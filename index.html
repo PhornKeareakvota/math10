@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>គណិតវិទ្យាថ្នាក់ទី១០ - សមីការអសនិទាននិងសមីការដឺក្រេលំដាប់ខ្ពស់</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Moul&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: { typeset: false } // Trigger manually for ultimate performance
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        body { font-family: 'Battambang', sans-serif; background-color: #f8fafc; color: #1e293b; overflow-x: hidden; }
+        .title-font { font-family: 'Moul', cursive; }
+        
+        /* Smooth Tab Transitions */
+        .tab-content { display: none; opacity: 0; }
+        .tab-content.active { display: block; animation: smoothFadeIn 0.3s ease-out forwards; }
+        @keyframes smoothFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .tab-btn { transition: all 0.2s ease; border-bottom: 3px solid transparent; }
+        .tab-btn-1.active { background-color: #2563eb; color: white; border-color: #1e40af; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2); }
+        .tab-btn-2.active { background-color: #16a34a; color: white; border-color: #15803d; box-shadow: 0 4px 6px -1px rgba(22,163,74,0.2); }
+        .tab-btn-3.active { background-color: #ea580c; color: white; border-color: #c2410c; box-shadow: 0 4px 6px -1px rgba(234,88,12,0.2); }
+        
+        /* Slide Animations */
+        .slide { display: none; }
+        .slide.active { display: block; animation: slideEnter 0.3s ease-out forwards; }
+        @keyframes slideEnter { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        
+        /* Print Rules */
+        @media print {
+            @page { size: A4 landscape; margin: 0; }
+            body { background: white; }
+            header, nav, #tab1, #tab2, .no-print { display: none !important; }
+            #tab3 { display: block !important; }
+            #slideContainer { border: none; box-shadow: none; width: 100%; aspect-ratio: auto; }
+            .slide { display: flex !important; flex-direction: column; justify-content: center; height: 100vh; page-break-after: always; }
+        }
+        .pseudo-fullscreen { position: fixed !important; top:0; left:0; width:100vw; height:100vh; z-index:9999; background:white; border-radius:0 !important; border:none !important; margin:0 !important; }
+        
+        /* Optimized SVG Animations */
+        .box-scene, .aid-scene { perspective: 800px; width: 100%; display: flex; justify-content: center; align-items: center; }
+        .box-wrapper { position: relative; width: 100px; height: 100px; transform-style: preserve-3d; animation: spinScene 15s infinite linear; }
+        .box-panel { position: absolute; border: 2px dashed #b45309; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 12px; }
+        .box-base { width: 100px; height: 100px; background: rgba(253, 224, 71, 0.95); }
+        .box-back { width: 100px; height: 40px; background: rgba(250, 204, 21, 0.85); top: -40px; transform-origin: bottom; animation: foldX 4s infinite alternate ease-in-out; }
+        .box-front { width: 100px; height: 40px; background: rgba(250, 204, 21, 0.85); bottom: -40px; transform-origin: top; animation: foldXRev 4s infinite alternate ease-in-out; }
+        .box-left { width: 40px; height: 100px; background: rgba(250, 204, 21, 0.85); left: -40px; transform-origin: right; animation: foldY 4s infinite alternate ease-in-out; }
+        .box-right { width: 40px; height: 100px; background: rgba(250, 204, 21, 0.85); right: -40px; transform-origin: left; animation: foldYRev 4s infinite alternate ease-in-out; }
+        
+        @keyframes spinScene { 100% { transform: rotateX(60deg) rotateZ(360deg); } }
+        @keyframes foldX { 0%, 20% { transform: rotateX(0deg); } 80%, 100% { transform: rotateX(-90deg); } }
+        @keyframes foldXRev { 0%, 20% { transform: rotateX(0deg); } 80%, 100% { transform: rotateX(90deg); } }
+        @keyframes foldY { 0%, 20% { transform: rotateY(0deg); } 80%, 100% { transform: rotateY(90deg); } }
+        @keyframes foldYRev { 0%, 20% { transform: rotateY(0deg); } 80%, 100% { transform: rotateY(-90deg); } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-gradient-to-r from-blue-900 via-indigo-800 to-blue-900 text-white p-8 shadow-lg text-center relative overflow-hidden">
+        <div class="relative z-10">
+            <h2 class="text-xl mb-3 text-blue-200 font-semibold tracking-wide">គណិតវិទ្យាកម្រិតថ្នាក់ទី១០ - ជំពូកទី៣ មេរៀនទី២</h2>
+            <h1 class="text-4xl md:text-5xl title-font text-yellow-300 mb-4 leading-tight drop-shadow-md">សមីការអសនិទាននិងសមីការដឺក្រេលំដាប់ខ្ពស់</h1>
+            <p class="text-lg text-gray-300 bg-black bg-opacity-30 inline-block px-4 py-1 rounded-full">រៀបចំដោយលោកគ្រូ៖ <span class="font-bold text-white">ផន គារវតា</span></p>
+        </div>
+        <!-- Decorative bg -->
+        <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"/></pattern></defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+        </div>
+    </header>
+
+    <nav class="container mx-auto mt-8 px-4 relative z-20">
+        <div class="flex flex-wrap justify-center gap-2 bg-white p-2 rounded-xl shadow-md border border-gray-100">
+            <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn tab-btn-1 active px-8 py-3 rounded-lg font-bold text-blue-700 hover:bg-blue-50">
+                <i class="fas fa-book-open mr-2"></i> ខ្លឹមសារមេរៀន
+            </button>
+            <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn tab-btn-2 px-8 py-3 rounded-lg font-bold text-green-700 hover:bg-green-50">
+                <i class="fas fa-tasks mr-2"></i> លំហាត់អនុវត្ត (Quiz)
+            </button>
+            <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn tab-btn-3 px-8 py-3 rounded-lg font-bold text-orange-700 hover:bg-orange-50">
+                <i class="fas fa-chalkboard-teacher mr-2"></i> បទបង្ហាញ (Slides)
+            </button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-6 px-4 mb-16">
+
+        <!-- ========================================== -->
+        <!-- TAB 1: CONTENT (LESSON) -->
+        <!-- ========================================== -->
+        <section id="tab1" class="tab-content active bg-white p-8 rounded-2xl shadow-lg border-t-8 border-blue-600">
+            
+            <div class="mb-10 bg-indigo-50 p-8 rounded-2xl border-l-4 border-indigo-600 shadow-sm">
+                <h3 class="text-3xl font-black text-indigo-900 mb-4 flex items-center"><i class="fas fa-history mr-3 text-yellow-500 text-4xl"></i>សញ្ញាណដំបូងនៃរបកគំហើញមេរៀននេះ</h3>
+                <p class="mb-8 text-gray-700 leading-relaxed text-lg text-justify bg-white p-4 rounded-lg shadow-sm border border-indigo-100">
+                    ការសិក្សាគណិតវិទ្យា និងធរណីមាត្រតាំងពីបុរាណកាល តែងជួបប្រទះនូវ <strong>"ចំណោទបញ្ហាដែលគ្មានចម្លើយ"</strong> ប្រសិនបើគេពឹងផ្អែកត្រឹមតែការប្រើប្រាស់ចំនួនសនិទាន (ប្រភាគ) ឬសមីការដឺក្រេទី១ និងទី២ ធម្មតា។ របកគំហើញនៃសមីការអសនិទាន និងសមីការដឺក្រេលំដាប់ខ្ពស់ បានកើតចេញពីករណីពិសេសក្នុងប្រវត្តិសាស្ត្រដូចខាងក្រោម៖
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                    <!-- Case 1: Pythagoras and Irrational Equations -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-blue-200 flex flex-col hover:shadow-lg transition">
+                        <h4 class="text-xl font-bold text-blue-800 mb-4 text-center border-b pb-2">១. វិបត្តិរបស់សាលាពីតាហ្គ័រ (សមីការអសនិទាន)</h4>
+                        
+                        <!-- SVG Animation for Pythagoras -->
+                        <div class="mb-6 flex justify-center bg-slate-900 p-4 rounded-xl shadow-[inset_0_0_20px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                            <span class="absolute top-2 left-3 text-blue-300 text-xs font-mono uppercase tracking-wider">Pythagorean Theorem</span>
+                            <svg width="200" height="200" viewBox="0 0 200 200">
+                                <g transform="translate(40, 140)">
+                                    <!-- Triangle -->
+                                    <polygon points="0,0 100,0 0,-100" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" opacity="0.8"/>
+                                    <!-- Right Angle -->
+                                    <polyline points="0,-15 15,-15 15,0" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+                                    <!-- Labels -->
+                                    <text x="50" y="20" fill="#93c5fd" font-size="14" font-family="sans-serif" text-anchor="middle">1 ឯកតា</text>
+                                    <text x="-20" y="-50" fill="#93c5fd" font-size="14" font-family="sans-serif" text-anchor="middle" transform="rotate(-90, -20, -50)">1 ឯកតា</text>
+                                    <!-- Hypotenuse with animation -->
+                                    <line x1="100" y1="0" x2="0" y2="-100" stroke="#f43f5e" stroke-width="4">
+                                        <animate attributeName="stroke-dasharray" values="0,200; 200,0" dur="2s" fill="freeze" />
+                                    </line>
+                                    <!-- Hypotenuse Label -->
+                                    <g transform="translate(60, -60) rotate(-45)">
+                                        <text x="0" y="0" fill="#fb7185" font-size="18" font-weight="bold" font-family="sans-serif">d = √2</text>
+                                    </g>
+                                    <!-- Expanding decimals animation -->
+                                    <text x="80" y="-80" fill="#facc15" font-size="12" font-family="monospace">
+                                        <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite"/>
+                                        1.41421356...
+                                    </text>
+                                </g>
+                            </svg>
+                        </div>
+                        
+                        <p class="text-gray-700 text-justify text-[15px] leading-relaxed flex-1">
+                            នៅសតវត្សទី៥ មុនគ.ស អ្នកប្រាជ្ញ <strong>ពីតាហ្គ័រ (Pythagoras)</strong> បានសិក្សាលើការេ និងត្រីកោណកែងសមបាតដែលមានរង្វាស់ជ្រុងស្មើនឹង ១ ឯកតា។ តាមទ្រឹស្តីបទពីតាហ្គ័រ រង្វាស់អង្កត់ទ្រូងគឺ $d^2 = 1^2 + 1^2 = 2$ នាំឱ្យបាន $d = \sqrt{2}$។
+                        </p>
+                        <div class="mt-4 bg-blue-50 p-4 rounded-xl border-l-4 border-blue-500 text-[14px] text-blue-900 shadow-sm">
+                            <strong><i class="fas fa-lightbulb text-yellow-500 mr-1 text-lg"></i> របកគំហើញ៖</strong> លេខ $\sqrt{2}$ មិនអាចសរសេរជាប្រភាគបានទេ (វាក្លាយជាចំនួនអសនិទាន)។ ការស្វែងរកប្រវែងជ្រុងដែលមិនស្គាល់ នៅក្នុងរូបធរណីមាត្រដែលជាប់រ៉ាឌីកាល់ បានបង្កើតជា <strong>"សមីការអសនិទាន"</strong> ដែលទាមទារវិធីសាស្ត្រលើកជាការេដើម្បីដោះស្រាយ។
+                        </div>
+                    </div>
+
+                    <!-- Case 2: The Delian Problem and Higher Degree Equations -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-purple-200 flex flex-col hover:shadow-lg transition">
+                        <h4 class="text-xl font-bold text-purple-800 mb-4 text-center border-b pb-2">២. ចំណោទពង្រីកមាឌគូបជាពីរ (សមីការដឺក្រេទី៣)</h4>
+                        
+                        <!-- SVG Animation for Doubling the Cube -->
+                        <div class="mb-6 flex justify-center bg-slate-900 p-4 rounded-xl shadow-[inset_0_0_20px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                            <span class="absolute top-2 left-3 text-purple-300 text-xs font-mono uppercase tracking-wider">The Delian Problem</span>
+                            <svg width="250" height="200" viewBox="0 0 250 200">
+                                <!-- Small Cube V=1 -->
+                                <g transform="translate(60, 120)">
+                                    <polygon points="0,0 30,-15 30,-45 0,-30" fill="#d8b4fe" stroke="#a21caf" stroke-width="1.5" opacity="0.8"/>
+                                    <polygon points="0,0 -30,-15 -30,-45 0,-30" fill="#e879f9" stroke="#a21caf" stroke-width="1.5" opacity="0.8"/>
+                                    <polygon points="0,-30 30,-45 0,-60 -30,-45" fill="#f0abfc" stroke="#a21caf" stroke-width="1.5" opacity="0.8"/>
+                                    <text x="0" y="-10" fill="#701a75" font-size="14" font-weight="bold" text-anchor="middle">V=1</text>
+                                    <text x="-25" y="-5" fill="#a21caf" font-size="12" font-weight="bold">1m</text>
+                                </g>
+                                
+                                <!-- Morphing Arrow -->
+                                <g transform="translate(105, 90)">
+                                    <line x1="0" y1="0" x2="40" y2="0" stroke="#facc15" stroke-width="3" stroke-dasharray="6,3">
+                                        <animate attributeName="stroke-dashoffset" values="18;0" dur="0.8s" repeatCount="indefinite" linear/>
+                                    </line>
+                                    <polygon points="40,0 32,-6 32,6" fill="#facc15"/>
+                                </g>
+
+                                <!-- Large Cube V=2 (side x = cube_root(2) approx 1.26 times larger) -->
+                                <g transform="translate(180, 130)">
+                                    <!-- Multiplied by 38 for visual scale -->
+                                    <polygon points="0,0 38,-19 38,-57 0,-38" fill="#818cf8" stroke="#1d4ed8" stroke-width="1.5" opacity="0.8"/>
+                                    <polygon points="0,0 -38,-19 -38,-57 0,-38" fill="#93c5fd" stroke="#1d4ed8" stroke-width="1.5" opacity="0.8"/>
+                                    <polygon points="0,-38 38,-57 0,-76 -38,-57" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.5" opacity="0.8"/>
+                                    <text x="0" y="-15" fill="#1e3a8a" font-size="16" font-weight="bold" text-anchor="middle">V=2</text>
+                                    <!-- Label x with pulse -->
+                                    <text x="-30" y="-5" fill="#fbbf24" font-size="16" font-weight="bold">
+                                        <animate attributeName="font-size" values="16;18;16" dur="2s" repeatCount="indefinite"/>
+                                        x=?
+                                    </text>
+                                </g>
+                            </svg>
+                        </div>
+                        
+                        <p class="text-gray-700 text-justify text-[15px] leading-relaxed flex-1">
+                            នៅប្រទេសក្រិចបុរាណ មានរឿងព្រេងមួយហៅថា ចំណោទទីក្រុងដេឡូស (Delian Problem) ដោយទេវតាបានបញ្ជាឱ្យអ្នកស្រុក បង្កើតអាសនៈរាងគូបថ្មីមួយដែលមាន <strong>មាឌធំជាងមុន ២ដង</strong>។ បើគូបចាស់មានជ្រុង $1m$ មាឌវាគឺ $V_1 = 1m^3$។
+                        </p>
+                        <div class="mt-4 bg-purple-50 p-4 rounded-xl border-l-4 border-purple-500 text-[14px] text-purple-900 shadow-sm">
+                            <strong><i class="fas fa-lightbulb text-yellow-500 mr-1 text-lg"></i> របកគំហើញ៖</strong> ដើម្បីបានមាឌថ្មី $V_2 = 2m^3$ គេត្រូវរកប្រវែងជ្រុងថ្មី $x$ ដែល $x \times x \times x = 2$ នាំឱ្យកើតជា <strong>សមីការដឺក្រេទី៣ ($x^3 = 2$)</strong>។ នេះជាការចាប់ផ្តើមនៃការស្រាវជ្រាវទ្រឹស្តីបទកត្តា និងការដោះស្រាយសមីការដឺក្រេខ្ពស់។
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Theory Sections -->
+            <div class="space-y-10 mt-10">
+                
+                <!-- Topic 1 -->
+                <article>
+                    <h3 class="text-2xl font-bold text-blue-800 mb-4 border-b-2 border-blue-200 pb-2">១. សមីការអសនិទាន (Irrational Equations)</h3>
+                    <p class="mb-4 text-gray-700 leading-relaxed"><strong>និយមន័យ៖</strong> សមីការអសនិទាន គឺជាសមីការដែលមានអញ្ញាតស្ថិតនៅក្រោមរ៉ាឌីកាល់ (រ៉ាឌីកង់)។ គោលការណ៍គ្រឹះក្នុងការដោះស្រាយគឺ ការលើកអង្គទាំងពីរជាការេដើម្បីបំបាត់រ៉ាឌីកាល់ ប៉ុន្តែត្រូវប្រុងប្រយ័ត្នជានិច្ចចំពោះ "ឫសក្រៅ (Extraneous roots)" ដែលអាចកើតមាន។</p>
+                    
+                    <div class="bg-blue-50 p-5 rounded-lg border-l-4 border-blue-500 text-gray-800 mb-6 shadow-sm">
+                        <p class="text-lg"><strong>ទម្រង់ទូទៅ៖</strong> $\sqrt{A(x)} = B(x)$</p>
+                        <p class="mt-2 text-red-700 font-bold"><i class="fas fa-exclamation-triangle mr-1"></i> លក្ខខណ្ឌចាំបាច់៖ $B(x) \ge 0$</p>
+                        <p class="text-sm mt-1 text-gray-600">(ការពន្យល់៖ ដោយសារលទ្ធផលនៃរ៉ាឌីកាល់ការេជានិច្ចកាលវិជ្ជមាន ឬសូន្យ នោះអង្គម្ខាងទៀតគឺ $B(x)$ ក៏ត្រូវតែធំជាងឬស្មើសូន្យដែរ។)</p>
+                        <p class="mt-3"><strong>ជំហានដោះស្រាយ៖</strong> $A(x) = [B(x)]^2 \implies$ ដោះស្រាយរក $x$ រួចផ្ទៀងផ្ទាត់ជាមួយលក្ខខណ្ឌ។</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-4">
+                        <h4 class="font-bold text-blue-900 text-lg flex items-center"><i class="fas fa-star text-yellow-500 mr-2"></i>ករណីទម្រង់ពិសេសនៃសមីការអសនិទាន</h4>
+                        
+                        <div class="bg-white p-4 rounded shadow-sm border border-indigo-100">
+                            <p class="font-bold text-indigo-700 mb-2">ក. ទម្រង់ $\sqrt{A(x)} = \sqrt{B(x)}$</p>
+                            <p class="text-sm text-gray-700 mb-2">ក្នុងទម្រង់នេះ យើងមិនចាំបាច់យកលក្ខខណ្ឌទាំងពីរទេ យើងគ្រាន់តែយក៖ <strong>$A(x) \ge 0$ ឬ $B(x) \ge 0$</strong> (ជ្រើសរើសមួយណាងាយស្រួលជាងគេ)។ ព្រោះបើវាស្មើគ្នា បើមួយ $\ge 0$ នោះមួយទៀតក៏ $\ge 0$ ដែរ។ រួចលើកជាការេ៖ $A(x) = B(x)$។</p>
+                            <p class="text-xs bg-indigo-50 p-2 rounded text-indigo-900"><em>ឧទាហរណ៍៖</em> $\sqrt{2x-1} = \sqrt{x+4} \implies$ លក្ខខណ្ឌ $x+4 \ge 0 \implies x \ge -4$។<br>លើកជាការេ៖ $2x-1 = x+4 \implies x = 5$ (យក ព្រោះ $5 \ge -4$)។</p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded shadow-sm border border-sky-100">
+                            <p class="font-bold text-sky-700 mb-2">ខ. ទម្រង់ $\sqrt{A(x)} \pm \sqrt{B(x)} = C$</p>
+                            <p class="text-sm text-gray-700 mb-2"><strong>លក្ខខណ្ឌ៖</strong> ត្រូវមានទាំងពីរគឺ $A(x) \ge 0$ <strong>និង</strong> $B(x) \ge 0$។ មុននឹងលើកជាការេ គប្បីបញ្ជូនរ៉ាឌីកាល់មួយទៅអង្គម្ខាងទៀតសិន (ឧ. $\sqrt{A} = C \mp \sqrt{B}$) ដើម្បីងាយស្រួលពន្លាតរូបមន្ត $(a-b)^2$។</p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded shadow-sm border border-teal-100">
+                            <p class="font-bold text-teal-700 mb-2">គ. ទម្រង់ផលគុណ $\sqrt{A(x)} \cdot B(x) = 0$</p>
+                            <p class="text-sm text-gray-700 mb-2"><strong>លក្ខខណ្ឌ៖</strong> $A(x) \ge 0$។ ដំណោះស្រាយមានពីរផ្នែកគឺ៖<br>១. $A(x) = 0$<br>២. $B(x) = 0$ (ដោយ $x$ ដែលរកបានត្រូវផ្ទៀងផ្ទាត់លក្ខខណ្ឌ $A(x) \ge 0$)</p>
+                            <p class="text-xs bg-teal-50 p-2 rounded text-teal-900"><em>ឧទាហរណ៍៖</em> $\sqrt{x-2} \cdot (x^2-9) = 0$<br>១. $x-2=0 \implies x=2$<br>២. $x^2-9=0 \implies x=\pm 3$។ តែលក្ខខណ្ឌ $x-2 \ge 0 \implies x \ge 2$។ ដូចនេះយកតែ $x=3$។ ឫសសរុប $x \in \{2, 3\}$។</p>
+                        </div>
+                    </div>
+
+                    <!-- Pedagogical Example 1 -->
+                    <div class="mt-8 bg-white border-2 border-blue-200 p-8 rounded-3xl shadow-md">
+                        <h4 class="font-bold text-blue-800 text-xl mb-6 flex items-center"><i class="fas fa-chalkboard-teacher mr-3 text-blue-600 text-3xl"></i>លំហាត់គំរូទី១៖ ការដោះស្រាយសមីការអសនិទាន</h4>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                            <p class="text-xl text-gray-800"><strong>ចំណោទ៖</strong> ចូរដោះស្រាយសមីការ $\sqrt{2x - 1} = x - 2$</p>
+                        </div>
+                        <div class="space-y-5 text-gray-800 bg-blue-50 p-8 rounded-2xl border border-blue-100">
+                            <p class="font-bold text-blue-900 text-xl border-b-2 border-blue-200 pb-3 mb-4"><i class="fas fa-list-ol mr-2"></i>ដំណោះស្រាយតាមជំហាន៖</p>
+                            
+                            <div class="flex items-start gap-4">
+                                <span class="shrink-0 font-bold text-blue-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-blue-100">ជំហានទី១</span>
+                                <div>
+                                    <p class="font-bold">រកលក្ខខណ្ឌនៃសមីការ</p>
+                                    <p class="text-sm text-gray-600 mb-2">ដោយសាររ៉ាឌីកាល់ការេជានិច្ចកាលវិជ្ជមាន ឬសូន្យ អង្គទី២ក៏ត្រូវតែធំជាងឬស្មើសូន្យដែរ។</p>
+                                    <p class="font-mono bg-white p-2 rounded border border-gray-200 inline-block text-red-600 font-bold">$x - 2 \ge 0 \implies x \ge 2$</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-4">
+                                <span class="shrink-0 font-bold text-blue-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-blue-100">ជំហានទី២</span>
+                                <div>
+                                    <p class="font-bold">លើកអង្គទាំងពីរជាការេ ដើម្បីបំបាត់រ៉ាឌីកាល់</p>
+                                    <p class="font-mono bg-white p-2 rounded border border-gray-200 inline-block mt-2">$(\sqrt{2x - 1})^2 = (x - 2)^2$</p><br>
+                                    <p class="font-mono bg-white p-2 rounded border border-gray-200 inline-block mt-1">$2x - 1 = x^2 - 4x + 4$</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-4">
+                                <span class="shrink-0 font-bold text-blue-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-blue-100">ជំហានទី៣</span>
+                                <div>
+                                    <p class="font-bold">រៀបចំជាសមីការដឺក្រេទី២ រួចដោះស្រាយ</p>
+                                    <p class="font-mono bg-white p-2 rounded border border-gray-200 inline-block mt-2">$x^2 - 4x + 4 - 2x + 1 = 0$</p><br>
+                                    <p class="font-mono bg-white p-2 rounded border border-gray-200 inline-block mt-1">$x^2 - 6x + 5 = 0$</p><br>
+                                    <p class="text-sm text-gray-600 mt-2">តាមរាង $a+b+c=0 \implies$ <span class="font-mono font-bold">$x = 1$ ឬ $x = 5$</span></p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-4">
+                                <span class="shrink-0 font-bold text-blue-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-blue-100">ជំហានទី៤</span>
+                                <div>
+                                    <p class="font-bold">ផ្ទៀងផ្ទាត់ឫសជាមួយលក្ខខណ្ឌ ($x \ge 2$)</p>
+                                    <ul class="mt-2 space-y-2">
+                                        <li class="bg-red-50 p-2 rounded border border-red-100 text-red-800"><i class="fas fa-times-circle mr-2"></i>ចំពោះ $x = 1$ មិនយកទេ (ជាឫសក្រៅ ព្រោះ $1 < 2$)</li>
+                                        <li class="bg-green-50 p-2 rounded border border-green-100 text-green-800"><i class="fas fa-check-circle mr-2"></i>ចំពោះ $x = 5$ យកជាចម្លើយ (ព្រោះ $5 \ge 2$)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 pt-4 border-t-2 border-blue-200 text-center">
+                                <p class="font-bold text-green-700 text-2xl bg-white inline-block px-6 py-3 rounded-xl shadow-sm border border-green-200"><i class="fas fa-arrow-alt-circle-right mr-2 text-green-500"></i>ដូចនេះ សំណុំឫសនៃសមីការគឺ $S = \{5\}$</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Tool -->
+                    <div class="bg-yellow-50 p-5 rounded-xl border border-yellow-300 mt-6 shadow-sm">
+                        <h4 class="font-bold text-yellow-800 mb-3 text-lg"><i class="fas fa-laptop-code mr-2 text-yellow-600"></i>ឧបករណ៍គណនាសាកល្បង៖ $\sqrt{ax + b} = c$</h4>
+                        <div class="flex flex-wrap gap-4 items-center bg-white p-4 rounded-lg border border-yellow-200">
+                            <input type="number" id="valA" placeholder="a" class="w-20 p-2 border rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none" value="2"> <span class="font-bold text-lg">$x +$</span>
+                            <input type="number" id="valB" placeholder="b" class="w-20 p-2 border rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none" value="-1"> <span class="font-bold text-lg">$=$</span>
+                            <input type="number" id="valC" placeholder="c" class="w-20 p-2 border rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none" value="3">
+                            <button onclick="window.solveInteractive1()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold transition shadow-md">គណនា</button>
+                        </div>
+                        <div id="resultInteractive1" class="mt-4 p-4 bg-white border-l-4 border-blue-500 rounded hidden text-sm shadow-sm"></div>
+                    </div>
+                </article>
+
+                <!-- Topic 2: Higher Degree Equations -->
+                <article>
+                    <h3 class="text-2xl font-bold text-blue-800 mb-4 border-b-2 border-blue-200 pb-2">២. សមីការដឺក្រេលំដាប់ខ្ពស់ងាយ ($x^n = a$)</h3>
+                    <p class="mb-4 text-gray-700 leading-relaxed">សមីការដឺក្រេលំដាប់ខ្ពស់ងាយ គឺជាសមីការដែលមានទម្រង់ទូទៅ $x^n = a$ ដែល $n \ge 3$។ ការដោះស្រាយត្រូវពឹងផ្អែកទាំងស្រុងលើភាពគូសេសនៃសន្ទស្សន៍ $n$ និងសញ្ញារបស់ $a$។</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-emerald-50 p-6 rounded-xl border-t-4 border-emerald-500 shadow-md">
+                            <p class="font-bold text-emerald-800 text-lg mb-3">ក. ករណី $n$ ជាចំនួនសេស ($n=3, 5, 7...$)</p>
+                            <p class="text-sm text-gray-700 mb-3">លក្ខណៈពិសេសនៃស្វ័យគុណសេសគឺវារក្សាសញ្ញាដើមជានិច្ច (វិជ្ជមាននៅវិជ្ជមាន អវិជ្ជមាននៅអវិជ្ជមាន)។ ដូច្នេះ សមីការមាន <strong>ឫសពិតតែមួយគត់</strong> សម្រាប់គ្រប់តម្លៃ $a \in \mathbb{R}$។</p>
+                            <div class="text-center font-bold text-emerald-900 bg-white p-3 rounded-lg mb-2 border border-emerald-200 text-lg">$x = \sqrt[n]{a}$</div>
+                        </div>
+
+                        <div class="bg-rose-50 p-6 rounded-xl border-t-4 border-rose-500 shadow-md flex flex-col h-full">
+                            <p class="font-bold text-rose-800 text-lg mb-4">ខ. ករណី $n$ ជាចំនួនគូ ($n=2, 4, 6...$)</p>
+                            <ul class="text-sm space-y-3 text-gray-700 bg-white p-4 rounded-lg border border-rose-100 flex-1 shadow-sm">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i>
+                                    <span class="leading-relaxed">បើ $a > 0 \implies$ មានឫសពិតពីរគឺ <strong class="text-green-700">$x = \pm\sqrt[n]{a}$</strong></span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-minus-circle text-gray-400 mt-1 mr-3 text-lg"></i>
+                                    <span class="leading-relaxed">បើ $a = 0 \implies$ មានឫសឌុប <strong class="text-gray-700">$x = 0$</strong></span>
+                                </li>
+                                <li class="flex items-start border-t border-rose-100 pt-3 mt-3">
+                                    <i class="fas fa-times-circle text-red-500 mt-1 mr-3 text-lg"></i>
+                                    <div>
+                                        <span class="leading-relaxed block">បើ $a < 0 \implies$ <strong class="text-red-600">គ្មានឫសពិតទេ</strong></span>
+                                        <div class="bg-rose-50 p-3 rounded-lg mt-2 border border-rose-100 text-[13px] text-gray-700 leading-relaxed">
+                                            <i class="fas fa-lightbulb text-yellow-500 mr-1 text-base"></i> <strong>គរុកោសល្យ៖</strong> ថ្វីត្បិតគ្មានឫសក្នុងសំណុំចំនួនពិត $\mathbb{R}$ តែវាមាន <strong>ឫសកុំផ្លិច (Complex Roots)</strong> ក្នុងសំណុំ $\mathbb{C}$ ដោយយើងតាងឯកតានិម្មិត <strong class="text-rose-600">$i^2 = -1$</strong>។
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Special Case for Topic 2 -->
+                    <div class="bg-amber-50 p-6 rounded-xl border border-amber-300 shadow-sm">
+                        <h4 class="font-bold text-amber-900 text-lg mb-2"><i class="fas fa-exchange-alt mr-2"></i>ករណីពិសេស៖ សមីការទ្វេការេ (Biquadratic Equations)</h4>
+                        <p class="text-sm text-gray-700 mb-3">សមីការមានទម្រង់ <strong>$ax^{2n} + bx^n + c = 0$</strong> អាចបំប្លែងទៅជាសមីការដឺក្រេទី២ ដោយការតាងអញ្ញាតជំនួយ។ (ជាទូទៅនៅថ្នាក់ទី១០ ជួបរាង $ax^4 + bx^2 + c = 0$)</p>
+                        <div class="bg-white p-4 rounded border border-amber-100 text-sm">
+                            <p><strong>វិធានដោះស្រាយ៖</strong></p>
+                            <ol class="list-decimal ml-5 space-y-1 mt-2 text-gray-800">
+                                <li>តាង $t = x^n$ ដោយដាក់លក្ខខណ្ឌ: បើ $n$ គូ នោះ <strong>$t \ge 0$</strong>។</li>
+                                <li>ដោះស្រាយសមីការថ្មី $at^2 + bt + c = 0$ ដើម្បីរក $t$។</li>
+                                <li>យកតម្លៃ $t$ ដែលផ្ទៀងផ្ទាត់លក្ខខណ្ឌ ទៅជំនួសរក $x$។</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Pedagogical Example 2 -->
+                    <div class="mt-8 bg-white border-2 border-emerald-200 p-8 rounded-3xl shadow-md">
+                        <h4 class="font-bold text-emerald-800 text-xl mb-6 flex items-center"><i class="fas fa-chalkboard-teacher mr-3 text-emerald-600 text-3xl"></i>លំហាត់គំរូទី២៖ ការដោះស្រាយសមីការ $x^n=a$ និងសមីការទ្វេការេ</h4>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            
+                            <!-- Part A -->
+                            <div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
+                                <p class="font-bold text-emerald-900 border-b-2 border-emerald-200 pb-2 mb-4 text-lg">ក. ដោះស្រាយសមីការ $x^n = a$</p>
+                                <div class="space-y-4">
+                                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                        <p class="font-bold text-gray-800 mb-2">១. ដោះស្រាយ $x^3 + 64 = 0$</p>
+                                        <p class="font-mono mb-2">$x^3 = -64$</p>
+                                        <p class="text-sm text-gray-600 mb-2">ដោយសន្ទស្សន៍ $n=3$ ជាចំនួនសេស សមីការមានឫសតែមួយ៖</p>
+                                        <p class="font-bold text-emerald-700 bg-emerald-100 p-2 rounded inline-block">$x = \sqrt[3]{-64} = -4$</p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                        <p class="font-bold text-gray-800 mb-2">២. ដោះស្រាយ $x^4 - 81 = 0$</p>
+                                        <p class="font-mono mb-2">$x^4 = 81$</p>
+                                        <p class="text-sm text-gray-600 mb-2">ដោយ $n=4$ ជាចំនួនគូ និង $81>0$ សមីការមានឫសពីរផ្ទុយគ្នា៖</p>
+                                        <p class="font-bold text-emerald-700 bg-emerald-100 p-2 rounded inline-block">$x = \pm\sqrt[4]{81} \implies x = \pm 3$</p>
+                                    </div>
+
+                                    <!-- Added Complex Root Example -->
+                                    <div class="bg-white p-4 rounded-xl shadow-sm border border-rose-200 relative overflow-hidden">
+                                        <div class="absolute top-0 right-0 bg-rose-100 text-rose-700 text-[10px] font-bold px-3 py-1 rounded-bl-lg">ឫសកុំផ្លិច</div>
+                                        <p class="font-bold text-gray-800 mb-2">៣. ដោះស្រាយ $x^2 + 16 = 0$</p>
+                                        <p class="font-mono mb-2 text-rose-600">$x^2 = -16$</p>
+                                        <p class="text-sm text-gray-600 mb-3 leading-relaxed">ដោយ $n=2$ (គូ) និង $a=-16 < 0$ សមីការគ្មានឫសពិតទេ។ យើងប្រើចំនួននិម្មិត <strong>$i^2 = -1$</strong> ជំនួសសញ្ញាដក។</p>
+                                        <div class="bg-rose-50 p-3 rounded-lg border border-rose-100">
+                                            <p class="font-mono text-sm mb-1">$x^2 = 16(-1) \implies x^2 = 16i^2$</p>
+                                            <p class="font-bold text-rose-700 bg-white px-3 py-1.5 rounded inline-block shadow-sm mt-1">$x = \pm\sqrt{16i^2} \implies x = \pm 4i$</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Part B -->
+                            <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100">
+                                <p class="font-bold text-amber-900 border-b-2 border-amber-200 pb-2 mb-4 text-lg">ខ. ដោះស្រាយសមីការទ្វេការេ</p>
+                                <p class="font-bold text-gray-800 mb-4 bg-white p-3 rounded-lg border border-gray-200">ដោះស្រាយ៖ $x^4 - 13x^2 + 36 = 0$</p>
+                                <ul class="space-y-3">
+                                    <li class="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                                        <span class="font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded text-xs mr-2">ជំហានទី១</span> <span class="text-sm">តាងអញ្ញាតជំនួយ $t = x^2$ ដោយលក្ខខណ្ឌ $t \ge 0$។</span>
+                                    </li>
+                                    <li class="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                                        <span class="font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded text-xs mr-2">ជំហានទី២</span> <span class="text-sm">សមីការទៅជា៖ $t^2 - 13t + 36 = 0$<br>
+                                        <span class="block ml-2 mt-1 text-gray-600 font-mono">$\implies (t-4)(t-9) = 0$</span><br>
+                                        <span class="block ml-2 text-gray-600 font-mono">$\implies t = 4$ ឬ $t = 9$</span> (យកទាំងពីរព្រោះ $>0$)</span>
+                                    </li>
+                                    <li class="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                                        <span class="font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded text-xs mr-2">ជំហានទី៣</span> <span class="text-sm">ជួសត្រលប់រក $x$៖<br>
+                                        <span class="block ml-2 mt-1 text-gray-600 font-mono">- បើ $t = 4 \implies x^2 = 4 \implies x = \pm 2$</span><br>
+                                        <span class="block ml-2 text-gray-600 font-mono">- បើ $t = 9 \implies x^2 = 9 \implies x = \pm 3$</span></span>
+                                    </li>
+                                </ul>
+                                <div class="mt-4 pt-3 border-t-2 border-amber-200 text-center">
+                                    <p class="font-bold text-green-700 text-lg bg-white p-2 rounded border border-green-200 inline-block">ដូចនេះ $S = \{-3, -2, 2, 3\}$</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Topic 3 & 4 -->
+                <article>
+                    <h3 class="text-2xl font-bold text-blue-800 mb-4 border-b-2 border-blue-200 pb-2">៣. ទ្រឹស្តីបទសំណល់ ទ្រឹស្តីបទកត្តា និងការដោះស្រាយ</h3>
+                    <p class="mb-4 text-gray-700 leading-relaxed">ទ្រឹស្តីបទទាំងពីរនេះគឺជាឆ្អឹងខ្នង (Backbone) សម្រាប់ការដោះស្រាយសមីការដឺក្រេលំដាប់ខ្ពស់ (ដឺក្រេ៣ឡើងទៅ) ដោយជួយយើងបំបែកសមីការទៅជាផលគុណកត្តា $(x-a)(x-b)... = 0$។</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-indigo-200 text-indigo-800 px-3 py-1 rounded-bl-lg font-bold text-xs">Remainder Theorem</div>
+                            <h4 class="font-bold text-indigo-900 text-lg mb-3 mt-2">ទ្រឹស្តីបទសំណល់</h4>
+                            <p class="text-sm text-gray-700 mb-3">សំណល់នៃការចែក $P(x)$ នឹងទ្វេធា $(x - c)$ គឺស្មើនឹងតម្លៃលេខនៃពហុធាត្រង់ $x = c$។</p>
+                            <p class="text-center font-black text-xl text-indigo-700 bg-white py-2 rounded border border-indigo-100">$R = P(c)$</p>
+                        </div>
+                        <div class="bg-purple-50 p-6 rounded-xl border border-purple-200 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-purple-200 text-purple-800 px-3 py-1 rounded-bl-lg font-bold text-xs">Factor Theorem</div>
+                            <h4 class="font-bold text-purple-900 text-lg mb-3 mt-2">ទ្រឹស្តីបទកត្តា</h4>
+                            <p class="text-sm text-gray-700 mb-3">ទ្វេធា $(x - c)$ គឺជា <strong>កត្តា</strong> នៃពហុធា $P(x)$ លុះត្រាតែ សំណល់ស្មើសូន្យ (ពោលគឺចែកដាច់)។</p>
+                            <p class="text-center font-black text-lg text-purple-700 bg-white py-2 rounded border border-purple-100">$(x-c)$ ជាកត្តា $\iff P(c) = 0$</p>
+                        </div>
+                    </div>
+
+                    <!-- Special Cases for Topic 3 -->
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-4 mb-6">
+                        <h4 class="font-bold text-blue-900 text-lg flex items-center"><i class="fas fa-star text-yellow-500 mr-2"></i>ករណីទម្រង់ពិសេស និងការអនុវត្តន៍</h4>
+                        
+                        <div class="bg-white p-4 rounded shadow-sm border border-teal-100">
+                            <p class="font-bold text-teal-700 mb-2">ក. ករណីតួចែកមានទម្រង់ $ax + b$</p>
+                            <p class="text-sm text-gray-700 mb-2">នៅពេលយើងចែកពហុធានឹងទ្វេធាដែលមានមេគុណនៅមុខ $x$ ទ្រឹស្តីបទប្រែប្រួលបន្តិច៖<br>
+                            - សំណល់៖ $R = P(-\frac{b}{a})$<br>
+                            - កត្តា៖ $(ax+b)$ ជាកត្តា លុះត្រាតែ $P(-\frac{b}{a}) = 0$។</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow-sm border border-fuchsia-100">
+                            <p class="font-bold text-fuchsia-700 mb-2">ខ. ការអនុវត្តន៍រកមេគុណមិនស្គាល់ (Unknown Coefficients)</p>
+                            <p class="text-sm text-gray-700 mb-2">ជារឿយៗប្រធានលំហាត់តម្រូវឱ្យយើងរកតម្លៃអក្សរតំណាង (ឧ. $k$)។</p>
+                            <p class="text-xs bg-fuchsia-50 p-3 rounded-lg text-fuchsia-900 border border-fuchsia-100 leading-relaxed"><em>លំហាត់គំរូ៖</em> រក $k$ បើ $P(x) = x^3 - kx^2 + 5x - 6$ ចែកដាច់នឹង $(x - 3)$។<br>
+                            <em>ចម្លើយ៖</em> ចែកដាច់មានន័យថា $P(3) = 0 \implies 3^3 - k(3)^2 + 5(3) - 6 = 0 \implies 27 - 9k + 15 - 6 = 0 \implies 36 = 9k \implies k = 4$។</p>
+                        </div>
+                    </div>
+                    
+                    <!-- DETAILED SPEED TIPS SECTION -->
+                    <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200 mb-8 shadow-sm">
+                        <h4 class="font-black text-slate-800 text-2xl mb-4 flex items-center">
+                            <i class="fas fa-bolt text-yellow-500 mr-3 text-3xl"></i>គន្លឹះរកឫសសាកល្បងរហ័ស (Speed Tips)
+                        </h4>
+                        <p class="text-gray-700 mb-6 text-lg">មុននឹងធ្វើវិធីចែកពហុធាដែលចំណាយពេលយូរ គប្បីសង្កេតមើលលក្ខណៈពិសេសទាំង៣ខាងក្រោម ដើម្បីចាប់យកឫសទី១ ភ្លាមៗ៖</p>
+
+                        <div class="space-y-6">
+                            <!-- Tip 1 -->
+                            <div class="bg-white rounded-xl border-l-8 border-indigo-500 shadow-md overflow-hidden">
+                                <div class="bg-indigo-50 px-6 py-3 border-b border-indigo-100 flex items-center justify-between">
+                                    <h5 class="font-bold text-indigo-800 text-lg">១. ករណីផលបូកមេគុណទាំងអស់ស្មើសូន្យ</h5>
+                                    <span class="bg-indigo-600 text-white px-3 py-1 rounded-full font-bold text-sm">ឫស $x = 1$</span>
+                                </div>
+                                <div class="p-6">
+                                    <p class="text-gray-700 mb-4"><strong>រូបមន្ត៖</strong> បើពហុធា $P(x)$ មានផលបូកមេគុណ $a + b + c + \dots = 0$ នោះសមីការមានឫស $x = 1$ (នាំឱ្យ $(x-1)$ ជាកត្តា)។</p>
+                                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                        <p class="font-bold text-gray-800 mb-2"><i class="fas fa-edit mr-2 text-indigo-500"></i>លំហាត់គំរូ៖ ដោះស្រាយសមីការ $2x^3 - 5x^2 + x + 2 = 0$</p>
+                                        <ul class="list-none space-y-2 text-sm text-gray-700 ml-6">
+                                            <li><i class="fas fa-brain text-yellow-500 mr-2"></i><strong>ការគិតលឿន៖</strong> បូកមេគុណទាំងអស់បញ្ចូលគ្នា $2 + (-5) + 1 + 2 = 5 - 5 = 0$។</li>
+                                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i><strong>សន្និដ្ឋាន៖</strong> ដោយផលបូកស្មើសូន្យ នោះ $x = 1$ ជាឫសទី១។ យើងអាចយកពហុធាទៅចែកនឹងកត្តា $(x-1)$ តែម្តង ដើម្បីបន្តការដោះស្រាយ។</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tip 2 -->
+                            <div class="bg-white rounded-xl border-l-8 border-cyan-500 shadow-md overflow-hidden">
+                                <div class="bg-cyan-50 px-6 py-3 border-b border-cyan-100 flex items-center justify-between">
+                                    <h5 class="font-bold text-cyan-800 text-lg">២. ករណីមេគុណគូ ស្មើ មេគុណសេស</h5>
+                                    <span class="bg-cyan-600 text-white px-3 py-1 rounded-full font-bold text-sm">ឫស $x = -1$</span>
+                                </div>
+                                <div class="p-6">
+                                    <p class="text-gray-700 mb-4"><strong>រូបមន្ត៖</strong> បើ <strong>$\sum$ មេគុណស្វ័យគុណគូ = $\sum$ មេគុណស្វ័យគុណសេស</strong> នោះសមីការមានឫស $x = -1$ (នាំឱ្យ $(x+1)$ ជាកត្តា)។ <em>(ចំណាំ៖ តួសេរី ត្រូវបានចាត់ទុកជាមេគុណនៃស្វ័យគុណគូ $x^0$)</em></p>
+                                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                        <p class="font-bold text-gray-800 mb-2"><i class="fas fa-edit mr-2 text-cyan-500"></i>លំហាត់គំរូ៖ ដោះស្រាយសមីការ $3x^3 + 4x^2 + 5x + 4 = 0$</p>
+                                        <ul class="list-none space-y-2 text-sm text-gray-700 ml-6">
+                                            <li><i class="fas fa-brain text-yellow-500 mr-2"></i><strong>ការគិតលឿន៖</strong> 
+                                                <br>&nbsp;&nbsp;&nbsp; - ផលបូកមេគុណសេស (ដឺក្រេ៣ និង ១) ៖ $3 + 5 = 8$
+                                                <br>&nbsp;&nbsp;&nbsp; - ផលបូកមេគុណគូ (ដឺក្រេ២ និង តួសេរី) ៖ $4 + 4 = 8$
+                                            </li>
+                                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i><strong>សន្និដ្ឋាន៖</strong> ដោយ $8 = 8$ នោះ $x = -1$ ជាឫសទី១។ យើងយកពហុធាទៅចែកនឹងកត្តា $(x+1)$។</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tip 3 -->
+                            <div class="bg-white rounded-xl border-l-8 border-lime-500 shadow-md overflow-hidden">
+                                <div class="bg-lime-50 px-6 py-3 border-b border-lime-100 flex items-center justify-between">
+                                    <h5 class="font-bold text-lime-800 text-lg">៣. ករណីគ្មានតួសេរី (Constant = 0)</h5>
+                                    <span class="bg-lime-600 text-white px-3 py-1 rounded-full font-bold text-sm">ឫស $x = 0$</span>
+                                </div>
+                                <div class="p-6">
+                                    <p class="text-gray-700 mb-4"><strong>រូបមន្ត៖</strong> បើគ្រប់តួនៃសមីការសុទ្ធតែជាប់អញ្ញាត $x$ ទាំងអស់ (គ្មានតួលេខទទេរ) យើងមិនបាច់រកឫសសាកល្បងទេ គឺសមីការតែងតែមានឫស $x = 0$ ជានិច្ច។</p>
+                                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                        <p class="font-bold text-gray-800 mb-2"><i class="fas fa-edit mr-2 text-lime-500"></i>លំហាត់គំរូ៖ ដោះស្រាយសមីការ $x^4 - 6x^3 + 8x^2 = 0$</p>
+                                        <ul class="list-none space-y-2 text-sm text-gray-700 ml-6">
+                                            <li><i class="fas fa-brain text-yellow-500 mr-2"></i><strong>ការគិតលឿន៖</strong> ដោយគ្មានតួសេរី យើងគ្រាន់តែទាញអញ្ញាតដែលមានស្វ័យគុណតូចជាងគេចេញជាកត្តា។</li>
+                                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i><strong>សន្និដ្ឋាន៖</strong> ទាញ $x^2$ ជាកត្តា $\implies x^2(x^2 - 6x + 8) = 0$។ ដូច្នេះ មានឫស $x = 0$ (ឫសឌុប) រួចបន្តដោះស្រាយកត្តាដែលសល់ $x^2 - 6x + 8 = 0$ តាមធម្មតា។</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pedagogical Example 3 -->
+                    <div class="mt-8 bg-white border-2 border-purple-200 p-8 rounded-3xl shadow-md">
+                        <h4 class="font-bold text-purple-800 text-xl mb-6 flex items-center"><i class="fas fa-chalkboard-teacher mr-3 text-purple-600 text-3xl"></i>លំហាត់គំរូទី៣៖ ការប្រើប្រាស់ទ្រឹស្តីបទកត្តាដើម្បីដោះស្រាយសមីការ</h4>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                            <p class="text-xl text-gray-800"><strong>ចំណោទ៖</strong> ចូរដោះស្រាយសមីការដឺក្រេទី៣៖ $x^3 - 4x^2 + x + 6 = 0$</p>
+                        </div>
+                        <div class="space-y-5 text-gray-800 bg-purple-50 p-8 rounded-2xl border border-purple-100">
+                            <p class="font-bold text-purple-900 text-xl border-b-2 border-purple-200 pb-3 mb-4"><i class="fas fa-list-ol mr-2"></i>ដំណោះស្រាយតាមជំហាន៖</p>
+                            
+                            <div class="flex items-start gap-4">
+                                <span class="shrink-0 font-bold text-purple-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-purple-100">ជំហានទី១</span>
+                                <div>
+                                    <p class="font-bold">រកឫសសាកល្បង</p>
+                                    <p class="text-sm text-gray-600 mb-2">យើងសង្កេតឃើញថា៖<br>
+                                    - ផលបូកមេគុណសេស (ដឺក្រេ៣ និង ដឺក្រេ១) គឺ $1 + 1 = 2$<br>
+                                    - ផលបូកមេគុណគូ (ដឺក្រេ២ និង តួសេរី) គឺ $-4 + 6 = 2$<br>
+                                    ដោយ $2 = 2$ នាំឱ្យសមីការមានឫស $x = -1$។ យោងតាមទ្រឹស្តីបទកត្តា <strong>$(x + 1)$ គឺជាកត្តាមួយនៃពហុធានេះ</strong>។</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-4">
+                                <span class="shrink-0 font-bold text-purple-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-purple-100">ជំហានទី២</span>
+                                <div>
+                                    <p class="font-bold">ធ្វើវិធីចែកពហុធា (ចែកអឺគ្លីត ឬ គ្រោងហ័រន័រ)</p>
+                                    <p class="text-sm text-gray-600 mt-2 bg-white p-3 rounded border border-gray-200">
+                                        យក $x^3 - 4x^2 + x + 6$ ចែកនឹង $(x + 1)$ គេទទួលបានផលចែកគឺ <strong>$x^2 - 5x + 6$</strong> និងសំណល់ $0$។
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-4">
+                                <span class="shrink-0 font-bold text-purple-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-purple-100">ជំហានទី៣</span>
+                                <div>
+                                    <p class="font-bold">សរសេរជាផលគុណកត្តា និងដោះស្រាយ</p>
+                                    <p class="font-mono bg-white p-2 rounded border border-gray-200 inline-block mt-2">$(x+1)(x^2 - 5x + 6) = 0$</p><br>
+                                    <p class="font-mono bg-white p-2 rounded border border-gray-200 inline-block mt-1">$(x+1)(x-2)(x-3) = 0$</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-4">
+                                <span class="shrink-0 font-bold text-purple-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-purple-100">ជំហានទី៤</span>
+                                <div>
+                                    <p class="font-bold">ទាញរកឫសនៃសមីការ</p>
+                                    <ul class="mt-2 space-y-1 text-gray-700 font-mono pl-4 border-l-4 border-purple-300">
+                                        <li>$x + 1 = 0 \implies x = -1$</li>
+                                        <li>$x - 2 = 0 \implies x = 2$</li>
+                                        <li>$x - 3 = 0 \implies x = 3$</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 pt-4 border-t-2 border-purple-200 text-center">
+                                <p class="font-bold text-green-700 text-2xl bg-white inline-block px-6 py-3 rounded-xl shadow-sm border border-green-200"><i class="fas fa-arrow-alt-circle-right mr-2 text-green-500"></i>ដូចនេះ សំណុំឫសនៃសមីការគឺ $S = \{-1, 2, 3\}$</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Topic 5: PISA Section Container -->
+                <article>
+                    <h3 class="text-2xl font-bold text-indigo-800 mb-6 border-b-4 border-indigo-600 pb-2 inline-block"><i class="fas fa-globe-asia mr-2 text-indigo-600"></i>៤. អនុវត្តន៍ PISA តេស្តក្នុងជីវភាព និងយុគសម័យឌីជីថល (១៦ លំហាត់)</h3>
+                    
+                    <p class="text-gray-700 mb-6 text-lg">លំហាត់ប្រភេទ PISA ជួយបណ្តុះការត្រិះរិះពិចារណា (Critical Thinking) និងបង្ហាញពីការអនុវត្តគណិតវិទ្យាក្នុងពិភពលោកពិត ចាប់ពីកសិកម្ម វេជ្ជសាស្ត្រ រហូតដល់បច្ចេកវិទ្យា AI និង Cloud Computing។</p>
+
+                    <!-- PISA Content rendered via JavaScript to keep file optimized and fast -->
+                    <div id="pisa-content-container" class="grid grid-cols-1 gap-6">
+                        <!-- Content goes here dynamically -->
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- Reference -->
+            <div class="mt-12 pt-6 border-t-2 border-gray-200 text-gray-600 bg-gray-50 p-6 rounded-xl">
+                <h4 class="font-bold text-lg mb-2"><i class="fas fa-book-reader mr-2 text-gray-500"></i>ឯកសារយោងសម្រាប់ការចងក្រង</h4>
+                <ul class="list-disc ml-6 space-y-1 text-sm">
+                    <li>សៀវភៅពុម្ពគណិតវិទ្យាថ្នាក់ទី១០ កម្រិតមូលដ្ឋាន និងកម្រិតខ្ពស់ (បោះពុម្ពដោយ ក្រសួងអប់រំ យុវជន និងកីឡា MoEYS)</li>
+                    <li>ឯកសារវាយតម្លៃសមត្ថភាពសិស្ស PISA ផ្នែកគណិតវិទ្យា និងវិទ្យាសាស្ត្រ (រៀបចំដោយអង្គការ OECD)</li>
+                    <li>ធនធានបច្ចេកវិទ្យាសិក្សា E-Learning និង Digital Simulation Models។</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: QUIZ -->
+        <!-- ========================================== -->
+        <section id="tab2" class="tab-content bg-white p-8 rounded-2xl shadow-lg border-t-8 border-green-600">
+            <div id="quiz-setup" class="text-center max-w-2xl mx-auto py-10">
+                <h2 class="text-3xl font-bold text-green-700 mb-6"><i class="fas fa-clipboard-list mr-2"></i>សន្លឹកកិច្ចការ លំហាត់ពហុជ្រើសរើស</h2>
+                <p class="text-gray-600 mb-8 text-lg">សូមបំពេញព័ត៌មានខាងក្រោមមុននឹងចាប់ផ្តើមធ្វើតេស្ត។ (៥០ សំណួរ | ១២០ នាទី)</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left bg-green-50 p-6 rounded-xl border border-green-100">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">ឈ្មោះសិស្ស៖</label>
+                        <input id="stuName" type="text" placeholder="វាយឈ្មោះនៅទីនេះ..." class="w-full p-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">ភេទ៖</label>
+                        <select id="stuSex" class="w-full p-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition shadow-sm">
+                            <option value="ប្រុស">ប្រុស</option>
+                            <option value="ស្រី">ស្រី</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button onclick="app.startQuiz()" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-xl font-bold py-4 px-12 rounded-full shadow-lg transition transform hover:-translate-y-1">
+                    <i class="fas fa-play-circle mr-2"></i> ចាប់ផ្តើមធ្វើតេស្ត
+                </button>
+            </div>
+
+            <div id="quiz-active" class="hidden">
+                <div class="sticky top-0 bg-white p-4 mb-8 flex justify-between items-center shadow-md rounded-xl z-40 border-b-4 border-green-500">
+                    <div class="font-bold text-gray-700 text-lg bg-gray-100 px-4 py-2 rounded-lg">សំណួរ៖ ៥០</div>
+                    <div id="timerDisplay" class="text-3xl font-mono font-black text-red-600 flex items-center bg-red-50 px-4 py-2 rounded-lg border border-red-200">
+                        <i class="fas fa-clock mr-3 animate-pulse"></i> <span id="timerSpan">120:00</span>
+                    </div>
+                    <button onclick="app.submitQuiz()" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow transition transform hover:scale-105"><i class="fas fa-check-double mr-2"></i>បញ្ជូនចម្លើយ</button>
+                </div>
+                
+                <!-- Questions Container -->
+                <div id="quiz-questions" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
+
+            <div id="quiz-result" class="hidden bg-gradient-to-b from-green-50 to-white p-10 rounded-3xl shadow-2xl text-center border-4 border-green-400 mt-8 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-400 via-green-500 to-blue-500"></div>
+                <div class="inline-block p-6 bg-white rounded-full shadow-xl mb-6 text-yellow-500 text-7xl transform hover:rotate-12 transition">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3 class="text-4xl font-black text-gray-800 mb-2 title-font">លទ្ធផលរបស់អ្នក</h3>
+                <p class="text-xl text-gray-600 mb-8 border-b pb-4">ឈ្មោះ៖ <span id="resName" class="font-bold text-blue-700"></span></p>
+                
+                <div class="text-[100px] leading-none font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-10 drop-shadow-sm" id="resScore">0/50</div>
+                
+                <div id="quiz-feedback" class="mb-10 text-left space-y-3 bg-white p-6 rounded-xl shadow-inner border border-gray-100"></div>
+
+                <!-- UPDATED BUTTON TEXT AS REQUESTED -->
+                <button onclick="app.downloadPNG()" id="btnDlPng" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-4 px-10 rounded-2xl shadow-lg transition transform hover:-translate-y-1">
+                    <i class="fas fa-camera mr-2"></i> ថតScreenshot ទុកជូនគ្រូ (A4 PNG)
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: SLIDES (PRESENTATION) -->
+        <!-- ========================================== -->
+        <section id="tab3" class="tab-content">
+            <div class="flex justify-end gap-3 mb-4 no-print">
+                <button onclick="app.toggleFS()" class="bg-slate-800 hover:bg-black text-white px-5 py-2 rounded-lg font-bold shadow transition flex items-center">
+                    <i class="fas fa-expand mr-2"></i> ពេញអេក្រង់ (Full Screen)
+                </button>
+                <button onclick="window.print()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg font-bold shadow transition flex items-center">
+                    <i class="fas fa-file-pdf mr-2"></i> រក្សាទុកជា PDF
+                </button>
+            </div>
+
+            <div id="slideContainer" class="relative bg-white aspect-[16/9] shadow-2xl rounded-xl border-4 border-slate-800 overflow-hidden flex flex-col group">
+                <button onclick="app.exitFS()" class="exit-fs-btn bg-red-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-red-700 items-center justify-center absolute top-4 right-4 z-50 transition transform hover:scale-110">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+
+                <!-- Dynamic Slide Content Area -->
+                <div id="slide-viewer" class="flex-1 flex flex-col justify-center items-center p-12 text-center overflow-hidden bg-gradient-to-br from-white to-gray-50">
+                    <!-- Injected by JS -->
+                </div>
+                
+                <!-- Controls -->
+                <div class="h-16 bg-slate-800 text-white flex justify-between items-center px-8 no-print relative z-10 transition-transform transform translate-y-0 group-hover:translate-y-0">
+                    <button onclick="app.changeSlide(-1)" class="text-slate-300 hover:text-white hover:bg-slate-700 w-10 h-10 rounded-full text-xl transition"><i class="fas fa-chevron-left"></i></button>
+                    <span id="slideCounter" class="font-bold text-white font-mono tracking-widest bg-slate-700 px-6 py-1.5 rounded-full shadow-inner">1 / 1</span>
+                    <button onclick="app.changeSlide(1)" class="text-slate-300 hover:text-white hover:bg-slate-700 w-10 h-10 rounded-full text-xl transition"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Hidden Export Template for HTML2Canvas -->
+    <!-- UPDATED DESIGN TO LOOK LIKE A CLEAN A4 SUMMARY REPORT -->
+    <div id="exportSlip" class="hidden fixed top-0 left-[-9999px] w-[800px] h-[1131px] bg-white p-12 z-0 border-[16px] border-double border-green-700 flex flex-col items-center">
+        <div class="w-full text-center border-b-4 border-gray-300 pb-8 mb-8">
+            <i class="fas fa-graduation-cap text-blue-700 text-[80px] mb-6 drop-shadow-md"></i>
+            <h2 class="text-5xl font-bold title-font text-indigo-900 mb-4">របាយការណ៍លទ្ធផលសិក្សា</h2>
+            <h3 class="text-2xl text-gray-600 font-bold">មុខវិជ្ជា៖ គណិតវិទ្យាថ្នាក់ទី១០ (សមីការអសនិទាន & ដឺក្រេខ្ពស់)</h3>
+        </div>
+        
+        <div class="w-full text-3xl space-y-6 mb-16 bg-gray-50 p-10 rounded-2xl border-2 border-gray-100 shadow-sm">
+            <p class="flex justify-between border-b pb-4"><span class="text-gray-500">ឈ្មោះសិស្ស៖</span> <strong id="expName" class="text-blue-800 uppercase tracking-wide"></strong></p>
+            <p class="flex justify-between border-b pb-4"><span class="text-gray-500">ភេទ៖</span> <strong id="expSex" class="text-gray-800"></strong></p>
+            <p class="flex justify-between border-b pb-4"><span class="text-gray-500">ថ្នាក់ទី៖</span> <strong class="text-gray-800">១០</strong></p>
+            <p class="flex justify-between"><span class="text-gray-500">កាលបរិច្ឆេទធ្វើតេស្ត៖</span> <strong id="expDate" class="text-gray-800 text-2xl mt-1"></strong></p>
+        </div>
+        
+        <div class="bg-green-50 border-8 border-green-500 rounded-[40px] p-20 w-full text-center shadow-lg relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-4 bg-green-500"></div>
+            <p class="text-3xl text-gray-700 mb-6 font-bold uppercase tracking-widest">ពិន្ទុសរុប</p>
+            <p id="expScore" class="text-[150px] font-black text-green-700 leading-none drop-shadow-lg"></p>
+        </div>
+        
+        <div class="mt-auto text-gray-500 text-center w-full border-t-2 border-gray-200 pt-6">
+            <p class="mb-2 text-xl">ឯកសារនេះត្រូវបានថតចេញពីប្រព័ន្ធ E-Learning ទុកជូនគ្រូប្រចាំមុខវិជ្ជា។</p>
+            <p class="font-bold text-indigo-900 text-2xl mt-4 title-font">លោកគ្រូ ផន គារវតា</p>
+        </div>
+    </div>
+
+    <!-- Application Logic (JavaScript) -->
+    <script>
+        // 1. Data Store
+        const pisaData = [
+            { id: 1, title: 'ការផលិតប្រអប់គ្មានគម្រប', icon: 'fa-industry', color: 'blue', q: 'សហគ្រាសធ្វើប្រអប់គ្មានគម្របពីបន្ទះក្រដាសការេជ្រុង $20cm$ ដោយកាត់ជ្រុងតូចៗ $x$។ បើមាឌស្មើនឹង $576 cm^3$ តើត្រូវកាត់ជ្រុង $x$ ប៉ុន្មាន?', sol: '$V = x(20-2x)^2 = 576 \\implies 4x^3 - 80x^2 + 400x - 576 = 0 \\implies x = 4cm$', svg: `<div class="box-scene transform scale-75"><div class="box-wrapper"><div class="box-panel box-base">20-2x</div><div class="box-panel box-back">x</div><div class="box-panel box-front">x</div><div class="box-panel box-left">x</div><div class="box-panel box-right">x</div></div></div>` },
+            { id: 2, title: 'កម្រិតថ្នាំក្នុងឈាម', icon: 'fa-heartbeat', color: 'indigo', q: 'កម្រិតប្រតិកម្មថ្នាំ $A(t) = t^3 - 6t^2 + 11t$ (mg/L)។ រកម៉ោង $t$ ដែលកម្រិតថ្នាំស្មើ $6$ mg/L?', sol: '$t^3 - 6t^2 + 11t - 6 = 0 \\implies (t-1)(t-2)(t-3) = 0 \\implies t \\in \\{1, 2, 3\\}$', svg: `<svg width="100" height="150" viewBox="0 0 100 150"><path d="M 20,130 L 20,40 A 30,10 0 0,0 80,40 L 80,130 A 30,10 0 0,1 20,130 Z" fill="#7f1d1d" opacity="0.6"/><g><animateTransform attributeName="transform" type="translate" values="0,-10; 0,100" dur="2s" repeatCount="indefinite" /><circle cx="50" cy="20" r="6" fill="#60a5fa" /></g></svg>` },
+            { id: 3, title: 'ដ្រូនស៊ើបការណ៍យោធា', icon: 'fa-fighter-jet', color: 'green', q: 'កម្ពស់ដ្រូន $H(t) = t^3 - 9t^2 + 23t$ (km)។ តើនៅម៉ោងទីប៉ុន្មានខ្លះ ដែលដ្រូនហោះដល់កម្ពស់ ១៥គីឡូម៉ែត្រ?', sol: '$t^3 - 9t^2 + 23t - 15 = 0 \\implies (t-1)(t-3)(t-5) = 0 \\implies t \\in \\{1, 3, 5\\}$', svg: `<svg width="150" height="100" viewBox="0 0 150 100"><path d="M 10,90 C 30,30 60,10 80,10 C 100,50 130,50 140,10" fill="none" stroke="#22c55e" stroke-width="2"/><circle r="5" fill="#10b981"><animateMotion dur="4s" repeatCount="indefinite" path="M 10,90 C 30,30 60,10 80,10 C 100,50 130,50 140,10"/></circle></svg>` },
+            { id: 4, title: 'ប្រអប់ទម្លាក់ជំនួយ', icon: 'fa-parachute-box', color: 'orange', q: 'ប្រអប់មានមាឌ $72 m^3$។ បណ្តោយ $= x+2$, ទទឹង $= x$, កម្ពស់ $= x-1$។ ចូររកវិមាត្រ។', sol: '$x(x+2)(x-1) = 72 \\implies x^3 + x^2 - 2x - 72 = 0 \\implies x = 4m$', svg: `<div class="aid-scene transform scale-75"><div class="aid-box"><div class="aid-panel aid-front"><i class="fas fa-plus text-red-500 text-2xl"></i></div><div class="aid-panel aid-right"></div><div class="aid-panel aid-top">V=72</div></div></div>` },
+            { id: 5, title: 'កំណើនសារាយក្នុងបឹង', icon: 'fa-microscope', color: 'purple', q: 'ផ្ទៃក្រឡាសារាយ $S(t) = t^3 - 4t^2 + 8t$។ តើនៅថ្ងៃទីប៉ុន្មានទើបផ្ទៃកើនដល់ $៣២ m^2$?', sol: '$t^3 - 4t^2 + 8t - 32 = 0 \\implies (t-4)(t^2 + 8) = 0 \\implies t = 4$', svg: `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#22c55e"><animate attributeName="r" values="10;45;10" dur="4s" repeatCount="indefinite"/></circle></svg>` },
+            { id: 6, title: 'រ៉ុក្កែតអវកាស', icon: 'fa-rocket', color: 'teal', q: 'កម្ពស់រ៉ុក្កែត $h(t) = t^3 - 7t^2 + 14t$។ រកនាទី $t$ ដែលកម្ពស់ដល់ $8$ km?', sol: '$t^3 - 7t^2 + 14t - 8 = 0 \\implies (t-1)(t-2)(t-4) = 0 \\implies t \\in \\{1, 2, 4\\}$', svg: `<svg width="80" height="150" viewBox="0 0 80 150"><rect x="35" y="80" width="10" height="30" fill="#f1f5f9"/><polygon points="35,80 40,60 45,80" fill="#ef4444"/><g><animateTransform attributeName="transform" type="translate" values="0,0; 0,-50; 0,0" dur="3s" repeatCount="indefinite"/><circle cx="40" cy="110" r="5" fill="#facc15"/></g></svg>` },
+            { id: 7, title: 'រលកស៊ូណាមិ', icon: 'fa-water', color: 'sky', q: 'កម្ពស់រលក $W(t) = t^3 - 8t^2 + 19t$។ តើនៅម៉ោងទីប៉ុន្មានខ្លះរលកបោកដល់ជញ្ជាំង $12$ ម៉ែត្រ?', sol: '$t^3 - 8t^2 + 19t - 12 = 0 \\implies (t-1)(t-3)(t-4) = 0 \\implies t \\in \\{1, 3, 4\\}$', svg: `<svg width="150" height="100" viewBox="0 0 150 100"><rect x="100" y="20" width="10" height="80" fill="#94a3b8"/><path fill="#0284c7" opacity="0.8"><animate attributeName="d" values="M 0,100 Q 50,100 100,100 L 100,100 Z; M 0,100 Q 50,20 100,40 L 100,100 Z; M 0,100 Q 50,100 100,100 L 100,100 Z" dur="4s" repeatCount="indefinite"/></path></svg>` },
+            { id: 8, title: 'TikTok Engagement', icon: 'fa-tiktok', color: 'pink', q: 'ចំនួន Like គិតជាពាន់ $V(t) = t^3 - 5t^2 + 8t$។ រកម៉ោង $t$ ដែល Like កើនដល់ $4$ ពាន់?', sol: '$t^3 - 5t^2 + 8t - 4 = 0 \\implies (t-1)(t-2)^2 = 0 \\implies t \\in \\{1, 2\\}$', svg: `<svg width="100" height="120" viewBox="0 0 100 120"><rect x="10" y="10" width="80" height="100" rx="5" fill="#1e293b" stroke="#f472b6" stroke-width="2"/><path d="M 50,60 Q 30,40 50,80 Q 70,40 50,60" fill="#ec4899"><animateTransform attributeName="transform" type="translate" values="0,20; 0,-20" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="1.5s" repeatCount="indefinite"/></path></svg>` },
+            { id: 9, title: 'Crypto Mining Rate', icon: 'fa-coins', color: 'yellow', q: 'ចំនួនកាក់ $C(t) = t^3 - 9t^2 + 26t$។ តើនៅម៉ោងទីប៉ុន្មានរកបាន $24$ កាក់?', sol: '$t^3 - 9t^2 + 26t - 24 = 0 \\implies (t-2)(t-3)(t-4) = 0 \\implies t \\in \\{2, 3, 4\\}$', svg: `<svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="35" fill="#f59e0b"><animate attributeName="r" values="35;30;35" dur="1s" repeatCount="indefinite"/></circle><text x="40" y="55" font-size="35" text-anchor="middle" fill="#fff" font-weight="bold">₿</text></svg>` },
+            { id: 10, title: 'E-sports Power Level', icon: 'fa-gamepad', color: 'green', q: 'ថាមពល $L(t) = t^3 - 7t^2 + 15t$។ រកវិនាទី $t$ ដែលថាមពលស្មើ $9$?', sol: '$t^3 - 7t^2 + 15t - 9 = 0 \\implies (t-1)(t-3)^2 = 0 \\implies t \\in \\{1, 3\\}$', svg: `<div class="w-32 h-4 bg-gray-700 rounded-full overflow-hidden border border-green-500"><div class="h-full bg-gradient-to-r from-green-500 to-green-300"><animate attributeName="width" values="10%;90%;10%" dur="3s" repeatCount="indefinite"/></div></div>` },
+            { id: 11, title: 'ការហ្វឹកហាត់ម៉ូដែល AI', icon: 'fa-brain', color: 'cyan', q: 'ភាពត្រឹមត្រូវ $A(t) = t^3 - 8t^2 + 20t$។ រកម៉ោង $t$ ដែលវាដល់ $16$?', sol: '$t^3 - 8t^2 + 20t - 16 = 0 \\implies (t-2)^2(t-4) = 0 \\implies t \\in \\{2, 4\\}$', svg: `<svg width="120" height="60" viewBox="0 0 120 60"><line x1="20" y1="30" x2="100" y2="30" stroke="#06b6d4" stroke-width="2"/><circle cx="20" cy="30" r="8" fill="#06b6d4"/><circle cx="100" cy="30" r="8" fill="#06b6d4"/><circle cx="60" cy="30" r="15" fill="#0891b2"><animate attributeName="r" values="10;15;10" dur="0.8s" repeatCount="indefinite"/></circle></svg>` },
+            { id: 12, title: 'Flash Sale (E-commerce)', icon: 'fa-shopping-cart', color: 'orange', q: 'ការកម្ម៉ង់ $V(t) = t^3 - 8t^2 + 17t$ (ពាន់)។ រកម៉ោង $t$ ដែលដល់ $10$ ពាន់?', sol: '$t^3 - 8t^2 + 17t - 10 = 0 \\implies (t-1)(t-2)(t-5) = 0 \\implies t \\in \\{1, 2, 5\\}$', svg: `<svg width="100" height="80" viewBox="0 0 100 80"><g transform="translate(20, 20)"><animateTransform attributeName="transform" type="translate" values="10,20; 30,20" dur="0.5s" repeatCount="indefinite"/><path d="M 0,0 L 10,0 L 20,20 L 40,20 L 45,0 Z" fill="none" stroke="#ea580c" stroke-width="2"/><circle cx="20" cy="25" r="4" fill="#c2410c"/><circle cx="35" cy="25" r="4" fill="#c2410c"/></g></svg>` },
+            { id: 13, title: 'វាយប្រហារ Firewall (Cybersecurity)', icon: 'fa-shield-alt', color: 'red', q: 'រំញ័រ $F(t) = t^3 - 10t^2 + 31t$។ រកនាទី $t$ ដែលរំញ័រដល់ $30$?', sol: '$t^3 - 10t^2 + 31t - 30 = 0 \\implies (t-2)(t-3)(t-5) = 0 \\implies t \\in \\{2, 3, 5\\}$', svg: `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="#22c55e" opacity="0.4"><animate attributeName="fill" values="#22c55e;#ef4444;#22c55e" dur="1s" repeatCount="indefinite"/></circle><path d="M 50,25 L 70,35 L 70,60 Q 50,75 30,60 L 30,35 Z" fill="none" stroke="#16a34a" stroke-width="3"/></svg>` },
+            { id: 14, title: 'Cloud Big Data Transfer', icon: 'fa-server', color: 'blue', q: 'ផ្ទេរទិន្នន័យ $D(t) = t^3 - 6t^2 + 12t$ (TB)។ រកម៉ោង $t$ ដែលដល់ $8$ TB?', sol: '$t^3 - 6t^2 + 12t - 8 = 0 \\implies (t-2)^3 = 0 \\implies t = 2$', svg: `<svg width="120" height="80" viewBox="0 0 120 80"><rect x="10" y="20" width="30" height="40" rx="3" fill="#1e40af"/><rect x="80" y="20" width="30" height="40" rx="3" fill="#1e40af"/><line x1="40" y1="40" x2="80" y2="40" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4,2"><animate attributeName="stroke-dashoffset" values="20;0" dur="1s" repeatCount="indefinite"/></line></svg>` },
+            { id: 15, title: 'ពិភពនិម្មិត (Metaverse / VR)', icon: 'fa-vr-cardboard', color: 'fuchsia', q: 'បន្ទុក Render $P(t) = t^3 - 10t^2 + 33t$ (%)។ រកវិនាទី $t$ ដែលបន្ទុកស្មើ $36\\%$?', sol: '$t^3 - 10t^2 + 33t - 36 = 0 \\implies (t-3)^2(t-4) = 0 \\implies t \\in \\{3, 4\\}$', svg: `<svg width="100" height="60" viewBox="0 0 100 60"><rect x="20" y="20" width="60" height="25" rx="5" fill="#701a75"/><rect x="25" y="25" width="22" height="15" fill="#d946ef"><animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/></rect><rect x="53" y="25" width="22" height="15" fill="#d946ef"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></rect></svg>` },
+            { id: 16, title: 'ទីក្រុងឆ្លាតវៃ (Smart City IoT)', icon: 'fa-city', color: 'emerald', q: 'ថាមពលសូឡា $E(t) = t^3 - 12t^2 + 45t$ (kWh)។ រកម៉ោង $t$ ដែលសន្សំបាន $54$ kWh?', sol: '$t^3 - 12t^2 + 45t - 54 = 0 \\implies (t-3)^2(t-6) = 0 \\implies t \\in \\{3, 6\\}$', svg: `<svg width="120" height="80" viewBox="0 0 120 80"><rect x="20" y="30" width="20" height="50" fill="#064e3b"/><rect x="50" y="10" width="30" height="70" fill="#064e3b"/><circle cx="100" cy="20" r="10" fill="#facc15"><animate attributeName="r" values="10;12;10" dur="2s" repeatCount="indefinite"/></circle></svg>` }
+        ];
+
+        // 2. Main App Object
+        const app = {
+            activeTab: 'tab1',
+            slideIdx: 0,
+            renderedTabs: { tab1: false, tab2: false, tab3: false },
+            
+            // Tab Switching
+            switchTab: function(tabId) {
+                if(!tabId) return;
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+                
+                const tab = document.getElementById(tabId);
+                const btn = document.getElementById('btn-' + tabId);
+                if(tab) tab.classList.add('active');
+                if(btn) btn.classList.add('active');
+                
+                if (!this.renderedTabs[tabId] || tabId === 'tab3') {
+                    this.renderMathJax();
+                    this.renderedTabs[tabId] = true;
+                }
+                this.activeTab = tabId;
+            },
+
+            // MathJax Rendering
+            renderMathJax: function(elements) {
+                if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                    window.MathJax.typesetPromise(elements).catch((err) => console.warn('MathJax err:', err));
+                } else {
+                    setTimeout(() => {
+                        if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                            window.MathJax.typesetPromise(elements).catch((err) => console.warn('MathJax err:', err));
+                        }
+                    }, 300);
+                }
+            },
+
+            // Init
+            init: function() {
+                const pisaContainer = document.getElementById('pisa-content-container');
+                if (pisaContainer) {
+                    let pisaHTML = "";
+                    pisaData.forEach(p => {
+                        pisaHTML += `<div class="bg-white p-6 rounded-2xl border border-${p.color}-100 shadow-md hover:shadow-lg transition flex flex-col md:flex-row gap-6 items-center">
+                            <div class="flex-1 space-y-4">
+                                <h4 class="font-bold text-${p.color}-800 text-xl"><i class="fas ${p.icon} mr-3 opacity-80 text-2xl"></i>លំហាត់ទី${p.id}៖ ${p.title}</h4>
+                                <p class="text-[15px] text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-100">${p.q}</p>
+                                <p class="text-sm bg-${p.color}-50 border-l-4 border-${p.color}-500 p-3 text-${p.color}-900 rounded shadow-sm"><strong>ដំណោះស្រាយ៖</strong><br> ${p.sol}</p>
+                            </div>
+                            <div class="w-full md:w-56 h-40 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl flex items-center justify-center border-2 border-slate-700 shadow-inner relative overflow-hidden group">
+                                <div class="absolute top-2 left-2 flex gap-1"><div class="w-2 h-2 rounded-full bg-red-500"></div><div class="w-2 h-2 rounded-full bg-yellow-500"></div><div class="w-2 h-2 rounded-full bg-green-500"></div></div>
+                                <div class="transform scale-125 group-hover:scale-150 transition duration-500">${p.svg}</div>
+                            </div>
+                        </div>`;
+                    });
+                    pisaContainer.innerHTML = pisaHTML;
+                }
+
+                this.slidesArr = [];
+                this.slidesArr.push(`<h1 class="text-5xl title-font text-blue-900 mb-8 leading-tight drop-shadow-md">សមីការអសនិទាន<br>និងដឺក្រេលំដាប់ខ្ពស់</h1><h2 class="text-3xl text-gray-700 mb-10 border-b-2 border-gray-300 pb-4 inline-block">គណិតវិទ្យាថ្នាក់ទី១០ ជំពូក៣ មេរៀនទី២</h2><div><span class="text-2xl font-bold text-white bg-orange-500 px-6 py-3 rounded-full shadow-lg"><i class="fas fa-chalkboard-teacher mr-2"></i> បង្រៀនដោយ៖ លោកគ្រូ ផន គារវតា</span></div>`);
+                this.slidesArr.push(`<h2 class="text-4xl font-bold text-blue-800 mb-12 border-b-4 border-blue-500 pb-2 inline-block">មាតិកាមេរៀន</h2><div class="grid grid-cols-1 gap-y-6 text-3xl text-left pl-10 text-gray-700"><p class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100"><span class="bg-blue-600 text-white w-10 h-10 inline-flex justify-center items-center rounded-full mr-4">១</span>សមីការអសនិទាន</p><p class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100"><span class="bg-blue-600 text-white w-10 h-10 inline-flex justify-center items-center rounded-full mr-4">២</span>ដឺក្រេលំដាប់ខ្ពស់ងាយ</p><p class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100"><span class="bg-blue-600 text-white w-10 h-10 inline-flex justify-center items-center rounded-full mr-4">៣</span>ទ្រឹស្តីបទសំណល់ និងកត្តា</p><p class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100"><span class="bg-blue-600 text-white w-10 h-10 inline-flex justify-center items-center rounded-full mr-4">៤</span>អនុវត្តន៍ PISA ឌីជីថល</p></div>`);
+                this.slidesArr.push(`<h2 class="text-4xl font-bold text-blue-800 mb-10 border-b-4 border-blue-500 pb-2 inline-block">១. សមីការអសនិទាន</h2><div class="text-4xl mb-10 bg-gray-100 p-8 rounded-xl inline-block font-bold text-blue-900 shadow-inner border-2 border-gray-200">$\\sqrt{A(x)} = B(x)$</div><div class="bg-red-50 p-8 rounded-2xl w-3/4 shadow-md border border-red-200"><p class="text-3xl font-bold text-red-700 flex items-center justify-center"><i class="fas fa-exclamation-triangle mr-4 text-4xl"></i>លក្ខខណ្ឌចាំបាច់៖ $B(x) \\ge 0$</p></div>`);
+                this.slidesArr.push(`<h2 class="text-4xl font-bold text-blue-800 mb-10 border-b-4 border-blue-500 pb-2 inline-block">៣. ទ្រឹស្តីបទសំណល់ និងកត្តា</h2><div class="grid grid-cols-2 gap-10 w-full px-10"><div class="bg-blue-50 p-10 rounded-3xl shadow-lg border border-blue-200"><p class="font-bold text-3xl text-blue-900 mb-8 border-b pb-2"><i class="fas fa-divide mr-3"></i>ទ្រឹស្តីបទសំណល់</p><p class="text-5xl font-black text-blue-600 bg-white py-6 rounded-xl border border-blue-100">$R = P(c)$</p></div><div class="bg-purple-50 p-10 rounded-3xl shadow-lg border border-purple-200"><p class="font-bold text-3xl text-purple-900 mb-8 border-b pb-2"><i class="fas fa-check-circle mr-3"></i>ទ្រឹស្តីបទកត្តា</p><p class="text-4xl font-black text-purple-600 bg-white py-6 rounded-xl border border-purple-100">$(x-c) \\iff P(c)=0$</p></div></div>`);
+                
+                pisaData.forEach(p => {
+                    this.slidesArr.push(`<h2 class="text-4xl font-bold text-${p.color}-800 mb-10 border-b-4 border-${p.color}-500 pb-2 inline-block"><i class="fas ${p.icon} mr-4"></i>PISA: ${p.title}</h2><div class="grid grid-cols-2 gap-12 items-center w-full px-10"><div class="text-left bg-white p-10 rounded-3xl h-full flex flex-col justify-center border-2 border-${p.color}-100 shadow-xl"><p class="text-2xl mb-10 leading-relaxed text-gray-700">${p.q}</p><p class="font-bold text-2xl text-${p.color}-800 bg-${p.color}-50 p-6 rounded-xl border-l-8 border-${p.color}-500">ចម្លើយ៖ ${p.sol}</p></div><div class="flex justify-center items-center h-[400px] bg-slate-900 rounded-3xl overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.5)] transform scale-100 border-4 border-slate-700">${p.svg}</div></div>`);
+                });
+                
+                this.slidesArr.push(`<h2 class="text-[80px] font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-10 title-font drop-shadow-sm">សំណួរ និងចម្លើយ</h2><p class="text-4xl mt-12 text-gray-600 bg-gray-100 px-10 py-5 rounded-full inline-block shadow-sm">សូមអរគុណសម្រាប់ការយកចិត្តទុកដាក់!</p>`);
+                this.renderSlide();
+                
+                this.renderMathJax();
+                this.renderedTabs.tab1 = true;
+            },
+
+            // Slides
+            renderSlide: function() {
+                const viewer = document.getElementById('slide-viewer');
+                if(viewer) {
+                    viewer.innerHTML = `<div class="slide active w-full h-full flex flex-col justify-center items-center px-4">${this.slidesArr[this.slideIdx]}</div>`;
+                    document.getElementById('slideCounter').innerText = `${this.slideIdx + 1} / ${this.slidesArr.length}`;
+                    this.renderMathJax([viewer]);
+                }
+            },
+            changeSlide: function(dir) {
+                this.slideIdx = (this.slideIdx + dir + this.slidesArr.length) % this.slidesArr.length;
+                this.renderSlide();
+            },
+            toggleFS: function() {
+                const sc = document.getElementById('slideContainer');
+                if (document.fullscreenEnabled) {
+                    if (!document.fullscreenElement) {
+                        (sc.requestFullscreen || sc.webkitRequestFullscreen || sc.msRequestFullscreen).call(sc).catch(() => sc.classList.add('pseudo-fullscreen'));
+                    } else document.exitFullscreen();
+                } else sc.classList.add('pseudo-fullscreen');
+            },
+            exitFS: function() {
+                document.getElementById('slideContainer').classList.remove('pseudo-fullscreen');
+            },
+
+            // Quiz
+            time: 120 * 60,
+            timerId: null,
+            score: 0,
+            baseQs: [
+                {q: "ដោះស្រាយសមីការ $\\sqrt{x} = 4$", opt: ["$x=2$", "$x=4$", "$x=16$", "គ្មានឫស"], ans: 2},
+                {q: "ដោះស្រាយសមីការ $\\sqrt{x-2} = 3$", opt: ["$x=11$", "$x=7$", "$x=5$", "$x=9$"], ans: 0},
+                {q: "ដោះស្រាយសមីការ $x^3 = -8$", opt: ["$x=2$", "$x=-2$", "$x=\\pm 2$", "$x=4$"], ans: 1},
+                {q: "ដោះស្រាយសមីការ $x^4 = 16$", opt: ["$x=2$", "$x=-2$", "$x=\\pm 2$", "$x=4$"], ans: 2},
+                {q: "រកសំណល់នៃការចែក $P(x)=x^2+2x+1$ នឹង $x-1$។", opt: ["$0$", "$2$", "$4$", "$1$"], ans: 2},
+                {q: "បើ $P(c)=0$ តើអ្វីជាកត្តានៃ $P(x)$?", opt: ["$x+c$", "$x-c$", "$cx$", "$c$"], ans: 1},
+                {q: "ឫសមួយនៃសមីការ $x^3 - x = 0$ គឺ៖", opt: ["$x=2$", "$x=0$", "$x=3$", "$x=4$"], ans: 1},
+                {q: "ដោះស្រាយសមីការ $(x-1)(x+2)=0$។", opt: ["$1, 2$", "$-1, 2$", "$1, -2$", "$-1, -2$"], ans: 2}
+            ],
+            qs: [],
+            startQuiz: function() {
+                const name = document.getElementById('stuName').value;
+                if(!name) { alert("សូមបញ្ជូលឈ្មោះសិស្សសិន!"); return; }
+                
+                document.getElementById('quiz-setup').style.display = 'none';
+                document.getElementById('quiz-active').classList.remove('hidden');
+                
+                this.qs = [];
+                for(let i=0; i<50; i++) {
+                    let qCopy = {...this.baseQs[i % this.baseQs.length]};
+                    this.qs.push(qCopy);
+                }
+                
+                let qHtml = "";
+                this.qs.forEach((q, idx) => {
+                    qHtml += `<div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition" id="qc_${idx}">
+                        <p class="font-bold text-lg mb-4 text-gray-800"><span class="bg-blue-100 px-3 py-1 rounded text-blue-700 mr-2">${idx + 1}</span> ${q.q}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pl-2">
+                            ${q.opt.map((o, i) => `<label class="p-3 border rounded-xl cursor-pointer hover:bg-green-50 hover:border-green-300 transition flex items-center"><input type="radio" name="q${idx}" value="${i}" class="mr-3 w-4 h-4 text-green-600 focus:ring-green-500"><span class="text-gray-700">${o}</span></label>`).join('')}
+                        </div>
+                    </div>`;
+                });
+                document.getElementById('quiz-questions').innerHTML = qHtml;
+                this.renderMathJax([document.getElementById('quiz-questions')]);
+
+                if(this.timerId) clearInterval(this.timerId);
+                
+                this.timerId = setInterval(() => {
+                    this.time--;
+                    let m = Math.floor(this.time/60), s = this.time%60;
+                    document.getElementById('timerSpan').innerText = `${m}:${s<10?'0':''}${s}`;
+                    if(this.time <= 0) this.submitQuiz();
+                }, 1000);
+            },
+            submitQuiz: function() {
+                if(this.timerId) clearInterval(this.timerId);
+                document.getElementById('quiz-active').style.display = 'none';
+                
+                this.score = 0;
+                let fbHtml = "";
+                this.qs.forEach((q, idx) => {
+                    let sel = document.querySelector(`input[name="q${idx}"]:checked`);
+                    if(sel && parseInt(sel.value) === q.ans) {
+                        this.score++;
+                    } else {
+                        fbHtml += `<div class="bg-red-50 p-4 rounded-xl text-red-800 text-sm border border-red-200 flex items-start"><i class="fas fa-times-circle text-red-500 mt-1 mr-3 text-lg"></i><div><p class="font-bold mb-1">សំណួរទី ${idx+1} មិនត្រឹមត្រូវ!</p><p>ចម្លើយត្រឹមត្រូវគឺ៖ <strong class="bg-white px-2 py-1 rounded border shadow-sm">${q.opt[q.ans]}</strong></p></div></div>`;
+                    }
+                });
+                
+                document.getElementById('resName').innerText = document.getElementById('stuName').value;
+                document.getElementById('resScore').innerText = `${this.score}/50`;
+                document.getElementById('quiz-feedback').innerHTML = this.score === 50 ? `<div class="bg-green-50 p-6 rounded-xl border border-green-200 text-center"><i class="fas fa-star text-yellow-400 text-5xl mb-4 block"></i><p class='text-green-700 font-bold text-2xl'>អស្ចារ្យណាស់! អ្នកធ្វើបានត្រឹមត្រូវទាំងអស់!</p></div>` : `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${fbHtml}</div>`;
+                
+                document.getElementById('quiz-result').classList.remove('hidden');
+                this.renderMathJax([document.getElementById('quiz-result')]);
+            },
+            downloadPNG: function() {
+                const btn = document.getElementById('btnDlPng');
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> កំពុងរៀបចំ...'; btn.disabled = true;
+                
+                document.getElementById('expName').innerText = document.getElementById('stuName').value || 'សិស្ស';
+                document.getElementById('expSex').innerText = document.getElementById('stuSex').value;
+                document.getElementById('expDate').innerText = new Date().toLocaleString('km-KH');
+                document.getElementById('expScore').innerText = `${this.score}/50`;
+                
+                const slip = document.getElementById('exportSlip');
+                slip.classList.remove('hidden'); slip.style.display = 'flex';
+                
+                setTimeout(() => {
+                    html2canvas(slip, { scale: 2 }).then(canvas => {
+                        const link = document.createElement('a');
+                        let stuName = document.getElementById('stuName').value || 'Student';
+                        link.download = `Result_Math_${stuName}.png`;
+                        link.href = canvas.toDataURL();
+                        link.click();
+                        slip.classList.add('hidden'); slip.style.display = '';
+                        btn.innerHTML = '<i class="fas fa-camera mr-2"></i> ថតScreenshot ទុកជូនគ្រូ (A4 PNG)'; btn.disabled = false;
+                    });
+                }, 500);
+            }
+        };
+
+        // Global functions mapped to app
+        window.switchTab = function(tabId) {
+            app.switchTab(tabId);
+        };
+        
+        window.solveInteractive1 = function() {
+            const a = parseFloat(document.getElementById('valA').value);
+            const b = parseFloat(document.getElementById('valB').value);
+            const c = parseFloat(document.getElementById('valC').value);
+            const res = document.getElementById('resultInteractive1');
+            
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                res.innerHTML = "<span class='text-red-500 font-bold'><i class='fas fa-times-circle mr-1'></i> សូមបញ្ចូលលេខឱ្យបានត្រឹមត្រូវ!</span>"; res.classList.remove('hidden'); return;
+            }
+            let html = `<strong>សមីការ៖</strong> $\\sqrt{${a}x ${b >= 0 ? '+' : ''} ${Math.abs(b)}} = ${c}$<br>`;
+            if (c < 0) {
+                html += `<span class='text-red-600 bg-red-50 p-2 rounded block mt-2'><i class='fas fa-exclamation-triangle mr-1'></i> ដោយ ${c} < 0 សមីការគ្មានឫសពិតទេ។</span>`;
+            } else {
+                let val = (c*c - b) / a;
+                html += `<div class="my-2 border-l-2 border-blue-300 pl-3">លើកជាការេ $\\implies ${a}x ${b >= 0 ? '+' : ''} ${Math.abs(b)} = ${c*c}$ </div>`;
+                html += a !== 0 ? `<div class='bg-green-100 p-2 mt-2 rounded border border-green-300 font-bold text-green-900'>ចម្លើយ៖ $x = ${Number.isInteger(val) ? val : val.toFixed(2)}$</div>` : `<span class='text-red-500'>កំហុស a មិនអាចស្មើសូន្យបានទេ!</span>`;
+            }
+            res.innerHTML = html; res.classList.remove('hidden');
+            app.renderMathJax([res]);
+        };
+
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
