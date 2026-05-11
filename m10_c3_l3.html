@@ -32,7 +32,6 @@
         .tab-btn.active-tab1 { background-color: #2563eb; color: white; border-bottom: 4px solid #1e3a8a; } /* Blue */
         .tab-btn.active-tab2 { background-color: #059669; color: white; border-bottom: 4px solid #064e3b; } /* Green */
         .tab-btn.active-tab3 { background-color: #7c3aed; color: white; border-bottom: 4px solid #4c1d95; } /* Purple */
-        .tab-btn.active-tab4 { background-color: #ea580c; color: white; border-bottom: 4px solid #9a3412; } /* Orange */
         
         .content-section { display: none; }
         .content-section.active { display: block; animation: fadeIn 0.5s; }
@@ -106,9 +105,6 @@
         </button>
         <button onclick="switchTab(3)" id="btn-tab3" class="tab-btn px-6 py-3 rounded-t-lg bg-gray-200 text-gray-700 font-bold hover:bg-purple-200">
             <i class="fas fa-desktop mr-2"></i> Tab 3: ស្លាយមេរៀន
-        </button>
-        <button onclick="switchTab(4)" id="btn-tab4" class="tab-btn px-6 py-3 rounded-t-lg bg-gray-200 text-gray-700 font-bold hover:bg-orange-200">
-            <i class="fas fa-gamepad mr-2 text-orange-500"></i> Tab 4: ល្បែងសិក្សា
         </button>
     </nav>
 
@@ -832,97 +828,6 @@
             <div id="slide-export-area" class="hidden"></div>
         </section>
         
-        <!-- ==================== TAB 4: ល្បែងសិក្សា (GAMES) ==================== -->
-        <section id="tab4" class="content-section">
-            <div class="flex justify-between items-center mb-6 border-b pb-4 flex-wrap gap-4">
-                <h2 class="text-2xl text-orange-600 title-font"><i class="fas fa-gamepad"></i> ល្បែងសិក្សា (Educational Games)</h2>
-                <p class="text-gray-600 font-bold">រៀនគណិតវិទ្យាឱ្យកាន់តែសប្បាយ និងងាយយល់តាមរយៈហ្គេមអន្តរកម្ម</p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                
-                <!-- Game 1: Inequality Catcher -->
-                <div class="bg-white rounded-xl shadow-md border border-sky-300 overflow-hidden flex flex-col">
-                    <div class="bg-gradient-to-r from-sky-500 to-blue-600 p-4 text-white flex justify-between items-center">
-                        <h3 class="font-bold text-lg"><i class="fas fa-shopping-basket mr-2"></i>ហ្គេមទី១៖ ចាប់ចម្លើយវិសមីការ</h3>
-                        <div class="text-sm font-bold bg-white/20 px-3 py-1 rounded-full shadow-inner">ពិន្ទុ: <span id="catcher-score" class="text-yellow-300">0</span> | ជីវិត: <span id="catcher-lives" class="text-red-300">3</span></div>
-                    </div>
-                    <div class="p-4 relative flex-1 flex flex-col">
-                        <div id="catcher-overlay" class="absolute inset-0 bg-white/95 z-20 flex flex-col items-center justify-center p-6 text-center backdrop-blur-sm">
-                            <i class="fas fa-meteor text-6xl text-blue-500 mb-4 animate-bounce"></i>
-                            <h4 class="text-2xl font-bold text-gray-800 mb-2 title-font">Math Catcher 4D</h4>
-                            <p class="text-sm text-gray-600 mb-6 max-w-sm">ដោះស្រាយវិសមីការក្នុងចិត្ត រួចអូសកន្ត្រកចាប់យកតែលេខណាដែលជា <span class="text-green-600 font-bold">"ចម្លើយត្រឹមត្រូវ"</span>។ ជៀសវាងចាប់លេខខុស!</p>
-                            <button onclick="startCatcherGame()" class="bg-gradient-to-r from-blue-600 to-sky-500 text-white font-bold px-8 py-3 rounded-full hover:scale-105 shadow-[0_4px_15px_rgba(14,165,233,0.5)] transition transform"><i class="fas fa-play mr-2"></i> ចាប់ផ្តើមលេង</button>
-                        </div>
-                        
-                        <div class="text-center mb-3">
-                            <span class="text-xs text-gray-500 font-bold uppercase tracking-wider bg-gray-100 px-3 py-1 rounded-full">គោលដៅបច្ចុប្បន្ន</span>
-                            <div id="catcher-goal" class="text-3xl font-bold text-blue-700 font-mono bg-blue-50 py-2 rounded-lg border-2 border-blue-200 mt-2 shadow-sm">???</div>
-                        </div>
-                        
-                        <!-- 4D Canvas Container -->
-                        <div id="catcher-3d-canvas" class="rounded-xl overflow-hidden cursor-grab active:cursor-grabbing relative bg-slate-900 border-4 border-slate-700 shadow-inner flex-1 min-h-[350px]">
-                            <div class="absolute top-3 left-3 text-xs font-bold text-white bg-black/50 px-3 py-1.5 rounded-full shadow pointer-events-none z-10 border border-slate-600"><i class="fas fa-space-shuttle"></i> បរិយាកាស 4D Animate</div>
-                        </div>
-                        <p class="text-xs text-center mt-3 text-gray-500 font-bold"><i class="fas fa-hand-pointer text-sky-500"></i> អូសលើអេក្រង់ដើម្បីបញ្ជាកន្ត្រកឆ្វេង-ស្តាំ</p>
-                    </div>
-                </div>
-
-                <!-- Game 2: PISA Logistics Manager -->
-                <div class="bg-white rounded-xl shadow-md border border-amber-200 overflow-hidden flex flex-col">
-                    <div class="bg-gradient-to-r from-amber-500 to-orange-500 p-4 text-white flex justify-between items-center">
-                        <h3 class="font-bold text-lg"><i class="fas fa-truck-loading mr-2"></i>ហ្គេមទី២៖ អ្នកគ្រប់គ្រងភស្តុភារ</h3>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <p class="text-gray-600 text-sm mb-4 leading-relaxed">
-                            អ្នកគឺជាអ្នកគ្រប់គ្រងការដឹកជញ្ជូន។ ឡានដឹកបានអតិបរមា <strong>5000kg</strong>។ ឡានទទេមានទម្ងន់ <strong>2000kg</strong> ហើយកេសនីមួយៗ <strong>50kg</strong>។ 
-                            ចូរផ្ទុកកេសឱ្យបាន <strong class="text-amber-600">ច្រើនបំផុត</strong> តែហាមលើស 5000kg!
-                        </p>
-                        
-                        <div id="game-logistics-3d" class="w-full h-56 rounded-xl bg-gradient-to-b from-amber-50 to-orange-100 border-2 border-amber-200 relative overflow-hidden cursor-grab active:cursor-grabbing mb-3 shadow-inner">
-                            <div class="absolute top-2 left-2 text-xs font-bold text-amber-800 bg-white/80 px-3 py-1.5 rounded-full shadow pointer-events-none z-10"><i class="fas fa-cube"></i> មើលការផ្ទុកទំនិញជាក់ស្តែង (4D Interactive)</div>
-                        </div>
-
-                        <div class="mb-8 bg-gray-100 p-4 rounded-xl border border-gray-200 relative">
-                            <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
-                                <span>2000kg (ឡានទទេ)</span>
-                                <span>ដែនកំណត់ 5000kg</span>
-                            </div>
-                            <div class="h-8 w-full bg-gray-300 rounded-full overflow-hidden flex relative border-2 border-gray-400">
-                                <div class="h-full bg-gray-500" style="width: 40%;"></div>
-                                <div id="logistics-bar" class="h-full bg-amber-500 transition-all duration-300 flex items-center justify-end px-2 text-white text-xs font-bold" style="width: 0%;"></div>
-                                <div class="absolute top-0 right-0 h-full border-r-4 border-red-500 z-10" style="width: 100%;"></div>
-                            </div>
-                            <div class="text-center mt-3">
-                                <span class="text-3xl font-bold text-gray-800" id="logistics-weight">2000</span>
-                                <span class="text-gray-500 font-bold">kg</span>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4 mt-auto">
-                            <div class="text-center bg-amber-50 rounded-lg p-3 border border-amber-100">
-                                <p class="text-sm text-amber-800 font-bold mb-2">ចំនួនកេសក្នុងឡាន</p>
-                                <p class="text-4xl font-bold text-amber-600" id="logistics-boxes">0</p>
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <button onclick="addBox(1)" id="btn-add-1" class="bg-blue-600 text-white font-bold py-2 rounded-lg hover:bg-blue-700 shadow transition">+ ដាក់ ១ កេស</button>
-                                <button onclick="addBox(10)" id="btn-add-10" class="bg-blue-800 text-white font-bold py-2 rounded-lg hover:bg-blue-900 shadow transition">+ ដាក់ ១0 កេស</button>
-                                <button onclick="checkLogisticsWin()" id="btn-dispatch" class="bg-green-600 text-white font-bold py-2 rounded-lg hover:bg-green-700 shadow transition mt-1"><i class="fas fa-truck-moving mr-2"></i> បញ្ចេញឡាន!</button>
-                            </div>
-                        </div>
-
-                        <div id="logistics-overlay" class="hidden absolute inset-0 bg-white/95 z-20 flex flex-col items-center justify-center p-6 text-center rounded-xl">
-                            <div id="logistics-icon" class="text-6xl mb-4"></div>
-                            <h4 id="logistics-msg-title" class="text-2xl font-bold mb-2"></h4>
-                            <p id="logistics-msg-desc" class="text-gray-600 mb-6"></p>
-                            <button onclick="resetLogisticsGame()" class="bg-gray-800 text-white font-bold px-6 py-2 rounded-full hover:bg-gray-900 shadow transition"><i class="fas fa-redo mr-2"></i>លេងម្តងទៀត</button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
     </main>
 
     <!-- Screenshot Template (Hidden) -->
@@ -975,7 +880,7 @@
         function switchTab(tabIndex) {
             document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('active-tab1', 'active-tab2', 'active-tab3', 'active-tab4');
+                el.classList.remove('active-tab1', 'active-tab2', 'active-tab3');
                 el.classList.add('bg-gray-200', 'text-gray-700');
             });
 
@@ -986,10 +891,8 @@
             if(tabIndex === 1) btn.classList.add('active-tab1');
             if(tabIndex === 2) btn.classList.add('active-tab2');
             if(tabIndex === 3) btn.classList.add('active-tab3');
-            if(tabIndex === 4) btn.classList.add('active-tab4');
 
             if (window.MathJax) MathJax.typesetPromise();
-            if (typeof isCatcherPlaying !== 'undefined' && tabIndex !== 4) isCatcherPlaying = false;
         }
 
         // --- 2. Dynamic Content Generator ---
@@ -2500,8 +2403,6 @@
                 initTrans3D();
                 initEnergy3D();
                 initMilitary3D();
-                initGameLogistics3D();
-                initCatcher3D(); 
             }, 500);
         };
     </script>
