@@ -1,0 +1,2349 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>វិសមីការនិងប្រព័ន្ធវិសមីការ - ថ្នាក់ទី១០</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for rendering mathematical formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Three.js for 3D Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- html2pdf for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- html2canvas for Screenshot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Moul&family=Kantumruy+Pro:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Battambang', cursive, sans-serif;
+            background-color: #f3f4f6;
+        }
+        h1, h2, h3, .title-font {
+            font-family: 'Moul', cursive;
+        }
+        .tab-btn { transition: all 0.3s ease; }
+        .tab-btn.active-tab1 { background-color: #2563eb; color: white; border-bottom: 4px solid #1e3a8a; } /* Blue */
+        .tab-btn.active-tab2 { background-color: #059669; color: white; border-bottom: 4px solid #064e3b; } /* Green */
+        .tab-btn.active-tab3 { background-color: #7c3aed; color: white; border-bottom: 4px solid #4c1d95; } /* Purple */
+        .tab-btn.active-tab4 { background-color: #ea580c; color: white; border-bottom: 4px solid #9a3412; } /* Orange */
+        
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.5s; }
+        .olym-page.block { animation: fadeIn 0.4s ease-out forwards; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Slide Styles */
+        .slide-container {
+            aspect-ratio: 16/9;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .math-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        #catcher-canvas { touch-action: none; }
+
+        /* Print formatting */
+        .pdf-page-a4-portrait {
+            width: 100%;
+            max-width: 210mm;
+            background: white;
+            padding: 20px;
+            margin: auto;
+        }
+        
+        /* Prevent page breaks inside items when printing to PDF */
+        .avoid-break {
+            page-break-inside: avoid;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md pt-6 pb-4 px-4 text-center">
+        <h1 class="text-3xl text-blue-800 mb-2">ជំពូកទី៣ មេរៀនទី៤៖ វិសមីការនិងប្រព័ន្ធវិសមីការ</h1>
+        <h2 class="text-xl text-gray-700 mb-2 font-bold">គណិតវិទ្យាកម្រិតថ្នាក់ទី១០</h2>
+        <p class="text-sm font-bold text-indigo-700 mt-2"><i class="fas fa-chalkboard-teacher"></i> រៀបចំដោយលោកគ្រូ ផន គារវតា</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex justify-center mt-6 gap-2 px-4 flex-wrap">
+        <button onclick="switchTab(1)" id="btn-tab1" class="tab-btn active-tab1 px-6 py-3 rounded-t-lg bg-gray-200 text-gray-700 font-bold hover:bg-blue-200">
+            <i class="fas fa-book-open mr-2"></i> Tab 1: ខ្លឹមសារមេរៀន
+        </button>
+        <button onclick="switchTab(2)" id="btn-tab2" class="tab-btn px-6 py-3 rounded-t-lg bg-gray-200 text-gray-700 font-bold hover:bg-green-200">
+            <i class="fas fa-tasks mr-2"></i> Tab 2: លំហាត់អនុវត្ត
+        </button>
+        <button onclick="switchTab(3)" id="btn-tab3" class="tab-btn px-6 py-3 rounded-t-lg bg-gray-200 text-gray-700 font-bold hover:bg-purple-200">
+            <i class="fas fa-desktop mr-2"></i> Tab 3: ស្លាយមេរៀន
+        </button>
+        <button onclick="switchTab(4)" id="btn-tab4" class="tab-btn px-6 py-3 rounded-t-lg bg-gray-200 text-gray-700 font-bold hover:bg-orange-200">
+            <i class="fas fa-gamepad mr-2 text-orange-500"></i> Tab 4: ល្បែងសិក្សា
+        </button>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto bg-white p-4 md:p-8 shadow-lg rounded-b-lg mb-10 min-h-[80vh]">
+        
+        <!-- ==================== TAB 1: ខ្លឹមសារមេរៀន ==================== -->
+        <section id="tab1" class="content-section active">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 flex-wrap gap-4">
+                <h2 class="text-2xl text-blue-700 title-font"><i class="fas fa-book text-blue-500"></i> ខ្លឹមសារមេរៀន</h2>
+                <button onclick="downloadPDF('tab1-content', 'Lesson_Inequalities', 'portrait')" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded shadow font-bold transition">
+                    <i class="fas fa-download mr-2"></i> ដោនឡោត PDF (A4 បញ្ឈរ)
+                </button>
+            </div>
+
+            <div id="tab1-content" class="space-y-6 pdf-page-a4-portrait">
+                
+                <!-- សញ្ញាណដំបូងនិងរបកគំហើញ -->
+                <div id="topic-intro" class="avoid-break border p-6 rounded-lg bg-indigo-50/50">
+                    <h3 class="text-xl font-bold text-indigo-800 mb-3 border-l-4 border-indigo-500 pl-2">សញ្ញាណដំបូងនិងរបកគំហើញវិសមីការនិងប្រព័ន្ធវិសមីការ</h3>
+                    <p class="mb-3 text-gray-700 leading-relaxed"><strong>ប្រវត្តិ និងរបកគំហើញ៖</strong> តាំងពីសម័យបុរាណ ក្នុងជីវភាពរស់នៅប្រចាំថ្ងៃ ដូចជាការជួញដូរ ការវាស់វែងដីធ្លី ឬការសាងសង់ មនុស្សមិនត្រឹមតែជួបប្រទះនូវបរិមាណដែល "ស្មើគ្នា" ប៉ុណ្ណោះទេ តែជារឿយៗតែងតែជួបនូវបរិមាណដែល "ច្រើនជាង" "តិចជាង" "យ៉ាងហោចណាស់" ឬ "យ៉ាងច្រើនបំផុត"។</p>
+                    <ul class="list-disc ml-8 mt-2 mb-4 text-gray-700 space-y-2">
+                        <li>និមិត្តសញ្ញា \(>\) (ធំជាង) និង \(<\) (តូចជាង) ត្រូវបានណែនាំដំបូងដោយគណិតវិទូជនជាតិអង់គ្លេសឈ្មោះ <strong>Thomas Harriot</strong> នៅក្នុងឆ្នាំ ១៦៣១។</li>
+                        <li>ក្រោយមក និមិត្តសញ្ញា \(\ge\) (ធំជាងឬស្មើ) និង \(\le\) (តូចជាងឬស្មើ) ត្រូវបានបង្កើតនិងប្រើប្រាស់យ៉ាងទូលំទូលាយដើម្បីសម្រួលដល់ការសរសេរលក្ខខណ្ឌដែនកំណត់ (Boundary Conditions)។</li>
+                    </ul>
+                    <div class="bg-white p-4 rounded-lg mt-4 border-l-4 border-yellow-400 shadow-sm">
+                        <p class="font-bold text-indigo-800"><i class="fas fa-lightbulb text-yellow-500 text-lg"></i> សារៈសំខាន់នៃការសិក្សា៖</p>
+                        <p class="text-gray-700 mt-2 leading-relaxed">នៅក្នុងពិភពពិត ធនធាន (ពេលវេលា, ថវិកា, វត្ថុធាតុដើម) តែងតែមានដែនកំណត់। វិសមីការ និងប្រព័ន្ធវិសមីការ មានតួនាទីយ៉ាងសំខាន់ជួយយើងក្នុងការកំណត់រក <strong>តម្លៃអតិបរមា (Maximum)</strong> ឬ <strong>តម្លៃអប្បបរមា (Minimum)</strong> សម្រាប់ការរៀបចំផែនការ ការបែងចែកធនធាន និងការសម្រេចចិត្តក្នុងវិស័យសេដ្ឋកិច្ច ពាណិជ្ជកម្ម និងវិស្វកម្មជាដើម។</p>
+                    </div>
+                </div>
+
+                <!-- ១. វិសមភាព -->
+                <div id="topic-1" class="avoid-break border p-6 rounded-lg bg-blue-50/50">
+                    <h3 class="text-xl font-bold text-blue-800 mb-3 border-l-4 border-blue-500 pl-2">១. វិសមភាព</h3>
+                    <p class="mb-2"><strong>និយមន័យ៖</strong> វិសមភាព គឺជាទំនាក់ទំនងរវាងកន្សោមពីរដោយប្រើសញ្ញា \(>\), \(<\), \(\ge\), ឬ \(\le\)</p>
+                    <div class="math-box">
+                        <p><strong>រូបមន្តលក្ខណៈ៖</strong> បើ \(a < b\)</p>
+                        <ul class="list-disc ml-6 mt-2">
+                            <li>បូក/ដក៖ \(a + c < b + c\)</li>
+                            <li>គុណ/ចែក (វិជ្ជមាន)៖ បើ \(c > 0 \Rightarrow ac < bc\)</li>
+                            <li>គុណ/ចែក (អវិជ្ជមាន)៖ បើ \(c < 0 \Rightarrow ac > bc\) <span class="text-red-500 font-bold">(ប្តូរទិសដៅសញ្ញា)</span></li>
+                        </ul>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded mt-4 border border-yellow-200">
+                        <p class="font-bold text-yellow-800"><i class="fas fa-pen"></i> លំហាត់គំរូ៖</p>
+                        <p>ប្រៀបធៀប \(-3x\) និង \(-3y\) ដោយដឹងថា \(x < y\)</p>
+                        <p><strong>ដំណោះស្រាយ៖</strong> ដោយសារ \(x < y\) គុណអង្គទាំងពីរនឹង \(-3\) (ចំនួនអវិជ្ជមាន ត្រូវប្តូរសញ្ញា) នាំឲ្យ \(-3x > -3y\)</p>
+                    </div>
+                </div>
+
+                <!-- ២. វិសមីការដឺក្រេទី១មានមួយអញ្ញាត -->
+                <div id="topic-2" class="avoid-break border p-6 rounded-lg bg-blue-50/50">
+                    <h3 class="text-xl font-bold text-blue-800 mb-3 border-l-4 border-blue-500 pl-2">២. វិសមីការដឺក្រេទី១មានមួយអញ្ញាត</h3>
+                    <p>ទម្រង់ទូទៅ៖ \(ax + b > 0\) (ឬ \(<, \ge, \le\)) ដែល \(a \ne 0\)</p>
+                    
+                    <!-- ការសិក្សាសញ្ញាទ្វេធាដឺក្រេទី១ -->
+                    <div class="mt-4 bg-white p-4 rounded border border-blue-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-2"><i class="fas fa-info-circle"></i> សិក្សាសញ្ញាទ្វេធាដឺក្រេទី១ \(f(x) = ax + b\)</h4>
+                        <p class="mb-2">ដើម្បីសិក្សាសញ្ញាទ្វេធា \(ax + b\) យើងត្រូវ៖</p>
+                        <ul class="list-decimal ml-6 mb-3 text-gray-700">
+                            <li>រកឫសនៃទ្វេធា៖ ឲ្យ \(ax + b = 0 \Rightarrow x = -\frac{b}{a}\)</li>
+                            <li>ប្រើវិធានសញ្ញា៖ <strong>"ខាងឆ្វេងឫស មានសញ្ញាផ្ទុយពី \(a\), ខាងស្ដាំឫស មានសញ្ញាដូច \(a\)"</strong></li>
+                        </ul>
+                        
+                        <div class="overflow-x-auto my-3">
+                            <table class="w-full text-center border-collapse border border-gray-400 bg-gray-50">
+                                <thead class="bg-gray-200 font-bold">
+                                    <tr>
+                                        <th class="border border-gray-400 p-2 w-1/4">\(x\)</th>
+                                        <th class="border border-gray-400 p-2">\(-\infty\)</th>
+                                        <th class="border border-gray-400 p-2">\(-\frac{b}{a}\)</th>
+                                        <th class="border border-gray-400 p-2">\(+\infty\)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border border-gray-400 p-2 font-bold bg-gray-100">\(ax + b\)</td>
+                                        <td class="border border-gray-400 p-2 text-red-600 font-bold">សញ្ញាផ្ទុយ \(a\)</td>
+                                        <td class="border border-gray-400 p-2 font-bold">\(0\)</td>
+                                        <td class="border border-gray-400 p-2 text-green-600 font-bold">សញ្ញាដូច \(a\)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 p-4 rounded mt-4 border border-yellow-200">
+                        <p class="font-bold text-yellow-800"><i class="fas fa-table"></i> លំហាត់គំរូ (ដោយប្រើតារាងសញ្ញា)៖</p>
+                        <p>ដោះស្រាយវិសមីការ៖ \(3x - 6 < 0\)</p>
+                        <div class="bg-white p-3 rounded mt-2 border border-yellow-100">
+                            <p><strong>ដំណោះស្រាយ៖</strong></p>
+                            <ul class="list-disc ml-6 mt-1 text-sm text-gray-700">
+                                <li>រកឫស៖ ឲ្យ \(3x - 6 = 0 \Rightarrow 3x = 6 \Rightarrow x = 2\)</li>
+                                <li>មេគុណ \(a = 3 > 0\) (មានសញ្ញាបូក \(+\))</li>
+                            </ul>
+                            <div class="overflow-x-auto my-2">
+                                <table class="w-[80%] max-w-lg text-center border-collapse border border-gray-400 text-sm mx-auto">
+                                    <tr class="bg-gray-100 font-bold">
+                                        <th class="border border-gray-400 p-1 w-1/4">\(x\)</th>
+                                        <th class="border border-gray-400 p-1">\(-\infty\)</th>
+                                        <th class="border border-gray-400 p-1">\(2\)</th>
+                                        <th class="border border-gray-400 p-1">\(+\infty\)</th>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-400 p-1 font-bold bg-gray-50">\(3x - 6\)</td>
+                                        <td class="border border-gray-400 p-1 text-red-600 font-bold">\(-\)</td>
+                                        <td class="border border-gray-400 p-1">\(0\)</td>
+                                        <td class="border border-gray-400 p-1 text-green-600 font-bold">\(+\)</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <p class="text-sm mt-2">ដោយសារវិសមីការយកលក្ខខណ្ឌ \(< 0\) (អវិជ្ជមាន), យើងមើលក្នុងតារាងកន្លែងដែលមានសញ្ញាដក (\(-\))។</p>
+                            <p class="font-bold text-blue-700 mt-1">ដូចនេះ សំណុំចម្លើយគឺ៖ \(x \in (-\infty, 2)\)</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 p-4 rounded mt-4 border border-yellow-200">
+                        <p class="font-bold text-yellow-800"><i class="fas fa-pen"></i> លំហាត់គំរូ (ដោយប្រើការបោះអង្គ)៖</p>
+                        <p>ដោះស្រាយវិសមីការ៖ \(-2x + 8 \ge 0\)</p>
+                        <p><strong>ដំណោះស្រាយ៖</strong> \(-2x \ge -8 \Rightarrow x \le \frac{-8}{-2} \Rightarrow x \le 4\). សំណុំចម្លើយ \(x \in (-\infty, 4]\)</p>
+                    </div>
+
+                    <!-- Dynamic Exercise -->
+                    <div class="bg-gray-100 p-5 mt-4 rounded-lg border-2 border-dashed border-gray-400">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="font-bold text-gray-800"><i class="fas fa-sync-alt text-blue-500"></i> លំហាត់អនុវត្តបែបដូរលេខ៖</p>
+                            <button onclick="generateLinearEq()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 text-sm rounded shadow transition">ប្តូរលេខ</button>
+                        </div>
+                        <p id="dyn-ex-1" class="text-lg my-3">ដោះស្រាយវិសមីការ៖ \(\dots\)</p>
+                        <button onclick="showDynSol(1)" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 text-sm rounded shadow transition">បង្ហាញដំណោះស្រាយ</button>
+                        <div id="dyn-sol-1" class="hidden mt-3 text-green-800 bg-green-50 border border-green-200 p-3 rounded leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <!-- ៣. ប្រព័ន្ធវិសមីការដឺក្រេទី១មានមួយអញ្ញាត -->
+                <div id="topic-3" class="avoid-break border p-6 rounded-lg bg-blue-50/50">
+                    <h3 class="text-xl font-bold text-blue-800 mb-3 border-l-4 border-blue-500 pl-2">៣. ប្រព័ន្ធវិសមីការដឺក្រេទី១មានមួយអញ្ញាត</h3>
+                    <p>ជាប្រព័ន្ធដែលមានវិសមីការដឺក្រេទី១ច្រើន។ ចម្លើយគឺជាប្រសព្វ (Intersection) នៃសំណុំចម្លើយនីមួយៗ។</p>
+                    <div class="bg-yellow-50 p-4 rounded mt-4 border border-yellow-200">
+                        <p class="font-bold text-yellow-800"><i class="fas fa-pen"></i> លំហាត់គំរូ៖</p>
+                        <p>ដោះស្រាយប្រព័ន្ធ៖ \( \begin{cases} x - 2 \le 3 \\ -x + 1 < -2 \end{cases} \)</p>
+                        <p><strong>ដំណោះស្រាយ៖</strong> <br> (1): \(x \le 5\)<br>(2): \(-x < -3 \Rightarrow x > 3\)<br>សំណុំចម្លើយរួម៖ យកប្រសព្វនៃអ័ក្សចំនួន គឺ \(3 < x \le 5\)</p>
+                    </div>
+                </div>
+
+                <!-- ៤. វិសមីការដឺក្រេទី២មានមួយអញ្ញាត -->
+                <div id="topic-4" class="avoid-break border p-6 rounded-lg bg-blue-50/50">
+                    <h3 class="text-xl font-bold text-blue-800 mb-3 border-l-4 border-blue-500 pl-2">៤. វិសមីការដឺក្រេទី២មានមួយអញ្ញាត</h3>
+                    <p class="mb-3">ទម្រង់៖ \(ax^2 + bx + c > 0\) (ឬ \(<, \ge, \le\)) ដែល \(a \ne 0\)</p>
+                    
+                    <!-- ការសិក្សាសញ្ញាត្រីធាដឺក្រេទី២ -->
+                    <div class="mt-4 bg-white p-4 rounded border border-blue-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-3"><i class="fas fa-info-circle"></i> សិក្សាសញ្ញាត្រីធាដឺក្រេទី២ \(f(x) = ax^2 + bx + c\)</h4>
+                        <p class="mb-3 text-sm">គណនាឌីស្គ្រីមីណង់ \(\Delta = b^2 - 4ac\) រួចពិនិត្យតាមករណីទាំង៣៖</p>
+                        
+                        <!-- ករណីទី១ -->
+                        <div class="mb-6">
+                            <p class="font-bold text-gray-800">ករណីទី១៖ \(\Delta > 0\) (មានឫសពីរផ្សេងគ្នា \(x_1 < x_2\))</p>
+                            <p class="text-xs text-gray-600 mb-1">វិធាន៖ "ចន្លោះឫសសញ្ញាផ្ទុយ \(a\), ក្រៅឫសសញ្ញាដូច \(a\)"</p>
+                            <div class="overflow-x-auto my-2">
+                                <table class="w-full text-center border-collapse border border-gray-400 bg-gray-50 text-sm">
+                                    <tr class="bg-gray-200 font-bold">
+                                        <th class="border border-gray-400 p-2">\(x\)</th>
+                                        <th class="border border-gray-400 p-2">\(-\infty\)</th>
+                                        <th class="border border-gray-400 p-2"></th>
+                                        <th class="border border-gray-400 p-2">\(x_1\)</th>
+                                        <th class="border border-gray-400 p-2"></th>
+                                        <th class="border border-gray-400 p-2">\(x_2\)</th>
+                                        <th class="border border-gray-400 p-2"></th>
+                                        <th class="border border-gray-400 p-2">\(+\infty\)</th>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-400 p-2 font-bold bg-gray-100">\(f(x)\)</td>
+                                        <td class="border border-gray-400 p-2"></td>
+                                        <td class="border border-gray-400 p-2 text-green-600 font-bold italic">សញ្ញាដូច \(a\)</td>
+                                        <td class="border border-gray-400 p-2 font-bold">\(0\)</td>
+                                        <td class="border border-gray-400 p-2 text-red-600 font-bold italic">សញ្ញាផ្ទុយ \(a\)</td>
+                                        <td class="border border-gray-400 p-2 font-bold">\(0\)</td>
+                                        <td class="border border-gray-400 p-2 text-green-600 font-bold italic">សញ្ញាដូច \(a\)</td>
+                                        <td class="border border-gray-400 p-2"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ករណីទី២ -->
+                        <div class="mb-6 border-t pt-3 border-gray-100">
+                            <p class="font-bold text-gray-800">ករណីទី២៖ \(\Delta = 0\) (មានឫសឌុប \(x_0 = -b/2a\))</p>
+                            <div class="overflow-x-auto my-2">
+                                <table class="w-full text-center border-collapse border border-gray-400 bg-gray-50 text-sm">
+                                    <tr class="bg-gray-200 font-bold">
+                                        <th class="border border-gray-400 p-2">\(x\)</th>
+                                        <th class="border border-gray-400 p-2">\(-\infty\)</th>
+                                        <th class="border border-gray-400 p-2"></th>
+                                        <th class="border border-gray-400 p-2">\(x_0\)</th>
+                                        <th class="border border-gray-400 p-2"></th>
+                                        <th class="border border-gray-400 p-2">\(+\infty\)</th>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-400 p-2 font-bold bg-gray-100">\(f(x)\)</td>
+                                        <td class="border border-gray-400 p-2"></td>
+                                        <td class="border border-gray-400 p-2 text-green-600 font-bold italic">សញ្ញាដូច \(a\)</td>
+                                        <td class="border border-gray-400 p-2 font-bold">\(0\)</td>
+                                        <td class="border border-gray-400 p-2 text-green-600 font-bold italic">សញ្ញាដូច \(a\)</td>
+                                        <td class="border border-gray-400 p-2"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ករណីទី៣ -->
+                        <div class="border-t pt-3 border-gray-100">
+                            <p class="font-bold text-gray-800">ករណីទី៣៖ \(\Delta < 0\) (គ្មានឫសក្នុង \(\mathbb{R}\))</p>
+                            <div class="overflow-x-auto my-2">
+                                <table class="w-full text-center border-collapse border border-gray-400 bg-gray-50 text-sm">
+                                    <tr class="bg-gray-200 font-bold">
+                                        <th class="border border-gray-400 p-2">\(x\)</th>
+                                        <th class="border border-gray-400 p-2">\(-\infty\)</th>
+                                        <th class="border border-gray-400 p-2">\(+\infty\)</th>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-400 p-2 font-bold bg-gray-100">\(f(x)\)</td>
+                                        <td colspan="2" class="border border-gray-400 p-2 text-green-600 font-bold italic">មានសញ្ញាដូច \(a\) ជានិច្ច គ្រប់ \(x \in \mathbb{R}\)</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Example -->
+                    <div class="bg-yellow-50 p-4 rounded mt-4 border border-yellow-200">
+                        <p class="font-bold text-yellow-800"><i class="fas fa-table"></i> លំហាត់គំរូ៖</p>
+                        <p>ដោះស្រាយវិសមីការ៖ \(x^2 - 4x + 3 < 0\)</p>
+                        <div class="bg-white p-3 rounded mt-2 border border-yellow-100">
+                            <p><strong>ដំណោះស្រាយ៖</strong></p>
+                            <ul class="list-disc ml-6 mt-1 text-sm text-gray-700">
+                                <li>រកឫសនៃ \(x^2-4x+3=0\) គឺ \(x_1=1, x_2=3\) (\(\Delta > 0\))</li>
+                                <li>មេគុណ \(a=1 > 0\) (មានសញ្ញាបូក \(+\))</li>
+                            </ul>
+                            <div class="overflow-x-auto my-2">
+                                <table class="w-full max-w-lg text-center border-collapse border border-gray-400 text-sm mx-auto">
+                                    <tr class="bg-gray-100 font-bold">
+                                        <th class="border border-gray-400 p-1 w-[15%]">\(x\)</th>
+                                        <th class="border border-gray-400 p-1">\(-\infty\)</th>
+                                        <th class="border border-gray-400 p-1"></th>
+                                        <th class="border border-gray-400 p-1">\(1\)</th>
+                                        <th class="border border-gray-400 p-1"></th>
+                                        <th class="border border-gray-400 p-1">\(3\)</th>
+                                        <th class="border border-gray-400 p-1"></th>
+                                        <th class="border border-gray-400 p-1">\(+\infty\)</th>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-400 p-1 font-bold bg-gray-50">\(f(x)\)</td>
+                                        <td class="border border-gray-400 p-1"></td>
+                                        <td class="border border-gray-400 p-1 text-green-600 font-bold">\(+\)</td>
+                                        <td class="border border-gray-400 p-1 font-bold">\(0\)</td>
+                                        <td class="border border-gray-400 p-1 text-red-600 font-bold">\(-\)</td>
+                                        <td class="border border-gray-400 p-1 font-bold">\(0\)</td>
+                                        <td class="border border-gray-400 p-1 text-green-600 font-bold">\(+\)</td>
+                                        <td class="border border-gray-400 p-1"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <p class="font-bold text-blue-700 mt-2">ដូចនេះ សំណុំចម្លើយគឺ៖ \(x \in (1, 3)\)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ៥. ការអនុវត្តន៍វិសមីការ -->
+                <div id="topic-5" class="avoid-break border p-6 rounded-lg bg-blue-50/50">
+                    <h3 class="text-xl font-bold text-blue-800 mb-3 border-l-4 border-blue-500 pl-2">៥. ការអនុវត្តន៍វិសមីការ</h3>
+                    <div class="bg-yellow-50 p-4 rounded mt-4 border border-yellow-200">
+                        <p class="font-bold text-yellow-800"><i class="fas fa-book-open"></i> លំហាត់ចំណោទគំរូ៖</p>
+                        <p>ពិន្ទុគណិតវិទ្យា ២ខែដំបូងរបស់ដារ៉ាគឺ ៧៥ និង ៨០។ តើខែទី៣ គាត់ត្រូវទទួលបានពិន្ទុយ៉ាងតិចប៉ុន្មាន ទើបមធ្យមភាគយ៉ាងតិច ៨០?</p>
+                        <p><strong>ដំណោះស្រាយ៖</strong> តាង \(x\) ជាពិន្ទុខែទី៣។ <br>\(\frac{75 + 80 + x}{3} \ge 80 \Rightarrow 155 + x \ge 240 \Rightarrow x \ge 85\)</p>
+                    </div>
+                </div>
+
+                <!-- ៦. ការបង្ហាញវិសមភាព -->
+                <div id="topic-6" class="avoid-break border p-6 rounded-lg bg-blue-50/50">
+                    <h3 class="text-xl font-bold text-blue-800 mb-3 border-l-4 border-blue-500 pl-2">៦. ការបង្ហាញវិសមភាព</h3>
+                    <p class="mb-4 text-gray-700">គោលការណ៍គ្រឹះដ៏សំខាន់បំផុតក្នុងការបង្ហាញវិសមភាពគឺ៖ <strong class="text-blue-700 bg-blue-100 px-2 py-1 rounded">ការេនៃគ្រប់ចំនួនពិត ជានិច្ចកាលធំជាង ឬស្មើ ០ (\(X^2 \ge 0\))</strong></p>
+                    
+                    <!-- លំហាត់គំរូមូលដ្ឋាន -->
+                    <div class="bg-white p-4 rounded-lg mt-4 border border-blue-200 shadow-sm flex flex-col gap-6 items-center">
+                        <div class="w-full">
+                            <p class="font-bold text-blue-800 mb-2"><i class="fas fa-book-open"></i> លំហាត់គំរូមូលដ្ឋាន៖</p>
+                            <p class="mb-2">បង្ហាញថា បើ \(x > 0\) នោះ \(x + \frac{1}{x} \ge 2\)</p>
+                            <div class="bg-blue-50 p-3 rounded text-sm text-gray-700">
+                                <p><strong>ដំណោះស្រាយ៖</strong> យើងដឹងថា \(\left(\sqrt{x} - \frac{1}{\sqrt{x}}\right)^2 \ge 0\)</p>
+                                <p class="pl-4">\(\Rightarrow (\sqrt{x})^2 - 2(\sqrt{x})\left(\frac{1}{\sqrt{x}}\right) + \left(\frac{1}{\sqrt{x}}\right)^2 \ge 0\)</p>
+                                <p class="pl-4">\(\Rightarrow x - 2 + \frac{1}{x} \ge 0 \Rightarrow x + \frac{1}{x} \ge 2\) (ពិត)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- លំហាត់កម្រិតខ្ពស់គួរឲ្យចាប់អារម្មណ៍ -->
+                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-xl mt-6 border border-indigo-200 shadow-md">
+                        <div class="flex flex-col gap-6 items-start">
+                            <div class="w-full">
+                                <p class="font-bold text-indigo-900 mb-3 text-lg"><i class="fas fa-star text-yellow-500"></i> លំហាត់វិសមភាពគួរឲ្យចាប់អារម្មណ៍ (លំហាត់សិស្សពូកែ)</p>
+                                <p class="text-gray-800 font-bold mb-4 bg-white p-3 rounded border border-indigo-100 shadow-sm">
+                                    បង្ហាញថា ចំពោះគ្រប់ចំនួនពិត \(a, b\) និង \(c\) គេបាន៖ <br>
+                                    <span class="text-xl text-indigo-700 block text-center mt-2">\(a^2 + b^2 + c^2 \ge ab + bc + ca\)</span>
+                                </p>
+                                
+                                <div class="bg-white p-5 rounded-lg border border-indigo-100 shadow-inner text-sm text-gray-800">
+                                    <p class="font-bold text-indigo-800 mb-2"><i class="fas fa-key text-yellow-500"></i> គន្លឹះដោះស្រាយ៖</p>
+                                    <p class="mb-4 text-gray-600">ដើម្បីដោះស្រាយលំហាត់នេះ យើងត្រូវប្រើល្បិច <strong>"គុណនឹង ២"</strong> ដើម្បីបង្កើតជាទម្រង់រូបមន្តការេនៃទ្វេធា \((x-y)^2 = x^2 - 2xy + y^2\)</p>
+                                    
+                                    <p class="font-bold text-indigo-800 mb-2"><i class="fas fa-pencil-alt text-blue-500"></i> បកស្រាយលម្អិត៖</p>
+                                    <ul class="list-none space-y-3 font-mono">
+                                        <li class="flex items-start"><span class="mr-2 text-indigo-400">១.</span> <span>គុណអង្គសងខាងនៃវិសមភាពនឹង ២៖ <br> <span class="text-blue-700">\(2a^2 + 2b^2 + 2c^2 \ge 2ab + 2bc + 2ca\)</span></span></li>
+                                        <li class="flex items-start"><span class="mr-2 text-indigo-400">២.</span> <span>បោះតួទាំងអស់ទៅអង្គទី១៖ <br> <span class="text-blue-700">\(2a^2 + 2b^2 + 2c^2 - 2ab - 2bc - 2ca \ge 0\)</span></span></li>
+                                        <li class="flex items-start"><span class="mr-2 text-indigo-400">៣.</span> <span>បំបែក និងផ្ដុំតួជា ៣ ក្រុម៖ <br> <span class="text-blue-700">\((a^2 - 2ab + b^2) + (b^2 - 2bc + c^2) + (c^2 - 2ca + a^2) \ge 0\)</span></span></li>
+                                        <li class="flex items-start"><span class="mr-2 text-indigo-400">៤.</span> <span>ប្រើរូបមន្តការេនៃទ្វេធា៖ <br> <strong class="text-indigo-700 text-base">\((a-b)^2 + (b-c)^2 + (c-a)^2 \ge 0\)</strong></span></li>
+                                    </ul>
+                                </div>
+                                <p class="text-sm font-bold text-white mt-4 bg-gradient-to-r from-indigo-500 to-purple-600 p-3 rounded-lg shadow w-full text-center">
+                                    <i class="fas fa-check-double"></i> សន្និដ្ឋាន៖ ដោយសារការេនៃចំនួនពិតជានិច្ចកាល \(\ge 0\) នោះផលបូករបស់វាក៏ \(\ge 0\) ដែរ។ ដូចនេះវិសមភាពត្រូវបានបង្ហាញ!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ៧. មធ្យមនព្វន្ត មធ្យមធរណីមាត្រ -->
+                <div id="topic-7" class="avoid-break border p-6 rounded-lg bg-blue-50/50">
+                    <h3 class="text-xl font-bold text-blue-800 mb-3 border-l-4 border-blue-500 pl-2">៧. មធ្យមនព្វន្ត មធ្យមធរណីមាត្រ (AM-GM)</h3>
+                    <p class="mb-4 text-gray-700">ចំពោះចំនួនពិតវិជ្ជមាន \(a, b > 0\), គេបាន <strong class="text-blue-700 bg-blue-100 px-2 py-1 rounded">\(\frac{a+b}{2} \ge \sqrt{ab}\) ឬ \(a+b \ge 2\sqrt{ab}\)</strong></p>
+                    
+                    <!-- លំហាត់កម្រិតខ្ពស់គួរឲ្យចាប់អារម្មណ៍ (AM-GM) -->
+                    <div class="bg-gradient-to-br from-pink-50 to-rose-50 p-6 rounded-xl mt-4 mb-6 border border-pink-200 shadow-md">
+                        <div class="flex flex-col gap-6 items-start">
+                            <div class="w-full">
+                                <p class="font-bold text-pink-900 mb-3 text-lg"><i class="fas fa-star text-yellow-500"></i> លំហាត់វិសមភាព AM-GM គួរឲ្យចាប់អារម្មណ៍</p>
+                                <p class="text-gray-800 font-bold mb-4 bg-white p-3 rounded border border-pink-100 shadow-sm">
+                                    បង្ហាញថា ចំពោះគ្រប់ចំនួនពិតវិជ្ជមាន \(a, b, c > 0\) គេបាន៖ <br>
+                                    <span class="text-xl text-pink-700 block text-center mt-2">\((a+b)(b+c)(c+a) \ge 8abc\)</span>
+                                </p>
+                                
+                                <div class="bg-white p-5 rounded-lg border border-pink-100 shadow-inner text-sm text-gray-800">
+                                    <p class="font-bold text-pink-800 mb-2"><i class="fas fa-key text-yellow-500"></i> គន្លឹះដោះស្រាយ៖</p>
+                                    <p class="mb-4 text-gray-600">យើងត្រូវអនុវត្តវិសមភាព AM-GM ទៅលើកត្តានីមួយៗនៃអង្គទី១ រួចធ្វើផលគុណបញ្ចូលគ្នា។</p>
+                                    
+                                    <p class="font-bold text-pink-800 mb-2"><i class="fas fa-pencil-alt text-blue-500"></i> បកស្រាយលម្អិតមួយជំហានម្តងៗ៖</p>
+                                    <ul class="list-none space-y-3 font-mono">
+                                        <li class="flex items-start"><span class="mr-2 text-pink-400">១.</span> <span>អនុវត្ត AM-GM លើ \(a\) និង \(b\): <br> <span class="text-blue-700">\(a+b \ge 2\sqrt{ab}\)</span> &nbsp;&nbsp; (1)</span></li>
+                                        <li class="flex items-start"><span class="mr-2 text-pink-400">២.</span> <span>អនុវត្ត AM-GM លើ \(b\) និង \(c\): <br> <span class="text-blue-700">\(b+c \ge 2\sqrt{bc}\)</span> &nbsp;&nbsp; (2)</span></li>
+                                        <li class="flex items-start"><span class="mr-2 text-pink-400">៣.</span> <span>អនុវត្ត AM-GM លើ \(c\) និង \(a\): <br> <span class="text-blue-700">\(c+a \ge 2\sqrt{ca}\)</span> &nbsp;&nbsp; (3)</span></li>
+                                        <li class="flex items-start"><span class="mr-2 text-pink-400">៤.</span> <span>ដោយសារអង្គសងខាងសុទ្ធតែវិជ្ជមាន យើងអាចគុណវិសមភាព (1), (2), (3) បញ្ចូលគ្នា: <br> <span class="text-blue-700">\((a+b)(b+c)(c+a) \ge (2\sqrt{ab})(2\sqrt{bc})(2\sqrt{ca})\)</span></span></li>
+                                        <li class="flex items-start"><span class="mr-2 text-pink-400">៥.</span> <span>សម្រួលអង្គទី២: <br> <span class="text-blue-700">\(= 8\sqrt{a^2b^2c^2}\)</span> <br> <strong class="text-pink-700 text-base">\(= 8abc\)</strong></span></li>
+                                    </ul>
+                                </div>
+                                <p class="text-sm font-bold text-white mt-4 bg-gradient-to-r from-pink-500 to-rose-600 p-3 rounded-lg shadow w-full text-center">
+                                    <i class="fas fa-check-double"></i> សន្និដ្ឋាន៖ វិសមភាព \((a+b)(b+c)(c+a) \ge 8abc\) ពិតជាត្រឹមត្រូវ! <br> <span class="text-pink-200 font-normal">(សញ្ញាស្មើកើតឡើងលុះត្រាតែ \(a=b=c\))</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-100 p-5 mt-4 rounded-lg border-2 border-dashed border-gray-400">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="font-bold text-gray-800"><i class="fas fa-sync-alt text-purple-500"></i> លំហាត់អនុវត្តបែបដូរលេខ (AM-GM)：</p>
+                            <button onclick="generateAMGM()" class="bg-purple-600 text-white px-3 py-1 text-sm rounded shadow hover:bg-purple-700">ប្តូរលេខ</button>
+                        </div>
+                        <p id="dyn-ex-2" class="text-lg my-3">រកតម្លៃអប្បបរមានៃ \(f(x) = x + \frac{16}{x}\) (\(x>0\))</p>
+                        <button onclick="showDynSol(2)" class="bg-green-600 text-white px-3 py-1 text-sm rounded shadow hover:bg-green-700">បង្ហាញដំណោះស្រាយ</button>
+                        <div id="dyn-sol-2" class="hidden mt-3 text-green-800 bg-green-50 border border-green-200 p-3 rounded"></div>
+                    </div>
+                </div>
+
+                <!-- ៨. PISA តេស្ត -->
+                <div id="topic-8" class="avoid-break border p-6 rounded-lg bg-blue-50/50">
+                    <h3 class="text-xl font-bold text-blue-800 mb-3 border-l-4 border-blue-500 pl-2">៨. ការអនុវត្តន៍ក្នុងជីវភាព (PISA តេស្ត)</h3>
+                    <p class="mb-4 text-gray-700 text-sm leading-relaxed">តេស្ត PISA ផ្តោតលើសមត្ថភាពសិស្សក្នុងការយកចំណេះដឹងទៅដោះស្រាយបញ្ហាពិតក្នុងសង្គមជាក់ស្តែង។ ខាងក្រោមនេះគឺជាលំហាត់អនុវត្តវិសមីការតាមវិស័យនីមួយៗ៖</p>
+
+                    <div class="space-y-6">
+                        <!-- វិស័យកសិកម្ម -->
+                        <div class="bg-green-50 p-6 rounded-xl border border-green-300 shadow-md flex flex-col md:flex-row gap-8 items-center hover:shadow-lg transition">
+                            <div class="flex-1 w-full">
+                                <p class="font-bold text-green-800 mb-3 text-xl"><i class="fas fa-seedling"></i> លំហាត់កសិកម្ម (ការស្វែងរកផ្ទៃអតិបរមា)</p>
+                                <p class="text-sm mb-4 text-gray-700 leading-relaxed">កសិករម្នាក់មានរបងលួសប្រវែង <strong>\(60m\)</strong> ដើម្បីព័ទ្ធដីកសិដ្ឋានរាងចតុកោណកែងដោយជាប់នឹងជញ្ជាំងផ្ទះមួយចំហៀង (មិនបាច់ព័ទ្ធលួស)។ តើគាត់ត្រូវកំណត់ទទឹងប៉ុន្មានម៉ែត្រ ទើបផ្ទៃដីដាំដុះបានអតិបរមា?</p>
+                                
+                                <div class="bg-white p-5 rounded-lg border border-green-200 text-sm text-gray-800 shadow-inner">
+                                    <p class="font-bold text-green-900 mb-3"><i class="fas fa-lightbulb text-yellow-500"></i> បកស្រាយលម្អិត និងទំនាក់ទំនងជាមួយគំរូ 3D៖</p>
+                                    <ul class="list-disc ml-6 space-y-2 mb-4">
+                                        <li>តាង \(x\) ជាទទឹងនៃរបង (\(x > 0\)), នោះបណ្ដោយគឺ \(y\)។</li>
+                                        <li>ប្រវែងរបងសរុបមានតែ ៣ជ្រុង៖ \(2x + y = 60 \Rightarrow y = 60 - 2x\)</li>
+                                        <li>ផ្ទៃដី <span class="text-green-600 font-bold">(ពណ៌បៃតងក្នុង 3D)</span>៖ \(S = xy = x(60 - 2x)\)</li>
+                                        <li><span class="text-blue-600 font-bold">របងលួសពណ៌ខៀវក្នុង 3D៖</span> តំណាងឲ្យជ្រុងទាំង៣ ដែលមានប្រវែងសរុបថេរ ៦០ម៉ែត្រ។</li>
+                                    </ul>
+                                    <div class="bg-gradient-to-r from-green-100 to-teal-100 p-3 rounded text-center font-bold text-blue-900 mb-3 border border-green-300 shadow-sm text-lg">
+                                        អនុវត្តវិសមភាព AM-GM លើ \(2x\) និង \(60-2x\)៖
+                                    </div>
+                                    <div class="pl-4 font-mono text-gray-700 font-bold space-y-2">
+                                        <p>\(2x(60-2x) \le \left(\frac{2x + 60 - 2x}{2}\right)^2\)</p>
+                                        <p>\(2S \le \left(\frac{60}{2}\right)^2 \Rightarrow 2S \le 900 \Rightarrow S \le 450\)</p>
+                                        <p class="text-green-700 italic">អតិបរមាកើតឡើងពេល \(2x = 60-2x \Rightarrow 4x = 60 \Rightarrow x = 15m\)</p>
+                                    </div>
+                                </div>
+                                <p class="text-base font-bold text-white mt-4 bg-gradient-to-r from-green-500 to-teal-500 p-3 rounded-lg inline-block shadow-md w-full text-center"><i class="fas fa-check-circle"></i> សន្និដ្ឋាន៖ ទទឹង ១៥ម, បណ្ដោយ ៣០ម, ផ្ទៃអតិបរមា ៤៥០ម²</p>
+                            </div>
+                            <div class="w-full md:w-5/12 flex flex-col justify-center items-center gap-3">
+                                <div id="agri-3d-canvas" class="rounded-2xl shadow-inner border-4 border-green-300 w-full h-80 overflow-hidden cursor-grab active:cursor-grabbing relative bg-gradient-to-b from-green-50 to-green-100">
+                                    <div class="absolute top-3 left-3 text-xs font-bold text-gray-800 bg-white/90 px-3 py-1.5 rounded-full shadow pointer-events-none z-10"><i class="fas fa-mouse"></i> អូសបង្វិល (4D Animate)</div>
+                                </div>
+                                <p class="text-xs text-green-700 font-bold italic bg-green-100 px-3 py-1 rounded-full"><i class="fas fa-info-circle"></i> បម្រែបម្រួលផ្ទៃដីតាមទំហំទទឹង និងបណ្ដោយ</p>
+                            </div>
+                        </div>
+
+                        <!-- វិស័យពាណិជ្ជកម្ម -->
+                        <div class="bg-orange-50 p-6 rounded-xl border border-orange-300 shadow-md flex flex-col md:flex-row gap-8 items-center hover:shadow-lg transition">
+                            <div class="flex-1 w-full">
+                                <p class="font-bold text-orange-800 mb-3 text-xl"><i class="fas fa-chart-line"></i> លំហាត់ពាណិជ្ជកម្ម (ការវិភាគប្រាក់ចំណេញ)</p>
+                                <p class="text-sm mb-4 text-gray-700 leading-relaxed">ក្រុមហ៊ុនមួយចង់រកចំណេញឱ្យបាន <strong>យ៉ាងតិច \(5000\$\)</strong> ក្នុងមួយខែ។ បើចំណាយថេរប្រចាំខែ (ថ្លៃជួលកន្លែង ទឹកភ្លើង...) គឺ <strong>\(2000\$\)</strong> ហើយប្រាក់ចំណេញសុទ្ធលើការលក់ផលិតផលមួយគឺ <strong>\(10\$\)</strong>។ តើត្រូវលក់ផលិតផលយ៉ាងតិចប៉ុន្មាន?</p>
+                                
+                                <div class="bg-white p-5 rounded-lg border border-orange-200 text-sm text-gray-800 shadow-inner">
+                                    <p class="font-bold text-orange-900 mb-3"><i class="fas fa-lightbulb text-yellow-500"></i> បកស្រាយលម្អិត និងទំនាក់ទំនងជាមួយក្រាហ្វ 4D ខាងស្តាំ៖</p>
+                                    <ul class="list-disc ml-6 space-y-2 mb-4">
+                                        <li>តាង \(x\) ជាចំនួនផលិតផលដែលត្រូវលក់ (\(x > 0\))</li>
+                                        <li>ប្រាក់ចំណេញសរុបពីការលក់ = \(10x - 2000\)</li>
+                                        <li><span class="text-red-600 font-bold">របារក្រហម៖</span> លក់បាន ៤០០ ផលិតផល ចំណេញទើបបាន ២០០០$ (មិនទាន់ដល់គោលដៅ)</li>
+                                        <li><span class="text-yellow-600 font-bold">របារលឿង៖</span> លក់បាន ៦០០ ផលិតផល ចំណេញបាន ៤០០០$ (កៀកគោលដៅ)</li>
+                                        <li><span class="text-green-600 font-bold">របារបៃតង៖</span> លក់បាន ៨០០ ផលិតផល ចំណេញ ៦០០០$ <strong>(រំលងបន្ទាត់គោលដៅពណ៌ខៀវ!)</strong></li>
+                                    </ul>
+                                    <div class="bg-gradient-to-r from-orange-100 to-yellow-100 p-3 rounded text-center font-bold text-blue-900 mb-3 border border-orange-300 shadow-sm text-lg">
+                                        វិសមីការ៖ \(10x - 2000 \ge 5000\)
+                                    </div>
+                                    <div class="pl-4 font-mono text-gray-700 font-bold space-y-2">
+                                        <p>\(\Rightarrow 10x \ge 5000 + 2000\)</p>
+                                        <p>\(\Rightarrow 10x \ge 7000 \Rightarrow x \ge 700\)</p>
+                                    </div>
+                                </div>
+                                <p class="text-base font-bold text-white mt-4 bg-gradient-to-r from-orange-500 to-red-500 p-3 rounded-lg inline-block shadow-md w-full text-center"><i class="fas fa-check-circle"></i> សន្និដ្ឋាន៖ ក្រុមហ៊ុនត្រូវលក់យ៉ាងតិច ៧០០ ផលិតផល។</p>
+                            </div>
+                            <div class="w-full md:w-5/12 flex flex-col justify-center items-center gap-3">
+                                <div id="com-3d-canvas" class="rounded-2xl shadow-inner border-4 border-orange-300 w-full h-80 overflow-hidden cursor-grab active:cursor-grabbing relative bg-gradient-to-b from-slate-800 to-slate-900">
+                                    <div class="absolute top-3 left-3 text-xs font-bold text-gray-800 bg-white/90 px-3 py-1.5 rounded-full shadow pointer-events-none z-10"><i class="fas fa-mouse"></i> អូសបង្វិល (4D Animate)</div>
+                                </div>
+                                <p class="text-xs text-orange-700 font-bold italic bg-orange-100 px-3 py-1 rounded-full"><i class="fas fa-info-circle"></i> រោងចក្រផលិត និងក្រាហ្វិកប្រាក់ចំណេញជាក់ស្តែង</p>
+                            </div>
+                        </div>
+
+                        <!-- វិស័យសុខាភិបាល -->
+                        <div class="bg-red-50 p-6 rounded-xl border border-red-300 shadow-md flex flex-col md:flex-row gap-8 items-center hover:shadow-lg transition">
+                            <div class="flex-1 w-full">
+                                <p class="font-bold text-red-800 mb-3 text-xl"><i class="fas fa-heartbeat"></i> លំហាត់សុខាភិបាល (ការគណនាជីវជាតិប្រចាំថ្ងៃ)</p>
+                                <p class="text-sm mb-4 text-gray-700 leading-relaxed">អ្នកជំងឺម្នាក់ត្រូវទទួលបានជាតិកាល់ស្យូម <strong>យ៉ាងតិច \(800mg\)</strong> ក្នុងមួយថ្ងៃ។ បើគាត់ទទួលបានពីអាហារផ្សេងៗចំនួន <strong>\(300mg\)</strong> រួចហើយ ហើយទឹកដោះគោមួយកែវអាចផ្តល់ជាតិកាល់ស្យូមបាន <strong>\(250mg\)</strong>។ តើគាត់ត្រូវផឹកទឹកដោះគោបន្ថែមយ៉ាងតិចប៉ុន្មានកែវទៀត?</p>
+                                
+                                <div class="bg-white p-5 rounded-lg border border-red-200 text-sm text-gray-800 shadow-inner">
+                                    <p class="font-bold text-red-900 mb-3"><i class="fas fa-lightbulb text-yellow-500"></i> បកស្រាយលម្អិត និងទំនាក់ទំនងជាមួយគំរូ 4D៖</p>
+                                    <ul class="list-disc ml-6 space-y-2 mb-4">
+                                        <li>តាង \(x\) ជាចំនួនកែវទឹកដោះគោដែលត្រូវផឹក (\(x > 0\))</li>
+                                        <li>ជាតិកាល់ស្យូមសរុប = \(250x + 300\)</li>
+                                        <li><span class="text-orange-600 font-bold">គំនូរជីវចល 4D ខាងស្តាំ៖</span> បង្ហាញពីការផឹកទឹកដោះគោបន្ថែមម្តងមួយកែវ។ កម្រិតកាល់ស្យូមក្នុងរាងកាយកើនឡើងពី 300mg បន្តបន្ទាប់ រហូតដល់ឆ្លងកាត់បន្ទាត់គោលដៅ 800mg ទើបលោតសញ្ញាជោគជ័យពណ៌បៃតង។</li>
+                                    </ul>
+                                    <div class="bg-gradient-to-r from-red-100 to-pink-100 p-3 rounded text-center font-bold text-red-900 mb-3 border border-red-300 shadow-sm text-lg">
+                                        វិសមីការ៖ \(250x + 300 \ge 800\)
+                                    </div>
+                                    <div class="pl-4 font-mono text-gray-700 font-bold space-y-2">
+                                        <p>\(\Rightarrow 250x \ge 800 - 300\)</p>
+                                        <p>\(\Rightarrow 250x \ge 500 \Rightarrow x \ge 2\)</p>
+                                    </div>
+                                </div>
+                                <p class="text-base font-bold text-white mt-4 bg-gradient-to-r from-red-500 to-pink-600 p-3 rounded-lg inline-block shadow-md w-full text-center"><i class="fas fa-check-circle"></i> សន្និដ្ឋាន៖ អ្នកជំងឺត្រូវផឹកទឹកដោះគោបន្ថែមយ៉ាងតិច ២ កែវ។</p>
+                            </div>
+                            <div class="w-full md:w-5/12 flex flex-col justify-center items-center gap-3">
+                                <div id="health-3d-canvas" class="rounded-2xl shadow-inner border-4 border-red-300 w-full h-80 overflow-hidden cursor-grab active:cursor-grabbing relative bg-gradient-to-b from-red-50 to-pink-100">
+                                    <div class="absolute top-3 left-3 text-xs font-bold text-gray-800 bg-white/90 px-3 py-1.5 rounded-full shadow pointer-events-none z-10"><i class="fas fa-mouse"></i> អូសបង្វិល (4D Animate)</div>
+                                </div>
+                                <p class="text-xs text-red-700 font-bold italic bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-info-circle"></i> ការបំពេញកម្រិតកាល់ស្យូមក្នុងរាងកាយ</p>
+                            </div>
+                        </div>
+
+                        <!-- វិស័យបច្ចេកវិទ្យា -->
+                        <div class="bg-blue-50 p-6 rounded-xl border border-blue-300 shadow-md flex flex-col md:flex-row gap-8 items-center hover:shadow-lg transition">
+                            <div class="flex-1 w-full">
+                                <p class="font-bold text-blue-800 mb-3 text-xl"><i class="fas fa-wifi"></i> លំហាត់បច្ចេកវិទ្យា (ការជ្រើសរើសគម្រោងអ៊ីនធឺណិត)</p>
+                                <p class="text-sm mb-4 text-gray-700 leading-relaxed">គម្រោងអ៊ីនធឺណិត <strong>A</strong> តម្រូវឲ្យបង់ <strong>\(5\$\)</strong> ថេរប្រចាំខែ និងបង់បន្ថែម <strong>\(1\$\)</strong> ក្នុងមួយ GB (Gigabyte)। ចំណែកគម្រោង <strong>B</strong> បង់ <strong>\(15\$\)</strong> ប្រើមិនកំណត់។ តើត្រូវប្រើទិន្នន័យលើសពីប៉ុន្មាន GB ទើបការជ្រើសរើសគម្រោង B ចំណេញជាង?</p>
+                                
+                                <div class="bg-white p-5 rounded-lg border border-blue-200 text-sm text-gray-800 shadow-inner">
+                                    <p class="font-bold text-blue-900 mb-3"><i class="fas fa-lightbulb text-yellow-500"></i> បកស្រាយលម្អិត និងទំនាក់ទំនងជាមួយគំរូ 4D៖</p>
+                                    <ul class="list-disc ml-6 space-y-2 mb-4">
+                                        <li>តាង \(x\) ជាចំនួនទិន្នន័យដែលបានប្រើប្រាស់ (គិតជា GB) (\(x > 0\))</li>
+                                        <li>ការចំណាយគម្រោង A = \(5 + 1x\) (ដុល្លារ)</li>
+                                        <li>ការចំណាយគម្រោង B = \(15\) (ដុល្លារ ថេរជានិច្ច)</li>
+                                        <li><span class="text-blue-600 font-bold">គំនូរជីវចល 4D ខាងស្តាំ៖</span> បង្ហាញពីការកើនឡើងនៃទិន្នន័យ (Data) តាមពេលវេលាជាក់ស្តែង។ ផ្ទាំងកុងទ័រនឹងគណនាតម្លៃនៃគម្រោងទាំងពីរប្រណាំងគ្នា ដោយប្តូរពណ៌បៃតងលើគម្រោងណាដែលថោកជាង (ចំណេញជាង)។</li>
+                                    </ul>
+                                    <div class="bg-gradient-to-r from-blue-100 to-cyan-100 p-3 rounded text-center font-bold text-blue-900 mb-3 border border-blue-300 shadow-sm text-lg">
+                                        វិសមីការ៖ \(15 < 5 + x\) ឬ \(5 + x > 15\)
+                                    </div>
+                                    <div class="pl-4 font-mono text-gray-700 font-bold space-y-2">
+                                        <p>\(\Rightarrow x > 15 - 5\)</p>
+                                        <p>\(\Rightarrow x > 10\)</p>
+                                    </div>
+                                </div>
+                                <p class="text-base font-bold text-white mt-4 bg-gradient-to-r from-blue-500 to-cyan-600 p-3 rounded-lg inline-block shadow-md w-full text-center"><i class="fas fa-check-circle"></i> សន្និដ្ឋាន៖ ត្រូវប្រើទិន្នន័យលើសពី ១០ GB ទើបគម្រោង B ចំណេញជាង។</p>
+                            </div>
+                            <div class="w-full md:w-5/12 flex flex-col justify-center items-center gap-3">
+                                <div id="tech-3d-canvas" class="rounded-2xl shadow-inner border-4 border-blue-400 w-full h-80 overflow-hidden cursor-grab active:cursor-grabbing relative bg-slate-900">
+                                    <div class="absolute top-3 left-3 text-xs font-bold text-gray-800 bg-white/90 px-3 py-1.5 rounded-full shadow pointer-events-none z-10"><i class="fas fa-mouse"></i> អូសបង្វិល (4D Data Stream)</div>
+                                </div>
+                                <p class="text-xs text-blue-700 font-bold italic bg-blue-100 px-3 py-1 rounded-full"><i class="fas fa-network-wired"></i> ការបញ្ជូនទិន្នន័យ និងការគណនាតម្លៃជាក់ស្តែង</p>
+                            </div>
+                        </div>
+
+                        <!-- វិស័យបរិស្ថាន -->
+                        <div class="bg-teal-50 p-6 rounded-xl border border-teal-300 shadow-md flex flex-col md:flex-row gap-8 items-center hover:shadow-lg transition">
+                            <div class="flex-1 w-full">
+                                <p class="font-bold text-teal-800 mb-3 text-xl"><i class="fas fa-leaf"></i> លំហាត់បរិស្ថាន (ការកម្រិតការបញ្ចេញឧស្ម័ន CO2)</p>
+                                <p class="text-sm mb-4 text-gray-700 leading-relaxed">ទីក្រុងមួយចង់ដាក់កំហិតការបញ្ចេញឧស្ម័នពុល CO2 ឱ្យនៅ <strong>ក្រោម \(50\) តោន</strong> ក្នុងមួយខែ। រោងចក្រមួយបញ្ចេញឧស្ម័ននេះ <strong>\(2\) តោន/ថ្ងៃ</strong>। បើសិនជានៅដើមខែ រោងចក្រនោះបានបញ្ចេញអស់ <strong>\(10\) តោន</strong> រួចទៅហើយ តើអាចដំណើរការបានច្រើនបំផុតប៉ុន្មានថ្ងៃទៀត ទើបមិនលើសកម្រិតកំណត់?</p>
+                                
+                                <div class="bg-white p-5 rounded-lg border border-teal-200 text-sm text-gray-800 shadow-inner">
+                                    <p class="font-bold text-teal-900 mb-3"><i class="fas fa-lightbulb text-yellow-500"></i> បកស្រាយលម្អិត និងទំនាក់ទំនងជាមួយគំរូ 4D៖</p>
+                                    <ul class="list-disc ml-6 space-y-2 mb-4">
+                                        <li>តាង \(x\) ជាចំនួនថ្ងៃដែលអាចដំណើរការបន្ត (\(x > 0\))</li>
+                                        <li>បរិមាណបញ្ចេញបន្ថែមក្នុង \(x\) ថ្ងៃ = \(2x\)</li>
+                                        <li>បរិមាណឧស្ម័នសរុប = \(2x + 10\)</li>
+                                        <li><span class="text-gray-500 font-bold">គំនូរជីវចល 4D ខាងស្តាំ៖</span> បង្ហាញពីការកើនឡើងនៃឧស្ម័ន CO2 តាមពេលវេលាជាក់ស្តែង។ ពេលចំនួនថ្ងៃកើនឡើង បរិមាណផ្សែងនឹងកើនឡើង ហើយផ្ទៃមេឃនឹងប្រែជាងងឹតអាប់អួរ រហូតដល់ជាន់បន្ទាត់ក្រហម (៥០ តោន)។</li>
+                                    </ul>
+                                    <div class="bg-gradient-to-r from-teal-100 to-emerald-100 p-3 rounded text-center font-bold text-teal-900 mb-3 border border-teal-300 shadow-sm text-lg">
+                                        វិសមីការ៖ \(2x + 10 \le 50\)
+                                    </div>
+                                    <div class="pl-4 font-mono text-gray-700 font-bold space-y-2">
+                                        <p>\(\Rightarrow 2x \le 50 - 10\)</p>
+                                        <p>\(\Rightarrow 2x \le 40 \Rightarrow x \le 20\)</p>
+                                    </div>
+                                </div>
+                                <p class="text-base font-bold text-white mt-4 bg-gradient-to-r from-teal-500 to-emerald-600 p-3 rounded-lg inline-block shadow-md w-full text-center"><i class="fas fa-check-circle"></i> សន្និដ្ឋាន៖ រោងចក្រអាចដំណើរការបានច្រើនបំផុត ២០ ថ្ងៃទៀតប៉ុណ្ណោះ។</p>
+                            </div>
+                            <div class="w-full md:w-5/12 flex flex-col justify-center items-center gap-3">
+                                <div id="env-3d-canvas" class="rounded-2xl shadow-inner border-4 border-teal-300 w-full h-80 overflow-hidden cursor-grab active:cursor-grabbing relative bg-sky-100">
+                                    <div class="absolute top-3 left-3 text-xs font-bold text-gray-800 bg-white/90 px-3 py-1.5 rounded-full shadow pointer-events-none z-10"><i class="fas fa-mouse"></i> អូសបង្វិល (4D Simulation)</div>
+                                </div>
+                                <p class="text-xs text-teal-700 font-bold italic bg-teal-100 px-3 py-1 rounded-full"><i class="fas fa-info-circle"></i> រោងចក្របញ្ចេញផ្សែងប៉ះពាល់បរិស្ថានតាមពេលវេលា</p>
+                            </div>
+                        </div>
+
+                        <!-- វិស័យដឹកជញ្ជូន -->
+                        <div class="bg-yellow-50 p-6 rounded-xl border border-yellow-300 shadow-md flex flex-col md:flex-row gap-8 items-center hover:shadow-lg transition">
+                            <div class="flex-1 w-full">
+                                <p class="font-bold text-yellow-800 mb-3 text-xl"><i class="fas fa-truck"></i> លំហាត់ដឹកជញ្ជូន (ការគណនាទម្ងន់ផ្ទុកអតិបរមា)</p>
+                                <p class="text-sm mb-4 text-gray-700 leading-relaxed">រថយន្តដឹកទំនិញមួយគ្រឿងត្រូវបានអនុញ្ញាតឱ្យផ្ទុកទម្ងន់សរុប (រួមទាំងតួឡាន) អតិបរមាត្រឹម <strong>\(5000kg\)</strong>។ បើរថយន្តទទេមានទម្ងន់ <strong>\(2000kg\)</strong> ហើយទំនិញនីមួយៗត្រូវបានច្រកក្នុងកេសស្តង់ដារដែលមានទម្ងន់ <strong>\(50kg\)</strong> ក្នុងមួយកេស។ តើគេអាចផ្ទុកទំនិញបានច្រើនបំផុតប៉ុន្មានកេស ដើម្បីធានាសុវត្ថិភាពនិងមិនល្មើសច្បាប់ចរាចរណ៍?</p>
+                                
+                                <div class="bg-white p-5 rounded-lg border border-yellow-200 text-sm text-gray-800 shadow-inner">
+                                    <p class="font-bold text-yellow-900 mb-3"><i class="fas fa-lightbulb text-yellow-500"></i> បកស្រាយលម្អិត និងទំនាក់ទំនងជាមួយគំរូ 4D៖</p>
+                                    <ul class="list-disc ml-6 space-y-2 mb-4">
+                                        <li>តាង \(x\) ជាចំនួនកេសទំនិញដែលត្រូវផ្ទុកលើឡាន (\(x \ge 0\))</li>
+                                        <li>ទម្ងន់ទំនិញសុទ្ធសរុប = \(50x\)</li>
+                                        <li>ទម្ងន់ឡាននិងទំនិញសរុប = ទម្ងន់ឡានទទេ + ទម្ងន់ទំនិញ = \(2000 + 50x\)</li>
+                                        <li><span class="text-orange-600 font-bold">គំនូរជីវចល 4D ខាងស្តាំ៖</span> បង្ហាញពីការផ្ទុកទំនិញចូលឡានម្តងមួយកេសៗ ធ្វើឱ្យទម្ងន់កើនឡើងបន្តិចម្តងៗ និងយឺតឡានស្រុតចុះ រហូតដល់ពេញកម្រិត 5000kg ទើបបញ្ឈប់។</li>
+                                    </ul>
+                                    <div class="bg-gradient-to-r from-yellow-100 to-amber-100 p-3 rounded text-center font-bold text-yellow-900 mb-3 border border-yellow-300 shadow-sm text-lg">
+                                        វិសមីការ៖ \(50x + 2000 \le 5000\)
+                                    </div>
+                                    <div class="pl-4 font-mono text-gray-700 font-bold space-y-2">
+                                        <p>\(\Rightarrow 50x \le 5000 - 2000\)</p>
+                                        <p>\(\Rightarrow 50x \le 3000 \Rightarrow x \le \frac{3000}{50}\)</p>
+                                        <p>\(\Rightarrow x \le 60\)</p>
+                                    </div>
+                                </div>
+                                <p class="text-base font-bold text-white mt-4 bg-gradient-to-r from-yellow-500 to-orange-500 p-3 rounded-lg inline-block shadow-md w-full text-center"><i class="fas fa-check-circle"></i> សន្និដ្ឋាន៖ រថយន្តអាចផ្ទុកទំនិញបានអតិបរមាចំនួន ៦០ កេស។</p>
+                            </div>
+                            <div class="w-full md:w-5/12 flex flex-col justify-center items-center gap-3">
+                                <div id="trans-3d-canvas" class="rounded-2xl shadow-inner border-4 border-yellow-400 w-full h-80 overflow-hidden cursor-grab active:cursor-grabbing relative bg-sky-100">
+                                    <div class="absolute top-3 left-3 text-xs font-bold text-gray-800 bg-white/90 px-3 py-1.5 rounded-full shadow pointer-events-none z-20"><i class="fas fa-mouse"></i> អូសបង្វិលមើលការផ្ទុក (4D Animate)</div>
+                                </div>
+                                <p class="text-xs text-yellow-800 font-bold italic bg-yellow-100 px-3 py-1 rounded-full"><i class="fas fa-info-circle"></i> រថយន្តកំពុងបើកបរ និងផ្ទុកទំនិញជាក់ស្តែង</p>
+                            </div>
+                        </div>
+
+                        <!-- វិស័យថាមពល (បន្ថែមថ្មី) -->
+                        <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-300 shadow-md flex flex-col md:flex-row gap-8 items-center hover:shadow-lg transition">
+                            <div class="flex-1 w-full">
+                                <p class="font-bold text-indigo-800 mb-3 text-xl"><i class="fas fa-solar-panel"></i> លំហាត់ថាមពល (ការគណនាចំនួនផ្ទាំងសូឡា)</p>
+                                <p class="text-sm mb-4 text-gray-700 leading-relaxed">គ្រួសារមួយត្រូវការប្រើប្រាស់ថាមពលអគ្គិសនី <strong>យ៉ាងតិច \(3000 Wh\)</strong> ក្នុងមួយថ្ងៃ। ពួកគាត់មានកង្ហារខ្យល់មួយដែលផលិតថាមពលបាន <strong>\(500 Wh\)</strong> ក្នុងមួយថ្ងៃរួចហើយ। បើផ្ទាំងសូឡាមួយផ្ទាំងអាចផលិតថាមពលបាន <strong>\(250 Wh\)</strong> ក្នុងមួយថ្ងៃ តើពួកគាត់ត្រូវទិញផ្ទាំងសូឡាយ៉ាងតិចប៉ុន្មានផ្ទាំង ទើបគ្រប់គ្រាន់សម្រាប់ការប្រើប្រាស់?</p>
+                                
+                                <div class="bg-white p-5 rounded-lg border border-indigo-200 text-sm text-gray-800 shadow-inner">
+                                    <p class="font-bold text-indigo-900 mb-3"><i class="fas fa-lightbulb text-yellow-500"></i> បកស្រាយលម្អិត និងទំនាក់ទំនងជាមួយគំរូ 4D៖</p>
+                                    <ul class="list-disc ml-6 space-y-2 mb-4">
+                                        <li>តាង \(x\) ជាចំនួនផ្ទាំងសូឡាដែលត្រូវទិញ (\(x > 0\))</li>
+                                        <li>ថាមពលទទួលបានពីផ្ទាំងសូឡា = \(250x\)</li>
+                                        <li>ថាមពលសរុប (សូឡា + កង្ហារខ្យល់) = \(250x + 500\)</li>
+                                        <li><span class="text-indigo-600 font-bold">គំនូរជីវចល 4D ខាងស្តាំ៖</span> បង្ហាញពីបម្រែបម្រួលពេលវេលា (Day/Night Cycle)។ ថាមពលខ្យល់កើនឡើងជាប់រហូត ចំណែកឯផ្ទាំងសូឡាទាំង១០ ផលិតថាមពលបានតែពេលថ្ងៃ (មានពន្លឺព្រះអាទិត្យ) ដើម្បីបំពេញគោលដៅ 3000Wh នៅចុងបញ្ចប់នៃថ្ងៃ។</li>
+                                    </ul>
+                                    <div class="bg-gradient-to-r from-indigo-100 to-blue-100 p-3 rounded text-center font-bold text-indigo-900 mb-3 border border-indigo-300 shadow-sm text-lg">
+                                        វិសមីការ៖ \(250x + 500 \ge 3000\)
+                                    </div>
+                                    <div class="pl-4 font-mono text-gray-700 font-bold space-y-2">
+                                        <p>\(\Rightarrow 250x \ge 3000 - 500\)</p>
+                                        <p>\(\Rightarrow 250x \ge 2500 \Rightarrow x \ge 10\)</p>
+                                    </div>
+                                </div>
+                                <p class="text-base font-bold text-white mt-4 bg-gradient-to-r from-indigo-500 to-blue-600 p-3 rounded-lg inline-block shadow-md w-full text-center"><i class="fas fa-check-circle"></i> សន្និដ្ឋាន៖ គ្រួសារនេះត្រូវទិញផ្ទាំងសូឡាយ៉ាងតិច ១០ ផ្ទាំង។</p>
+                            </div>
+                            <div class="w-full md:w-5/12 flex flex-col justify-center items-center gap-3">
+                                <div id="energy-3d-canvas" class="rounded-2xl shadow-inner border-4 border-indigo-400 w-full h-80 overflow-hidden cursor-grab active:cursor-grabbing relative bg-slate-900">
+                                    <div class="absolute top-3 left-3 text-xs font-bold text-gray-800 bg-white/90 px-3 py-1.5 rounded-full shadow pointer-events-none z-10"><i class="fas fa-mouse"></i> អូសបង្វិល (4D Animate)</div>
+                                </div>
+                                <p class="text-xs text-indigo-700 font-bold italic bg-indigo-100 px-3 py-1 rounded-full"><i class="fas fa-info-circle"></i> ផ្ទះបំពាក់ផ្ទាំងសូឡា១០ និងការគណនាថាមពលជាក់ស្តែង</p>
+                            </div>
+                        </div>
+
+                        <!-- វិស័យយោធា -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-300 shadow-md flex flex-col md:flex-row gap-8 items-center hover:shadow-lg transition">
+                            <div class="flex-1 w-full">
+                                <p class="font-bold text-slate-800 mb-3 text-xl"><i class="fas fa-helicopter"></i> លំហាត់យោធា (ការគណនាបន្ទុកប្រតិបត្តិការ)</p>
+                                <p class="text-sm mb-4 text-gray-700 leading-relaxed">ឧទ្ធម្ភាគចក្រយោធាមួយគ្រឿងអាចហោះហើរដោយផ្ទុកទម្ងន់បានអតិបរមា <strong>\(2500kg\)</strong>। បើពីឡុតនិងសហសេវិកមានទម្ងន់សរុប <strong>\(160kg\)</strong> ហើយកេសស្បៀង ឬគ្រាប់រំសេវមួយកេសមានទម្ងន់ <strong>\(80kg\)</strong>। តើឧទ្ធម្ភាគចក្រនេះអាចដឹកទំនិញបានច្រើនបំផុតប៉ុន្មានកេស ទើបធានាបាននូវសុវត្ថិភាពហោះហើរ?</p>
+                                
+                                <div class="bg-white p-5 rounded-lg border border-slate-200 text-sm text-gray-800 shadow-inner">
+                                    <p class="font-bold text-slate-900 mb-3"><i class="fas fa-lightbulb text-yellow-500"></i> បកស្រាយលម្អិត និងទំនាក់ទំនងជាមួយគំរូ 4D៖</p>
+                                    <ul class="list-disc ml-6 space-y-2 mb-4">
+                                        <li>តាង \(x\) ជាចំនួនកេសដែលត្រូវដឹក (\(x \ge 0\), គិតជាចំនួនគត់)</li>
+                                        <li>ទម្ងន់ទំនិញសរុប = \(80x\)</li>
+                                        <li>ទម្ងន់សរុប (ទំនិញ + ពីឡុត) = \(80x + 160\)</li>
+                                        <li><span class="text-sky-600 font-bold">គំនូរជីវចល 4D ខាងស្តាំ៖</span> បង្ហាញពីឧទ្ធម្ភាគចក្រកំពុងស្ទូចទំនិញឡើង។ ចំនួនកេសកើនឡើងជាលំដាប់ ធ្វើឲ្យទម្ងន់សរុបកើនឡើង។ បើទម្ងន់លើស ២៥០០kg ឧទ្ធម្ភាគចក្រនឹងធ្លាក់ចុះ និងលោតសញ្ញាអាសន្ន!</li>
+                                    </ul>
+                                    <div class="bg-gradient-to-r from-slate-200 to-gray-300 p-3 rounded text-center font-bold text-slate-900 mb-3 border border-slate-400 shadow-sm text-lg">
+                                        វិសមីការ៖ \(80x + 160 \le 2500\)
+                                    </div>
+                                    <div class="pl-4 font-mono text-gray-700 font-bold space-y-2">
+                                        <p>\(\Rightarrow 80x \le 2500 - 160\)</p>
+                                        <p>\(\Rightarrow 80x \le 2340 \Rightarrow x \le 29.25\)</p>
+                                        <p class="text-slate-500 italic">ដោយសារកេសទំនិញត្រូវតែជាចំនួនគត់ នោះគេយកត្រឹម ២៩ កេស។</p>
+                                    </div>
+                                </div>
+                                <p class="text-base font-bold text-white mt-4 bg-gradient-to-r from-slate-600 to-gray-800 p-3 rounded-lg inline-block shadow-md w-full text-center"><i class="fas fa-check-circle"></i> សន្និដ្ឋាន៖ ឧទ្ធម្ភាគចក្រអាចដឹកបានច្រើនបំផុត ២៩ កេស។</p>
+                            </div>
+                            <div class="w-full md:w-5/12 flex flex-col justify-center items-center gap-3">
+                                <div id="military-3d-canvas" class="rounded-2xl shadow-inner border-4 border-slate-300 w-full h-80 overflow-hidden cursor-grab active:cursor-grabbing relative bg-gradient-to-b from-sky-100 to-blue-200">
+                                    <div class="absolute top-3 left-3 text-xs font-bold text-gray-800 bg-white/90 px-3 py-1.5 rounded-full shadow pointer-events-none z-10"><i class="fas fa-mouse"></i> អូសបង្វិល (4D Animate)</div>
+                                </div>
+                                <p class="text-xs text-slate-700 font-bold italic bg-slate-200 px-3 py-1 rounded-full"><i class="fas fa-info-circle"></i> ឧទ្ធម្ភាគចក្រស្ទូចទំនិញ និងកម្រិតបន្ទុកសុវត្ថិភាព</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- AI PISA Generator -->
+                    <div class="bg-purple-50 p-5 mt-6 rounded-lg border border-purple-200 shadow-sm">
+                        <h4 class="font-bold text-purple-800 mb-2"><i class="fas fa-robot"></i> ✨ បង្កើតលំហាត់ចំណោទ PISA ឆ្លាតវៃ (AI)</h4>
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="ai-topic-input" placeholder="បញ្ចូលប្រធានបទ..." class="flex-grow p-3 border border-gray-300 rounded shadow-inner focus:ring-2 focus:ring-purple-500">
+                            <button onclick="generateAIProblem()" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded shadow font-bold">✨ បង្កើត</button>
+                        </div>
+                        <div id="ai-loading" class="hidden text-center text-purple-600 my-6">
+                            <i class="fas fa-circle-notch fa-spin text-3xl mb-2"></i>
+                            <p class="font-bold">AI កំពុងរៀបចំលំហាត់...</p>
+                        </div>
+                        <div id="ai-output" class="hidden bg-white p-6 rounded-lg border border-purple-200 text-gray-800 leading-relaxed shadow-inner"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: លំហាត់អនុវត្ត (Quiz) ==================== -->
+        <section id="tab2" class="content-section">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 flex-wrap gap-4">
+                <h2 class="text-2xl text-green-700 title-font"><i class="fas fa-clipboard-check"></i> លំហាត់អនុវត្ត (៥០ សំណួរ)</h2>
+                <button onclick="downloadPDF('tab2-print-area', 'Quiz_Inequalities_A4', 'portrait')" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded shadow font-bold transition"><i class="fas fa-print mr-2"></i> PDF (A4)</button>
+            </div>
+
+            <div id="quiz-intro" class="text-center p-8 bg-green-50 rounded-lg border-2 border-green-200 mb-6">
+                <h3 class="text-xl font-bold mb-4 text-green-800">តេស្តសមត្ថភាព ៥០ សំណួរ - ១២០ នាទី</h3>
+                <button onclick="startTimer()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full text-lg shadow-lg font-bold">ចាប់ផ្តើមធ្វើតេស្ត</button>
+            </div>
+
+            <div id="tab2-print-area" class="pdf-page-a4-portrait">
+                <div class="border-2 border-green-700 p-6 mb-6 rounded-lg bg-white relative">
+                    <h3 class="text-center font-bold text-2xl mb-6 title-font text-green-800">សន្លឹកកិច្ចការសិស្ស</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-lg mb-4">
+                        <div class="flex items-end border-b border-gray-400 pb-1">
+                            <label class="font-bold mr-2 whitespace-nowrap">ឈ្មោះ៖</label>
+                            <input type="text" id="student-name" class="flex-1 bg-transparent outline-none font-bold text-blue-700 placeholder-gray-300" placeholder="វាយបញ្ចូលឈ្មោះនៅទីនេះ...">
+                        </div>
+                        <div class="flex items-end border-b border-gray-400 pb-1 gap-6">
+                            <div class="flex items-end w-1/3">
+                                <label class="font-bold mr-2 whitespace-nowrap">ភេទ៖</label>
+                                <input type="text" id="student-gender" class="flex-1 w-full bg-transparent outline-none font-bold text-blue-700 placeholder-gray-300" placeholder="...">
+                            </div>
+                            <div class="flex items-end w-2/3">
+                                <label class="font-bold mr-2 whitespace-nowrap">ថ្នាក់៖</label>
+                                <input type="text" id="student-class" class="flex-1 w-full bg-transparent outline-none font-bold text-blue-700 placeholder-gray-300" placeholder="១០ 'ក'">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="timer-display" class="absolute top-4 right-4 bg-red-100 text-red-700 font-bold px-4 py-2 rounded-lg border border-red-300 hidden">
+                        <i class="fas fa-clock"></i> <span id="timer">120:00</span>
+                    </div>
+                </div>
+                <form id="quiz-form" class="space-y-6 hidden">
+                    <div id="quiz-container"></div>
+                    <div class="text-center border-t pt-6"><button type="button" onclick="submitQuiz()" class="bg-blue-600 text-white px-10 py-3 rounded-lg text-xl font-bold shadow-lg" id="submit-btn">បញ្ជូនចម្លើយ</button></div>
+                    <div id="quiz-result" class="hidden p-8 bg-yellow-50 rounded-lg text-center shadow-lg border border-yellow-300">
+                        <p id="score-text" class="text-4xl font-bold text-blue-600 mb-6">0 / 50</p>
+                        <button type="button" onclick="restartQuiz()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold shadow-md">សាកល្បងម្ដងទៀត</button>
+                        <button type="button" onclick="takeScreenshot(event)" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold ml-2 shadow-md hover:bg-blue-700 transition"><i class="fas fa-camera mr-2"></i> ថតអេក្រង់បញ្ជូនគ្រូ</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: ស្លាយមេរៀន ==================== -->
+        <section id="tab3" class="content-section">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 flex-wrap gap-4">
+                <h2 class="text-2xl text-purple-700 title-font"><i class="fas fa-project-diagram"></i> បទបង្ហាញស្លាយ (២០ ស្លាយ)</h2>
+                <div class="flex gap-2">
+                    <button onclick="toggleFullScreen('slide-presentation')" class="bg-gray-800 text-white px-4 py-2 rounded shadow font-bold"><i class="fas fa-expand mr-2"></i> Full Screen</button>
+                    <button onclick="downloadPDF('slide-export-area', 'Slides_Inequalities_A4', 'landscape')" class="bg-red-500 text-white px-5 py-2 rounded shadow font-bold"><i class="fas fa-file-pdf mr-2"></i> PDF (ផ្តេក)</button>
+                </div>
+            </div>
+            <div id="slide-presentation" class="bg-gray-200 p-4 md:p-8 rounded-xl shadow-inner">
+                <div id="current-slide" class="slide-container text-2xl text-blue-900 mx-auto w-full max-w-[900px] aspect-video bg-white shadow-2xl relative border-4 border-white"></div>
+                <div class="flex justify-center gap-4 mt-6">
+                    <button onclick="prevSlide()" class="bg-purple-600 text-white px-6 py-3 rounded-full font-bold">ថយក្រោយ</button>
+                    <div class="bg-white px-6 py-3 rounded-full font-bold border shadow"><span id="slide-counter">1 / 20</span></div>
+                    <button onclick="nextSlide()" class="bg-purple-600 text-white px-6 py-3 rounded-full font-bold">បន្ទាប់</button>
+                </div>
+            </div>
+            <div id="slide-export-area" class="hidden"></div>
+        </section>
+        
+        <!-- ==================== TAB 4: ល្បែងសិក្សា (GAMES) ==================== -->
+        <section id="tab4" class="content-section">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 flex-wrap gap-4">
+                <h2 class="text-2xl text-orange-600 title-font"><i class="fas fa-gamepad"></i> ល្បែងសិក្សា (Educational Games)</h2>
+                <p class="text-gray-600 font-bold">រៀនគណិតវិទ្យាឱ្យកាន់តែសប្បាយ និងងាយយល់តាមរយៈហ្គេមអន្តរកម្ម</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Game 1: Inequality Catcher -->
+                <div class="bg-white rounded-xl shadow-md border border-sky-300 overflow-hidden flex flex-col">
+                    <div class="bg-gradient-to-r from-sky-500 to-blue-600 p-4 text-white flex justify-between items-center">
+                        <h3 class="font-bold text-lg"><i class="fas fa-shopping-basket mr-2"></i>ហ្គេមទី១៖ ចាប់ចម្លើយវិសមីការ</h3>
+                        <div class="text-sm font-bold bg-white/20 px-3 py-1 rounded-full shadow-inner">ពិន្ទុ: <span id="catcher-score" class="text-yellow-300">0</span> | ជីវិត: <span id="catcher-lives" class="text-red-300">3</span></div>
+                    </div>
+                    <div class="p-4 relative flex-1 flex flex-col">
+                        <div id="catcher-overlay" class="absolute inset-0 bg-white/95 z-20 flex flex-col items-center justify-center p-6 text-center backdrop-blur-sm">
+                            <i class="fas fa-meteor text-6xl text-blue-500 mb-4 animate-bounce"></i>
+                            <h4 class="text-2xl font-bold text-gray-800 mb-2 title-font">Math Catcher 4D</h4>
+                            <p class="text-sm text-gray-600 mb-6 max-w-sm">ដោះស្រាយវិសមីការក្នុងចិត្ត រួចអូសកន្ត្រកចាប់យកតែលេខណាដែលជា <span class="text-green-600 font-bold">"ចម្លើយត្រឹមត្រូវ"</span>។ ជៀសវាងចាប់លេខខុស!</p>
+                            <button onclick="startCatcherGame()" class="bg-gradient-to-r from-blue-600 to-sky-500 text-white font-bold px-8 py-3 rounded-full hover:scale-105 shadow-[0_4px_15px_rgba(14,165,233,0.5)] transition transform"><i class="fas fa-play mr-2"></i> ចាប់ផ្តើមលេង</button>
+                        </div>
+                        
+                        <div class="text-center mb-3">
+                            <span class="text-xs text-gray-500 font-bold uppercase tracking-wider bg-gray-100 px-3 py-1 rounded-full">គោលដៅបច្ចុប្បន្ន</span>
+                            <div id="catcher-goal" class="text-3xl font-bold text-blue-700 font-mono bg-blue-50 py-2 rounded-lg border-2 border-blue-200 mt-2 shadow-sm">???</div>
+                        </div>
+                        
+                        <!-- 4D Canvas Container -->
+                        <div id="catcher-3d-canvas" class="rounded-xl overflow-hidden cursor-grab active:cursor-grabbing relative bg-slate-900 border-4 border-slate-700 shadow-inner flex-1 min-h-[350px]">
+                            <div class="absolute top-3 left-3 text-xs font-bold text-white bg-black/50 px-3 py-1.5 rounded-full shadow pointer-events-none z-10 border border-slate-600"><i class="fas fa-space-shuttle"></i> បរិយាកាស 4D Animate</div>
+                        </div>
+                        <p class="text-xs text-center mt-3 text-gray-500 font-bold"><i class="fas fa-hand-pointer text-sky-500"></i> អូសលើអេក្រង់ដើម្បីបញ្ជាកន្ត្រកឆ្វេង-ស្តាំ</p>
+                    </div>
+                </div>
+
+                <!-- Game 2: PISA Logistics Manager -->
+                <div class="bg-white rounded-xl shadow-md border border-amber-200 overflow-hidden flex flex-col">
+                    <div class="bg-gradient-to-r from-amber-500 to-orange-500 p-4 text-white flex justify-between items-center">
+                        <h3 class="font-bold text-lg"><i class="fas fa-truck-loading mr-2"></i>ហ្គេមទី២៖ អ្នកគ្រប់គ្រងភស្តុភារ</h3>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                            អ្នកគឺជាអ្នកគ្រប់គ្រងការដឹកជញ្ជូន។ ឡានដឹកបានអតិបរមា <strong>5000kg</strong>។ ឡានទទេមានទម្ងន់ <strong>2000kg</strong> ហើយកេសនីមួយៗ <strong>50kg</strong>។ 
+                            ចូរផ្ទុកកេសឱ្យបាន <strong class="text-amber-600">ច្រើនបំផុត</strong> តែហាមលើស 5000kg!
+                        </p>
+                        
+                        <div id="game-logistics-3d" class="w-full h-56 rounded-xl bg-gradient-to-b from-amber-50 to-orange-100 border-2 border-amber-200 relative overflow-hidden cursor-grab active:cursor-grabbing mb-3 shadow-inner">
+                            <div class="absolute top-2 left-2 text-xs font-bold text-amber-800 bg-white/80 px-3 py-1.5 rounded-full shadow pointer-events-none z-10"><i class="fas fa-cube"></i> មើលការផ្ទុកទំនិញជាក់ស្តែង (4D Interactive)</div>
+                        </div>
+
+                        <div class="mb-8 bg-gray-100 p-4 rounded-xl border border-gray-200 relative">
+                            <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
+                                <span>2000kg (ឡានទទេ)</span>
+                                <span>ដែនកំណត់ 5000kg</span>
+                            </div>
+                            <div class="h-8 w-full bg-gray-300 rounded-full overflow-hidden flex relative border-2 border-gray-400">
+                                <div class="h-full bg-gray-500" style="width: 40%;"></div>
+                                <div id="logistics-bar" class="h-full bg-amber-500 transition-all duration-300 flex items-center justify-end px-2 text-white text-xs font-bold" style="width: 0%;"></div>
+                                <div class="absolute top-0 right-0 h-full border-r-4 border-red-500 z-10" style="width: 100%;"></div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <span class="text-3xl font-bold text-gray-800" id="logistics-weight">2000</span>
+                                <span class="text-gray-500 font-bold">kg</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mt-auto">
+                            <div class="text-center bg-amber-50 rounded-lg p-3 border border-amber-100">
+                                <p class="text-sm text-amber-800 font-bold mb-2">ចំនួនកេសក្នុងឡាន</p>
+                                <p class="text-4xl font-bold text-amber-600" id="logistics-boxes">0</p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <button onclick="addBox(1)" id="btn-add-1" class="bg-blue-600 text-white font-bold py-2 rounded-lg hover:bg-blue-700 shadow transition">+ ដាក់ ១ កេស</button>
+                                <button onclick="addBox(10)" id="btn-add-10" class="bg-blue-800 text-white font-bold py-2 rounded-lg hover:bg-blue-900 shadow transition">+ ដាក់ ១០ កេស</button>
+                                <button onclick="checkLogisticsWin()" id="btn-dispatch" class="bg-green-600 text-white font-bold py-2 rounded-lg hover:bg-green-700 shadow transition mt-1"><i class="fas fa-truck-moving mr-2"></i> បញ្ចេញឡាន!</button>
+                            </div>
+                        </div>
+
+                        <div id="logistics-overlay" class="hidden absolute inset-0 bg-white/95 z-20 flex flex-col items-center justify-center p-6 text-center rounded-xl">
+                            <div id="logistics-icon" class="text-6xl mb-4"></div>
+                            <h4 id="logistics-msg-title" class="text-2xl font-bold mb-2"></h4>
+                            <p id="logistics-msg-desc" class="text-gray-600 mb-6"></p>
+                            <button onclick="resetLogisticsGame()" class="bg-gray-800 text-white font-bold px-6 py-2 rounded-full hover:bg-gray-900 shadow transition"><i class="fas fa-redo mr-2"></i>លេងម្តងទៀត</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Screenshot Template (Hidden) -->
+    <div id="screenshot-area" class="absolute bg-white p-12" style="width: 794px; height: 1123px; left: -9999px; top: -9999px;">
+        <div class="border-8 border-green-600 p-8 h-full flex flex-col items-center justify-center relative bg-green-50 rounded-3xl">
+            <i class="fas fa-award text-yellow-500 text-8xl mb-6"></i>
+            <h1 class="text-5xl font-bold text-green-800 title-font mb-6">សន្លឹកលទ្ធផលប្រឡង</h1>
+            <h2 class="text-3xl text-gray-700 font-bold mb-12">គណិតវិទ្យា៖ វិសមីការនិងប្រព័ន្ធវិសមីការ</h2>
+            <div class="bg-white p-10 rounded-2xl shadow-lg w-full border-2 border-green-200">
+                <div class="flex justify-between border-b-2 border-gray-200 pb-4 mb-6">
+                    <span class="text-3xl font-bold text-gray-600">ឈ្មោះសិស្ស៖</span>
+                    <span id="ss-name" class="text-4xl font-bold text-blue-700"></span>
+                </div>
+                <div class="flex justify-between border-b-2 border-gray-200 pb-4 mb-6">
+                    <span class="text-3xl font-bold text-gray-600">ភេទ៖</span>
+                    <span id="ss-gender" class="text-3xl font-bold text-blue-700"></span>
+                </div>
+                <div class="flex justify-between border-b-2 border-gray-200 pb-4 mb-6">
+                    <span class="text-3xl font-bold text-gray-600">ថ្នាក់ទី៖</span>
+                    <span id="ss-class" class="text-3xl font-bold text-blue-700"></span>
+                </div>
+                <div class="flex justify-between border-b-2 border-gray-200 pb-4 mb-6">
+                    <span class="text-3xl font-bold text-gray-600">កាលបរិច្ឆេទ៖</span>
+                    <span id="ss-date" class="text-3xl font-bold text-blue-700"></span>
+                </div>
+                <div class="mt-12 text-center bg-yellow-50 p-6 rounded-xl border border-yellow-200">
+                    <p class="text-3xl font-bold text-gray-700 mb-4">ពិន្ទុសរុបរបស់អ្នក</p>
+                    <p id="ss-score" class="text-7xl font-bold text-red-600"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✨ Floating AI Tutor Chat -->
+    <button onclick="toggleAIChat()" class="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white w-16 h-16 rounded-full shadow-2xl hover:scale-110 transition transform z-50 flex justify-center items-center">
+        <i class="fas fa-robot text-3xl"></i>
+    </button>
+    <div id="ai-chat-modal" class="fixed bottom-24 right-6 w-96 max-w-[90vw] bg-white rounded-xl shadow-2xl border border-gray-200 hidden flex-col z-50 overflow-hidden" style="height: 500px; max-height: 70vh;">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white flex justify-between items-center"><h3 class="font-bold text-lg">✨ គ្រូជំនួយការ AI</h3><button onclick="toggleAIChat()"><i class="fas fa-times"></i></button></div>
+        <div id="chat-history" class="flex-grow p-4 overflow-y-auto bg-gray-50 flex flex-col gap-4"></div>
+        <div class="p-3 border-t bg-white flex gap-2">
+            <input type="text" id="chat-input" placeholder="សួរសំណួររបស់អ្នក..." class="flex-grow p-2 border rounded-full text-sm px-4" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()" class="bg-blue-600 text-white w-10 h-10 rounded-full flex justify-center items-center"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        // --- 1. Tab Navigation ---
+        function switchTab(tabIndex) {
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('active-tab1', 'active-tab2', 'active-tab3', 'active-tab4');
+                el.classList.add('bg-gray-200', 'text-gray-700');
+            });
+
+            document.getElementById(`tab${tabIndex}`).classList.add('active');
+            let btn = document.getElementById(`btn-tab${tabIndex}`);
+            btn.classList.remove('bg-gray-200', 'text-gray-700');
+            
+            if(tabIndex === 1) btn.classList.add('active-tab1');
+            if(tabIndex === 2) btn.classList.add('active-tab2');
+            if(tabIndex === 3) btn.classList.add('active-tab3');
+            if(tabIndex === 4) btn.classList.add('active-tab4');
+
+            if (window.MathJax) MathJax.typesetPromise();
+            if (typeof isCatcherPlaying !== 'undefined' && tabIndex !== 4) isCatcherPlaying = false;
+        }
+
+        // --- 2. Dynamic Content Generator ---
+        let dynData = {};
+        function generateLinearEq() {
+            let a = Math.floor(Math.random() * 8) + 2; 
+            let b = Math.floor(Math.random() * 20) - 10;
+            let c = Math.floor(Math.random() * 30) + 10;
+            let eqStr = `\\(${a}x ${b >= 0 ? '+' : ''}${b} > ${c}\\)`;
+            
+            const elDynEx1 = document.getElementById('dyn-ex-1');
+            const elDynSol1 = document.getElementById('dyn-sol-1');
+            
+            if(elDynEx1 && elDynSol1) {
+                elDynEx1.innerHTML = `ដោះស្រាយវិសមីការ៖ ${eqStr}`;
+                elDynSol1.classList.add('hidden');
+                let step1 = c - b;
+                let res = step1 / a;
+                dynData[1] = `ដំណោះស្រាយ៖ <br> \\(${a}x > ${step1} \\Rightarrow x > ${res.toFixed(2)}\\)`;
+                if (window.MathJax) MathJax.typesetPromise([elDynEx1]);
+            }
+        }
+
+        function generateAMGM() {
+            let k = [4, 9, 16, 25, 36][Math.floor(Math.random() * 5)];
+            const elDynEx2 = document.getElementById('dyn-ex-2');
+            const elDynSol2 = document.getElementById('dyn-sol-2');
+            
+            if(elDynEx2 && elDynSol2) {
+                elDynEx2.innerHTML = `រកតម្លៃអប្បបរមានៃ \\(f(x) = x + \\frac{${k}}{x}\\) (\(x>0\))`;
+                elDynSol2.classList.add('hidden');
+                let min = 2 * Math.sqrt(k);
+                dynData[2] = `តាម AM-GM៖ \\(x + \\frac{${k}}{x} \\ge 2\\sqrt{x \\cdot \\frac{${k}}{x}} = 2\\sqrt{${k}} = ${min}\\)`;
+                if (window.MathJax) MathJax.typesetPromise([elDynEx2]);
+            }
+        }
+
+        function showDynSol(id) {
+            let sol = document.getElementById(`dyn-sol-${id}`);
+            if(sol) {
+                sol.innerHTML = dynData[id];
+                sol.classList.remove('hidden');
+                if (window.MathJax) MathJax.typesetPromise([sol]);
+            }
+        }
+
+        // --- 3. Quiz Engine ---
+        let quizData = [];
+        let timerInterval, timeRemaining = 120 * 60;
+        function renderQuiz() {
+            quizData = [];
+            for(let i=0; i<50; i++) {
+                let a = Math.floor(Math.random()*10)+1, b = Math.floor(Math.random()*20);
+                let correct = `\\(x > ${b}\\)`, options = [correct, `\\(x < ${b}\\)`, `\\(x > ${b+1}\\)`, `\\(x = ${b}\\)`];
+                options.sort(() => Math.random() - 0.5);
+                quizData.push({ q: `ដោះស្រាយ៖ \\(${a}x > ${a*b}\\)`, options, ans: correct, topicId: 'topic-2' });
+            }
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = quizData.map((item, i) => `
+                <div class="bg-white p-5 rounded border mb-4 quiz-item" id="q-${i}">
+                    <h4 class="font-bold mb-2">${i+1}. ${item.q}</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        ${item.options.map((opt, oi) => `<label class="p-2 border rounded cursor-pointer hover:bg-gray-50"><input type="radio" name="q${i}" value="${oi}"> ${opt}</label>`).join('')}
+                    </div>
+                    <div id="feedback-${i}" class="hidden mt-2 p-2 rounded text-sm font-bold"></div>
+                </div>
+            `).join('');
+            if (window.MathJax) MathJax.typesetPromise([container]);
+        }
+
+        function startTimer() {
+            document.getElementById('quiz-intro').classList.add('hidden');
+            document.getElementById('quiz-form').classList.remove('hidden');
+            document.getElementById('timer-display').classList.remove('hidden');
+            renderQuiz();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                let m = Math.floor(timeRemaining/60), s = timeRemaining%60;
+                document.getElementById('timer').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+                if(timeRemaining <= 0) submitQuiz();
+            }, 1000);
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            let score = 0;
+            quizData.forEach((item, i) => {
+                let selected = document.querySelector(`input[name="q${i}"]:checked`);
+                let fb = document.getElementById(`feedback-${i}`);
+                fb.classList.remove('hidden');
+                if(selected && item.options[selected.value] === item.ans) {
+                    score++;
+                    fb.innerHTML = "ត្រឹមត្រូវ!"; fb.className = "mt-2 p-2 rounded text-green-700 bg-green-100";
+                } else {
+                    fb.innerHTML = `ខុសហើយ! ចម្លើយគឺ៖ ${item.ans}`; fb.className = "mt-2 p-2 rounded text-red-700 bg-red-100";
+                }
+            });
+            document.getElementById('score-text').innerText = `${score} / 50 ពិន្ទុ`;
+            document.getElementById('quiz-result').classList.remove('hidden');
+            document.getElementById('submit-btn').classList.add('hidden');
+        }
+
+        function restartQuiz() {
+            timeRemaining = 120 * 60;
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('submit-btn').classList.remove('hidden');
+            startTimer();
+        }
+
+        function takeScreenshot(event) {
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> កំពុងទាញយក...';
+            btn.disabled = true;
+
+            const name = document.getElementById('student-name').value || 'មិនមានឈ្មោះ';
+            const gender = document.getElementById('student-gender').value || '-';
+            const sClass = document.getElementById('student-class').value || '-';
+            const scoreTxt = document.getElementById('score-text').innerText;
+            
+            document.getElementById('ss-name').innerText = name;
+            document.getElementById('ss-gender').innerText = gender;
+            document.getElementById('ss-class').innerText = sClass;
+            document.getElementById('ss-score').innerText = scoreTxt;
+            
+            const today = new Date();
+            document.getElementById('ss-date').innerText = today.toLocaleDateString('km-KH');
+
+            const target = document.getElementById('screenshot-area');
+            
+            html2canvas(target, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = imgData;
+                a.download = `លទ្ធផល_${name}.png`;
+                a.click();
+                btn.innerHTML = originalText; btn.disabled = false;
+            }).catch(err => {
+                alert('មានបញ្ហាក្នុងការថតអេក្រង់៖ ' + err.message);
+                btn.innerHTML = originalText; btn.disabled = false;
+            });
+        }
+
+        // --- 4. Slides ---
+        const presentationSlides = [
+            "<div class='text-center'><h2 class='text-2xl text-gray-600 mb-2'>ជំពូកទី៣ មេរៀនទី៤</h2><h1 class='text-4xl font-bold text-blue-700 my-4 title-font'>វិសមីការ និងប្រព័ន្ធវិសមីការ</h1><p class='text-xl text-gray-700'>គណិតវិទ្យាថ្នាក់ទី១០</p><p class='text-sm mt-8 text-gray-500'>រៀបចំដោយ៖ លោកគ្រូ ផន គារវតា</p></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-indigo-700 mb-6 border-b-2 border-indigo-500 pb-2'>សញ្ញាណដំបូងនិងរបកគំហើញ</h3><p class='text-xl mb-4'>និមិត្តសញ្ញា \\(>\\) និង \\(<\\) ត្រូវបានណែនាំដោយ <strong>Thomas Harriot</strong> ក្នុងឆ្នាំ ១៦៣១។</p><p class='text-xl mb-4'>ក្រោយមក និមិត្តសញ្ញា \\(\\ge\\) និង \\(\\le\\) ត្រូវបានប្រើប្រាស់ទូលំទូលាយដើម្បីសម្រួលដល់ការសរសេរលក្ខខណ្ឌដែនកំណត់ (Boundary Conditions)។</p><p class='text-xl mb-4'>វិសមីការមានតួនាទីយ៉ាងសំខាន់ក្នុងការកំណត់រក <strong>តម្លៃអតិបរមា</strong> ឬ <strong>អប្បបរមា</strong> សម្រាប់ការរៀបចំផែនការ និងការបែងចែកធនធាន។</p></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-blue-700 mb-6 border-b-2 border-blue-500 pb-2'>១. វិសមភាព</h3><p class='text-xl mb-4'>វិសមភាព គឺជាទំនាក់ទំនងរវាងកន្សោមពីរដោយប្រើសញ្ញា \\(>\\), \\(<\\), \\(\\ge\\), ឬ \\(\\le\\)។</p><div class='bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500'><p class='font-bold text-xl mb-2'>វិធានគ្រឹះ បើ \\(a < b\\)៖</p><ul class='text-lg space-y-2 list-disc pl-8'><li>បូក/ដក៖ \\(a + c < b + c\\)</li><li>គុណ/ចែក (\\(c > 0\\))៖ \\(ac < bc\\)</li><li>គុណ/ចែក (\\(c < 0\\))៖ \\(ac > bc\\) <span class='text-red-500 font-bold'>(ប្តូរសញ្ញា)</span></li></ul></div></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-blue-700 mb-6 border-b-2 border-blue-500 pb-2'>២. វិសមីការដឺក្រេទី១មានមួយអញ្ញាត</h3><p class='text-xl mb-4'>ទម្រង់ទូទៅ៖ \\(ax + b > 0\\) ដែល \\(a \\ne 0\\)</p><div class='bg-gray-50 p-4 rounded-lg border border-gray-300'><p class='font-bold text-lg mb-2 text-center'>តារាងសញ្ញាទ្វេធា \\(f(x) = ax + b\\)</p><table class='w-full text-center border-collapse border border-gray-400 text-lg bg-white'><tr class='bg-gray-200'><th class='border border-gray-400 p-2'>\\(x\\)</th><th class='border border-gray-400 p-2'>\\(-\\infty\\)</th><th class='border border-gray-400 p-2'>\\(-b/a\\)</th><th class='border border-gray-400 p-2'>\\(+\\infty\\)</th></tr><tr><td class='border border-gray-400 p-2 font-bold'>\\(ax + b\\)</td><td class='border border-gray-400 p-2 text-red-600'>សញ្ញាផ្ទុយ \\(a\\)</td><td class='border border-gray-400 p-2'>\\(0\\)</td><td class='border border-gray-400 p-2 text-green-600'>សញ្ញាដូច \\(a\\)</td></tr></table></div></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-blue-700 mb-6 border-b-2 border-blue-500 pb-2'>៣. ប្រព័ន្ធវិសមីការដឺក្រេទី១</h3><p class='text-xl mb-4'>ចម្លើយគឺជា <strong>ប្រសព្វ</strong> នៃសំណុំចម្លើយនីមួយៗ។</p><div class='bg-yellow-50 p-6 rounded-lg border border-yellow-300'><p class='font-bold text-xl mb-2'>ឧទាហរណ៍៖</p><p class='text-xl mb-2'>\\( \\begin{cases} x - 2 \\le 3 \\\\ -x + 1 < -2 \\end{cases} \\Rightarrow \\begin{cases} x \\le 5 \\\\ x > 3 \\end{cases} \\)</p><p class='text-xl font-bold text-blue-600 mt-4'>ចម្លើយ៖ \\(3 < x \\le 5\\)</p></div></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-blue-700 mb-6 border-b-2 border-blue-500 pb-2'>៤. វិសមីការដឺក្រេទី២មានមួយអញ្ញាត</h3><p class='text-xl mb-4'>ទម្រង់ទូទៅ៖ \\(ax^2 + bx + c > 0\\) ដែល \\(a \\ne 0\\)</p><p class='text-xl font-bold text-red-600 mb-2'>ករណី \\(\\Delta > 0\\) (មានឫសពីរ \\(x_1 < x_2\\))</p><div class='bg-gray-50 p-4 rounded-lg border border-gray-300'><table class='w-full text-center border-collapse border border-gray-400 text-lg bg-white'><tr class='bg-gray-200'><th class='border border-gray-400 p-2'>\\(x\\)</th><th class='border border-gray-400 p-2'>\\(-\\infty\\)</th><th class='border border-gray-400 p-2'>\\(x_1\\)</th><th class='border border-gray-400 p-2'>\\(x_2\\)</th><th class='border border-gray-400 p-2'>\\(+\\infty\\)</th></tr><tr><td class='border border-gray-400 p-2 font-bold'>\\(f(x)\\)</td><td class='border border-gray-400 p-2 text-green-600'>ដូច \\(a\\)</td><td class='border border-gray-400 p-2'>0</td><td class='border border-gray-400 p-2 text-red-600'>ផ្ទុយ \\(a\\)</td><td class='border border-gray-400 p-2'>0</td><td class='border border-gray-400 p-2 text-green-600'>ដូច \\(a\\)</td></tr></table></div></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-blue-700 mb-6 border-b-2 border-blue-500 pb-2'>៤. វិសមីការដឺក្រេទី២ (ត)</h3><ul class='text-xl space-y-6 list-disc pl-8'><li><span class='font-bold text-orange-600'>ករណី \\(\\Delta = 0\\) (ឫសឌុប \\(x_0\\))៖</span><br> ត្រីធាមានសញ្ញា <strong>ដូច \\(a\\) ជានិច្ច</strong> លើកលែងត្រង់ឫសដែលវាស្មើ ០។</li><li><span class='font-bold text-red-600'>ករណី \\(\\Delta < 0\\) (គ្មានឫស)៖</span><br> ត្រីធាមានសញ្ញា <strong>ដូច \\(a\\) ជានិច្ច</strong> ចំពោះគ្រប់តម្លៃ \\(x \\in \\mathbb{R}\\)។</li></ul></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-blue-700 mb-6 border-b-2 border-blue-500 pb-2'>៥ & ៦. អនុវត្តន៍ និង ការបង្ហាញវិសមភាព</h3><div class='space-y-6'><div class='bg-blue-50 p-4 rounded-lg'><p class='font-bold text-xl'>៥. ការអនុវត្តន៍ (ចំណោទ)៖</p><p class='text-lg'>ប្រឡង២ខែបាន ៧៥ និង ៨០។ តើខែទី៣ត្រូវយកយ៉ាងតិចប៉ុន្មាន ទើបមធ្យមភាគ \\(\\ge 80\\)?</p><p class='text-lg font-bold text-green-700'>ចម្លើយ៖ \\(\\frac{75+80+x}{3} \\ge 80 \\Rightarrow x \\ge 85\\)</p></div><div class='bg-purple-50 p-4 rounded-lg'><p class='font-bold text-xl'>៦. ការបង្ហាញវិសមភាព៖</p><p class='text-lg'>គោលការណ៍គ្រឹះ៖ ការេនៃចំនួនពិតជានិច្ចកាលធំជាងឬស្មើ០ (\\(X^2 \\ge 0\\))។</p><p class='text-lg'>ឧ. បង្ហាញថា \\(a^2+b^2+c^2 \\ge ab+bc+ca\\)</p></div></div></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-blue-700 mb-6 border-b-2 border-blue-500 pb-2'>៧. មធ្យមនព្វន្ត មធ្យមធរណីមាត្រ (AM-GM)</h3><p class='text-xl mb-4'>ចំពោះចំនួនពិតវិជ្ជមាន \\(a, b > 0\\), គេបាន៖</p><div class='bg-indigo-50 p-6 rounded-xl border-2 border-indigo-300 text-center my-8'><p class='text-4xl font-bold text-indigo-800'>\\( \\frac{a+b}{2} \\ge \\sqrt{ab} \\)</p></div><p class='text-lg italic text-center text-pink-700 font-bold'>ឧទាហរណ៍: បង្ហាញថា \\((a+b)(b+c)(c+a) \\ge 8abc\\)</p></div>",
+            "<div class='text-center w-full px-8'><h3 class='text-4xl font-bold text-green-700 mb-6'><i class='fas fa-globe'></i> ៨. ការអនុវត្តន៍ក្នុងជីវភាព (PISA)</h3><p class='text-2xl text-gray-700 mt-8 leading-relaxed'>តេស្ត PISA ផ្តោតលើសមត្ថភាពសិស្សក្នុងការយកចំណេះដឹងគណិតវិទ្យា ទៅដោះស្រាយបញ្ហាពិតៗក្នុងសង្គមជាក់ស្តែង តាមរយៈវិស័យនានា។</p></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-green-700 mb-4 border-b-2 border-green-500 pb-2'>៨. ការអនុវត្តន៍ក្នុងជីវភាព (PISA)</h3><div class='space-y-4'><div class='bg-green-50 p-4 rounded-lg border border-green-300'><p class='text-xl font-bold text-green-800 mb-2'><i class='fas fa-seedling'></i> កសិកម្ម (ផ្ទៃអតិបរមា)</p><p class='text-lg'>របងលួស ៦០m ព័ទ្ធដីជាប់ជញ្ជាំង។ \\(S = x(60-2x)\\) <br>តាម AM-GM រកបានទទឹង \\(15m\\), បណ្ដោយ \\(30m\\), ផ្ទៃអតិបរមា \\(450m^2\\)</p></div><div class='bg-orange-50 p-4 rounded-lg border border-orange-300'><p class='text-xl font-bold text-orange-800 mb-2'><i class='fas fa-chart-line'></i> ពាណិជ្ជកម្ម (ប្រាក់ចំណេញ)</p><p class='text-lg'>ចំណាយថេរ ២០០០$, ចំណេញលើទំនិញ១គឺ ១០$។ ចង់ចំណេញ \\(\\ge 5000\\$\\) <br>\\(10x - 2000 \\ge 5000 \\Rightarrow x \\ge 700\\) ផលិតផល</p></div></div></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-red-700 mb-4 border-b-2 border-red-500 pb-2'>៨. ការអនុវត្តន៍ក្នុងជីវភាព (PISA) ត</h3><div class='space-y-4'><div class='bg-red-50 p-4 rounded-lg border border-red-300'><p class='text-xl font-bold text-red-800 mb-2'><i class='fas fa-heartbeat'></i> សុខាភិបាល (ជីវជាតិប្រចាំថ្ងៃ)</p><p class='text-lg'>ត្រូវការកាល់ស្យូម \\(\\ge 800mg\\)។ មានស្រាប់ ៣០០mg, ទឹកដោះគោ១កែវ ២៥០mg។<br>\\(250x + 300 \\ge 800 \\Rightarrow x \\ge 2\\) កែវ</p></div><div class='bg-blue-50 p-4 rounded-lg border border-blue-300'><p class='text-xl font-bold text-blue-800 mb-2'><i class='fas fa-wifi'></i> បច្ចេកវិទ្យា (គម្រោងអ៊ីនធឺណិត)</p><p class='text-lg'>A: ៥$ + ១$/GB, B: ១៥$ ប្រើមិនកំណត់។<br>\\(15 < 5 + x \\Rightarrow x > 10\\) GB ទើបគម្រោង B ចំណេញជាង</p></div></div></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-teal-700 mb-4 border-b-2 border-teal-500 pb-2'>៨. ការអនុវត្តន៍ក្នុងជីវភាព (PISA) ត</h3><div class='space-y-4'><div class='bg-teal-50 p-4 rounded-lg border border-teal-300'><p class='text-xl font-bold text-teal-800 mb-2'><i class='fas fa-leaf'></i> បរិស្ថាន (កម្រិតឧស្ម័ន CO2)</p><p class='text-lg'>កំណត់ក្រោម ៥០តោន។ បញ្ចេញ ២តោន/ថ្ងៃ, បញ្ចេញអស់ ១០តោនហើយ។<br>\\(2x + 10 \\le 50 \\Rightarrow x \\le 20\\) ថ្ងៃ</p></div><div class='bg-yellow-50 p-4 rounded-lg border border-yellow-300'><p class='text-xl font-bold text-yellow-800 mb-2'><i class='fas fa-truck'></i> ដឹកជញ្ជូន (ទម្ងន់ផ្ទុក)</p><p class='text-lg'>អតិបរមា ៥០០០kg, ឡានទទេ ២០០០kg, ទំនិញ ៥០kg/កេស។<br>\\(50x + 2000 \\le 5000 \\Rightarrow x \\le 60\\) កេស</p></div></div></div>",
+            "<div class='text-left w-full px-8'><h3 class='text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-500 pb-2'>៨. ការអនុវត្តន៍ក្នុងជីវភាព (PISA) ត</h3><div class='space-y-4'><div class='bg-indigo-50 p-4 rounded-lg border border-indigo-300'><p class='text-xl font-bold text-indigo-800 mb-2'><i class='fas fa-solar-panel'></i> ថាមពល (ផ្ទាំងសូឡា)</p><p class='text-lg'>ត្រូវការ \\(\\ge 3000Wh\\)។ កង្ហារខ្យល់មាន ៥០០Wh, សូឡា១ផ្ទាំង ២៥០Wh។<br>\\(250x + 500 \\ge 3000 \\Rightarrow x \\ge 10\\) ផ្ទាំង</p></div><div class='bg-slate-50 p-4 rounded-lg border border-slate-300'><p class='text-xl font-bold text-slate-800 mb-2'><i class='fas fa-helicopter'></i> យោធា (បន្ទុកប្រតិបត្តិការ)</p><p class='text-lg'>ឧទ្ធម្ភាគចក្រអតិបរមា ២៥០០kg, ពីឡុត ១៦០kg, គ្រាប់រំសេវ ៨០kg/កេស។<br>\\(80x + 160 \\le 2500 \\Rightarrow x \\le 29.25\\) យក ២៩ កេស</p></div></div></div>",
+            "<div class='text-center w-full px-8'><h1 class='text-6xl font-bold text-blue-700 mb-6'>សូមអរគុណ!</h1><p class='text-3xl text-gray-700 mb-8'>តើប្អូនៗមានសំណួរអ្វីខ្លះទេ?</p><i class='fas fa-chalkboard-teacher text-6xl text-gray-400'></i></div>"
+        ];
+        let currentSlideIdx = 0;
+        function updateSlide() {
+            const cont = document.getElementById('current-slide');
+            cont.innerHTML = presentationSlides[currentSlideIdx];
+            document.getElementById('slide-counter').innerText = `${currentSlideIdx + 1} / ${presentationSlides.length}`;
+            if (window.MathJax) MathJax.typesetPromise([cont]);
+        }
+        function prevSlide() { if(currentSlideIdx > 0) { currentSlideIdx--; updateSlide(); } }
+        function nextSlide() { if(currentSlideIdx < presentationSlides.length - 1) { currentSlideIdx++; updateSlide(); } }
+        function toggleFullScreen(elemId) {
+            let elem = document.getElementById(elemId);
+            if (!document.fullscreenElement) elem.requestFullscreen().catch(err => alert(err.message));
+            else document.exitFullscreen();
+        }
+
+        function downloadPDF(id, name, orient) {
+            const el = document.getElementById(id);
+            if(id === 'slide-export-area') {
+                el.classList.remove('hidden');
+                el.innerHTML = presentationSlides.map(s => `<div style="width:297mm; height:210mm; page-break-after:always; display:flex; align-items:center; justify-content:center; flex-direction:column; background:white; font-size:2rem;">${s}</div>`).join('');
+                if(window.MathJax) MathJax.typesetPromise([el]).then(() => runPDF(el, name, orient));
+            } else runPDF(el, name, orient);
+        }
+        function runPDF(el, name, orient) {
+            html2pdf().set({ filename: name+'.pdf', jsPDF: { format: 'a4', orientation: orient } }).from(el).save().then(() => { if(el.id === 'slide-export-area') el.classList.add('hidden'); });
+        }
+
+        async function callGeminiAPI(prompt) {
+            const apiKey = "";
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            try {
+                const res = await fetch(url, { method: 'POST', body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+                const json = await res.json();
+                return json.candidates[0].content.parts[0].text;
+            } catch(e) { return "Error calling AI."; }
+        }
+
+        async function generateAIProblem() {
+            const input = document.getElementById('ai-topic-input').value;
+            const output = document.getElementById('ai-output');
+            document.getElementById('ai-loading').classList.remove('hidden');
+            output.classList.add('hidden');
+            const res = await callGeminiAPI(`បង្កើតលំហាត់ PISA វិសមីការ ថ្នាក់ទី១០ លើប្រធានបទ៖ ${input} ជា HTML (no markdown)`);
+            output.innerHTML = res;
+            document.getElementById('ai-loading').classList.add('hidden');
+            output.classList.remove('hidden');
+            if(window.MathJax) MathJax.typesetPromise([output]);
+        }
+
+        function toggleAIChat() { document.getElementById('ai-chat-modal').classList.toggle('hidden'); }
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input'), hist = document.getElementById('chat-history');
+            const msg = input.value; input.value = '';
+            if(!msg) return;
+            hist.innerHTML += `<div class="self-end bg-blue-600 text-white p-2 rounded">${msg}</div>`;
+            const res = await callGeminiAPI(`ពន្យល់សិស្សថ្នាក់ទី១០ ពី៖ ${msg} ជា HTML ខ្លីៗ`);
+            hist.innerHTML += `<div class="self-start bg-white p-2 rounded border">${res}</div>`;
+            hist.scrollTop = hist.scrollHeight;
+            if(window.MathJax) MathJax.typesetPromise([hist]);
+        }
+
+        // --- 3D Initialization Functions ---
+        
+        function initAgri3D() {
+            const cont = document.getElementById('agri-3d-canvas');
+            if (!cont || !window.THREE) return;
+            if (cont.children.length > 1) return;
+
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0fdf4);
+            const camera = new THREE.PerspectiveCamera(45, cont.clientWidth / cont.clientHeight, 0.1, 100);
+            camera.position.set(0, 8, 14); camera.lookAt(0, 1, 0);
+
+            const ren = new THREE.WebGLRenderer({ antialias: true });
+            ren.setSize(cont.clientWidth, cont.clientHeight);
+            cont.appendChild(ren.domElement);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+            dirLight.position.set(5, 10, 7); scene.add(dirLight);
+
+            const group = new THREE.Group(); scene.add(group);
+
+            // ដី និង ជញ្ជាំង
+            const ground = new THREE.Mesh(new THREE.PlaneGeometry(12, 10), new THREE.MeshLambertMaterial({ color: 0x4ade80 }));
+            ground.rotation.set(-Math.PI / 2, 0, 0); group.add(ground);
+
+            const wall = new THREE.Mesh(new THREE.BoxGeometry(10, 2.5, 0.5), new THREE.MeshLambertMaterial({ color: 0x9ca3af }));
+            wall.position.set(0, 1.25, -4); group.add(wall);
+
+            // របងលួស (Fences) ដែលអាចប្តូរប្រវែងបាន
+            const fenceMat = new THREE.MeshLambertMaterial({ color: 0x3b82f6, wireframe: true });
+            const fenceL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1, 1), fenceMat);
+            const fenceR = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1, 1), fenceMat);
+            const fenceF = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 0.1), fenceMat);
+            group.add(fenceL, fenceR, fenceF);
+
+            // ផ្ទៃដីដាំដុះដែលអាចប្រែប្រួលពណ៌
+            const cropArea = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0x16a34a, side: THREE.DoubleSide, transparent: true, opacity: 0.8 }));
+            cropArea.rotation.set(-Math.PI/2, 0, 0);
+            cropArea.position.y = 0.02; // លេចពីលើដីបន្តិច
+            group.add(cropArea);
+
+            // HTML Overlay UI
+            const uiTag = document.createElement('div');
+            uiTag.className = "absolute bottom-3 right-3 bg-white/95 px-4 py-2 rounded-xl shadow-lg border-2 border-green-500 text-left pointer-events-none transition-all duration-300 z-20 w-48";
+            uiTag.id = "agri-ui-box";
+            uiTag.innerHTML = `
+                <div class="flex justify-between items-center text-xs mb-1"><span class="text-slate-600">ទទឹង (x):</span> <span class="font-bold text-blue-600"><span id="a-x">0</span> m</span></div>
+                <div class="flex justify-between items-center text-xs mb-1"><span class="text-slate-600">បណ្ដោយ (y):</span> <span class="font-bold text-blue-600"><span id="a-y">0</span> m</span></div>
+                <div class="flex justify-between items-center text-sm border-t pt-1 mt-1"><span class="text-green-800 font-bold">ផ្ទៃក្រឡា:</span> <span class="font-bold text-emerald-600 transition-colors" id="a-area-box"><span id="a-area">0</span> m²</span></div>
+            `;
+            cont.appendChild(uiTag);
+
+            let drag = false, pX = 0, pY = 0;
+            cont.onmousedown = (e) => { dragging = true; prevX = e.offsetX; prevY = e.offsetY; };
+            cont.onmousemove = (e) => {
+                if(drag) { group.rotation.y += (e.offsetX - pX)*0.01; group.rotation.x += (e.offsetY - pY)*0.01; pX = e.offsetX; pY = e.offsetY; }
+            };
+            cont.onmouseup = cont.onmouseleave = () => drag = false;
+            
+            let time = 0;
+            function ani() { 
+                requestAnimationFrame(ani); 
+                time += 0.02;
+                if(!drag) group.rotation.y += 0.002; 
+
+                // គណនា X ពី 2 ទៅ 28 (ទទឹង) បណ្តោយ y = 60 - 2x
+                let mathX = 15 + Math.sin(time) * 13; // លោតពី 2 ទៅ 28
+                let mathY = 60 - 2 * mathX;
+                let mathArea = mathX * mathY;
+
+                // Update HTML UI
+                const eX = document.getElementById('a-x');
+                const eY = document.getElementById('a-y');
+                const eArea = document.getElementById('a-area');
+                const eAreaBox = document.getElementById('a-area-box');
+                const uiBox = document.getElementById('agri-ui-box');
+
+                if(eX) eX.innerText = mathX.toFixed(1);
+                if(eY) eY.innerText = mathY.toFixed(1);
+                if(eArea) eArea.innerText = mathArea.toFixed(1);
+
+                // ប្តូរពណ៌ទៅជាមាស ពេលផ្ទៃដីអតិបរមា (ជិត 450)
+                if (mathArea > 445) {
+                    if(eAreaBox) eAreaBox.classList.replace('text-emerald-600', 'text-amber-500');
+                    if(uiBox) { uiBox.classList.replace('border-green-500', 'border-amber-400'); uiBox.classList.add('bg-amber-50', 'scale-105'); }
+                    cropArea.material.color.setHex(0xeab308); // ពណ៌មាស
+                } else {
+                    if(eAreaBox) eAreaBox.classList.replace('text-amber-500', 'text-emerald-600');
+                    if(uiBox) { uiBox.classList.replace('border-amber-400', 'border-green-500'); uiBox.classList.remove('bg-amber-50', 'scale-105'); }
+                    cropArea.material.color.setHex(0x16a34a); // បៃតងធម្មតា
+                }
+
+                // Scale Visuals (Scale down factor 0.1 for 3D world)
+                let visX = mathX * 0.15;
+                let visY = mathY * 0.15;
+
+                fenceL.scale.set(1, 1, visX);
+                fenceL.position.set(-visY/2, 0.5, -4 + visX/2);
+
+                fenceR.scale.set(1, 1, visX);
+                fenceR.position.set(visY/2, 0.5, -4 + visX/2);
+
+                fenceF.scale.set(visY, 1, 1);
+                fenceF.position.set(0, 0.5, -4 + visX);
+
+                cropArea.scale.set(visY, visX, 1);
+                cropArea.position.set(0, 0.02, -4 + visX/2);
+
+                ren.render(scene, camera); 
+            } 
+            ani();
+        }
+
+        function initCom3D() {
+            const cont = document.getElementById('com-3d-canvas');
+            if (!cont || !window.THREE || cont.children.length > 1) return;
+            const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(45, cont.clientWidth/cont.clientHeight, 0.1, 100);
+            scene.background = new THREE.Color(0x0f172a); cam.position.set(0, 8, 16); cam.lookAt(0,2,0);
+            const ren = new THREE.WebGLRenderer({antialias:true}); ren.setSize(cont.clientWidth, cont.clientHeight); cont.appendChild(ren.domElement);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.4)); 
+            const dL = new THREE.DirectionalLight(0xffffff, 0.8); dL.position.set(5,10,7); scene.add(dL);
+            const pL = new THREE.PointLight(0xf59e0b, 1, 20); pL.position.set(0, 3, 0); scene.add(pL);
+            const grp = new THREE.Group(); scene.add(grp);
+
+            // Factory / Conveyor Belt
+            const belt = new THREE.Mesh(new THREE.BoxGeometry(10, 0.5, 2), new THREE.MeshLambertMaterial({color:0x334155}));
+            belt.position.set(0, 0, 3); grp.add(belt);
+            
+            const boxes = [];
+            const boxGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+            const boxMat = new THREE.MeshLambertMaterial({color:0x3b82f6});
+            for(let i=0; i<8; i++) {
+                const bx = new THREE.Mesh(boxGeo, boxMat);
+                bx.position.set(-5 + i*1.5, 0.65, 3);
+                grp.add(bx);
+                boxes.push(bx);
+            }
+
+            // Profit Bar 3D
+            const barBase = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 0.5, 32), new THREE.MeshLambertMaterial({color:0x475569}));
+            barBase.position.set(0, 0, -2); grp.add(barBase);
+            
+            const profitBar = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 1, 32), new THREE.MeshLambertMaterial({color:0xef4444}));
+            profitBar.position.set(0, 0.5, -2); grp.add(profitBar);
+
+            // Target Line 5000$
+            const targetRing = new THREE.Mesh(new THREE.TorusGeometry(1.8, 0.05, 16, 64), new THREE.MeshBasicMaterial({color:0x38bdf8}));
+            targetRing.rotation.x = Math.PI/2; targetRing.position.set(0, 5, -2); // កម្ពស់ 5 ស្មើនឹង 5000$ (1ឯកតា = 1000$)
+            grp.add(targetRing);
+
+            // HTML Overlay UI
+            const uiTag = document.createElement('div');
+            uiTag.className = "absolute top-3 right-3 bg-slate-900/90 text-white px-4 py-3 rounded-xl shadow-lg border-2 border-slate-600 text-left pointer-events-none transition-all duration-300 z-20 w-48 backdrop-blur-sm";
+            uiTag.id = "com-ui-box";
+            uiTag.innerHTML = `
+                <div class="flex justify-between items-center text-xs mb-1"><span class="text-slate-400">ទំនិញលក់បាន (x):</span> <span class="font-bold text-blue-400"><span id="c-x">0</span></span></div>
+                <div class="flex justify-between items-center text-xs mb-1"><span class="text-slate-400">ចំណាយថេរ:</span> <span class="font-bold text-red-400">-$2000</span></div>
+                <div class="flex justify-between items-center text-sm border-t border-slate-600 pt-1 mt-1"><span class="text-slate-300 font-bold">ប្រាក់ចំណេញ:</span> <span class="font-bold text-red-500 transition-colors" id="c-profit-box">$<span id="c-profit">-2000</span></span></div>
+                <div class="text-[10px] text-center mt-2 text-slate-500">គោលដៅ: +$5000</div>
+            `;
+            cont.appendChild(uiTag);
+            
+            let drag = false, pX = 0, pY = 0;
+            cont.onmousedown = e => {drag=true; pX=e.offsetX; pY=e.offsetY;};
+            cont.onmousemove = e => { if(drag) { grp.rotation.y += (e.offsetX-pX)*0.01; grp.rotation.x += (e.offsetY-pY)*0.01; pX=e.offsetX; pY=e.offsetY;} };
+            cont.onmouseup = cont.onmouseleave = () => drag=false;
+            cont.addEventListener('touchstart', (e) => { drag = true; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }, { passive: false });
+            cont.addEventListener('touchmove', (e) => {
+                if(drag) { e.preventDefault(); grp.rotation.y += (e.touches[0].clientX - pX) * 0.01; grp.rotation.x += (e.touches[0].clientY - pY) * 0.01; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }
+            }, { passive: false });
+            cont.addEventListener('touchend', () => drag = false);
+
+            let time = 0;
+            let products = 0;
+
+            function ani() { 
+                requestAnimationFrame(ani); 
+                time += 0.016;
+                if(!drag) grp.rotation.y += 0.002; 
+
+                // Conveyor animation
+                boxes.forEach(bx => {
+                    bx.position.x += 0.05;
+                    if(bx.position.x > 5) bx.position.x = -5;
+                });
+
+                // Profit Math
+                products += 2; // រាប់លឿនៗ
+                if (products > 900) products = 0; // Reset
+                
+                let profit = 10 * Math.floor(products) - 2000;
+                
+                // Update UI
+                const eX = document.getElementById('c-x');
+                const eProfit = document.getElementById('c-profit');
+                const eProfitBox = document.getElementById('c-profit-box');
+                const uiBox = document.getElementById('com-ui-box');
+
+                if(eX) eX.innerText = Math.floor(products);
+                if(eProfit) eProfit.innerText = profit;
+
+                // Update 3D Bar (1 ឯកតាកម្ពស់ = $1000)
+                let barHeight = Math.max(0.1, profit / 1000); 
+                profitBar.scale.set(1, barHeight, 1);
+                profitBar.position.y = barHeight / 2;
+
+                // Color Logic
+                if (profit < 0) {
+                    profitBar.material.color.setHex(0xef4444); // Red
+                    if(eProfitBox) eProfitBox.classList.replace('text-yellow-400', 'text-red-500');
+                    if(eProfitBox) eProfitBox.classList.replace('text-green-400', 'text-red-500');
+                    if(uiBox) uiBox.classList.replace('border-green-500', 'border-slate-600');
+                } else if (profit < 5000) {
+                    profitBar.material.color.setHex(0xf59e0b); // Yellow
+                    if(eProfitBox) eProfitBox.classList.replace('text-red-500', 'text-yellow-400');
+                    if(eProfitBox) eProfitBox.classList.replace('text-green-400', 'text-yellow-400');
+                    if(uiBox) uiBox.classList.replace('border-green-500', 'border-slate-600');
+                } else {
+                    profitBar.material.color.setHex(0x10b981); // Green! Goal hit!
+                    if(eProfitBox) eProfitBox.classList.replace('text-yellow-400', 'text-green-400');
+                    if(uiBox) uiBox.classList.replace('border-slate-600', 'border-green-500');
+                }
+
+                ren.render(scene,cam); 
+            } 
+            ani();
+        }
+
+        function initHealth3D() {
+            const cont = document.getElementById('health-3d-canvas');
+            if (!cont || !window.THREE || cont.children.length > 1) return;
+            
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xfef2f2); // ពណ៌ផ្កាឈូកខ្ចី
+            
+            const cam = new THREE.PerspectiveCamera(40, cont.clientWidth/cont.clientHeight, 0.1, 100);
+            cam.position.set(0, 4, 14);
+            cam.lookAt(0, 0, 0);
+            
+            const ren = new THREE.WebGLRenderer({antialias:true}); 
+            ren.setSize(cont.clientWidth, cont.clientHeight); 
+            cont.appendChild(ren.domElement);
+            
+            scene.add(new THREE.AmbientLight(0xffffff, 0.8)); 
+            const dL = new THREE.DirectionalLight(0xffffff, 0.6); 
+            dL.position.set(5, 10, 7); 
+            scene.add(dL);
+            
+            const grp = new THREE.Group(); 
+            scene.add(grp);
+
+            // ទម្រង់បាត
+            const base = new THREE.Mesh(new THREE.CylinderGeometry(4, 4, 0.2, 32), new THREE.MeshLambertMaterial({color: 0xfca5a5}));
+            base.position.y = -2;
+            grp.add(base);
+
+            // តួរាងកាយថ្លា (Silhouette)
+            const bodyGeo = new THREE.CylinderGeometry(1.5, 1.2, 5, 32);
+            const bodyMat = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff, transmission: 0.9, opacity: 0.5, transparent: true, roughness: 0.1
+            });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.position.y = 0.5;
+            grp.add(body);
+
+            // កម្រិតជាតិកាល់ស្យូម (Liquid Level)
+            const liquidGeo = new THREE.CylinderGeometry(1.45, 1.15, 5, 32);
+            liquidGeo.translate(0, 2.5, 0); // រុញអ័ក្សកណ្តាលមកក្រោម ដើម្បីឱ្យវាលូតឡើងលើ
+            const liquidMat = new THREE.MeshLambertMaterial({color: 0xffffff}); 
+            const liquid = new THREE.Mesh(liquidGeo, liquidMat);
+            liquid.position.y = -2; 
+            liquid.scale.y = 0.1; // ចាប់ផ្តើមពីកម្រិតទាប
+            grp.add(liquid);
+
+            // កងបន្ទាត់គោលដៅ (800mg Target Ring)
+            const ringGeo = new THREE.TorusGeometry(1.6, 0.05, 16, 100);
+            const ringMat = new THREE.MeshBasicMaterial({color: 0xef4444}); // ពណ៌ក្រហមដំបូង
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            ring.position.y = 2.0; // កម្ពស់គោលដៅ
+            grp.add(ring);
+
+            // ដំណក់ទឹកដោះគោ (Pouring effect)
+            const drops = [];
+            for(let i=0; i<15; i++) {
+                const drop = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), new THREE.MeshLambertMaterial({color: 0xffffff}));
+                drop.position.set((Math.random()-0.5)*0.5, 5 + Math.random()*2, (Math.random()-0.5)*0.5);
+                drop.visible = false;
+                grp.add(drop);
+                drops.push(drop);
+            }
+
+            // HTML Overlay UI សម្រាប់រាប់កែវ និងបរិមាណជាក់ស្តែង
+            const uiTag = document.createElement('div');
+            uiTag.className = "absolute bottom-3 right-3 bg-white/95 px-4 py-3 rounded-xl shadow-lg border-2 border-red-400 text-left pointer-events-none transition-colors duration-300 z-20 w-48";
+            uiTag.id = "health-ui-box";
+            uiTag.innerHTML = `
+                <div class="flex justify-between items-center text-xs mb-1 text-slate-500 font-bold border-b pb-1">
+                    <span>គោលដៅ:</span> <span class="text-red-500">800 mg</span>
+                </div>
+                <div class="flex justify-between items-center text-xs mb-1">
+                    <span class="text-slate-600">មូលដ្ឋាន:</span> <span class="font-bold">300 mg</span>
+                </div>
+                <div class="flex justify-between items-center text-xs mb-1">
+                    <span class="text-slate-600">ទឹកដោះគោ <span id="h-glasses" class="text-sky-600 text-sm">0</span> កែវ:</span> <span class="font-bold text-sky-600"><span id="h-milk">0</span> mg</span>
+                </div>
+                <div class="flex justify-between items-center text-sm border-t pt-1 mt-1">
+                    <span class="text-slate-800 font-bold">សរុប:</span> 
+                    <span class="font-bold text-slate-800 transition-colors" id="h-total-box"><span id="h-total">300</span> mg</span>
+                </div>
+            `;
+            cont.appendChild(uiTag);
+
+            let drag = false, pX = 0, pY = 0;
+            cont.onmousedown = e => {drag=true; pX=e.offsetX; pY=e.offsetY;};
+            cont.onmousemove = e => { if(drag) { grp.rotation.y += (e.offsetX-pX)*0.01; grp.rotation.x += (e.offsetY-pY)*0.01; pX=e.offsetX; pY=e.offsetY;} };
+            cont.onmouseup = cont.onmouseleave = () => drag=false;
+            cont.addEventListener('touchstart', (e) => { drag = true; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }, { passive: false });
+            cont.addEventListener('touchmove', (e) => {
+                if(drag) { e.preventDefault(); grp.rotation.y += (e.touches[0].clientX - pX) * 0.01; grp.rotation.x += (e.touches[0].clientY - pY) * 0.01; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }
+            }, { passive: false });
+            cont.addEventListener('touchend', () => drag = false);
+
+            let time = 0;
+            let glasses = 0;
+            let currentCalcium = 300;
+            let targetCalcium = 300;
+            let lastEventTime = Date.now();
+            let pouring = false;
+
+            function ani() { 
+                requestAnimationFrame(ani); 
+                time += 0.016;
+                
+                if(!drag) grp.rotation.y += 0.005;
+
+                // ដំណើរការលោតកែវទឹកដោះគោ (Game Logic 4D)
+                if (Date.now() - lastEventTime > 2000) {
+                    if (glasses < 2) {
+                        glasses++;
+                        targetCalcium += 250;
+                        pouring = true;
+                    } else if (Date.now() - lastEventTime > 5000) { 
+                        // Reset លេងសាជាថ្មី បន្ទាប់ពីពេញ ២កែវ បាន៣វិនាទី
+                        glasses = 0;
+                        targetCalcium = 300;
+                        currentCalcium = 300;
+                        pouring = false;
+                        ringMat.color.setHex(0xef4444); // ត្រឡប់ពណ៌ក្រហមវិញ
+                        const uiBox = document.getElementById('health-ui-box');
+                        if (uiBox) {
+                            uiBox.classList.replace('border-green-500', 'border-red-400');
+                            uiBox.classList.remove('bg-green-50');
+                        }
+                        const hTotalBox = document.getElementById('h-total-box');
+                        if(hTotalBox) hTotalBox.classList.replace('text-green-600', 'text-slate-800');
+                    }
+                    if(glasses < 2) lastEventTime = Date.now();
+                }
+
+                // គំនូរជីវចលចាក់ទឹកដោះគោ
+                if (pouring) {
+                    drops.forEach(d => {
+                        d.visible = true;
+                        d.position.y -= 0.15;
+                        if (d.position.y < (liquid.position.y + liquid.scale.y * 5)) {
+                            d.position.y = 5 + Math.random();
+                            d.position.x = (Math.random()-0.5)*0.5;
+                            d.position.z = (Math.random()-0.5)*0.5;
+                        }
+                    });
+                } else {
+                    drops.forEach(d => d.visible = false);
+                }
+
+                // កើនឡើងកម្រិតកាល់ស្យូមដោយរលូន
+                if (currentCalcium < targetCalcium) {
+                    currentCalcium += 4;
+                    if (currentCalcium >= targetCalcium) {
+                        currentCalcium = targetCalcium;
+                        pouring = false; // បញ្ឈប់ការចាក់ពេលពេញដល់កម្រិត
+                    }
+                } else if (currentCalcium > targetCalcium) {
+                    currentCalcium -= 20; // ស្រកចុះលឿនពេល Reset
+                    if (currentCalcium <= targetCalcium) currentCalcium = targetCalcium;
+                }
+
+                // អាប់ដេតទំហំ Scale របស់ទឹកដោះគោ (Max Scale ជិត 0.9)
+                liquid.scale.y = currentCalcium / 1000;
+
+                // អាប់ដេតទិន្នន័យលើផ្ទាំង UI
+                const eGlass = document.getElementById('h-glasses');
+                const eMilk = document.getElementById('h-milk');
+                const eTotal = document.getElementById('h-total');
+                if(eGlass) eGlass.innerText = glasses;
+                if(eMilk) eMilk.innerText = glasses * 250;
+                if(eTotal) eTotal.innerText = Math.floor(currentCalcium);
+
+                // ប្តូរពណ៌ទៅជាបៃតង ពេលសម្រេចគោលដៅ (>= 800mg)
+                if (currentCalcium >= 800 && ringMat.color.getHex() !== 0x10b981) {
+                    ringMat.color.setHex(0x10b981); // បៃតង
+                    const uiBox = document.getElementById('health-ui-box');
+                    if (uiBox) {
+                        uiBox.classList.replace('border-red-400', 'border-green-500');
+                        uiBox.classList.add('bg-green-50');
+                    }
+                    const hTotalBox = document.getElementById('h-total-box');
+                    if(hTotalBox) hTotalBox.classList.replace('text-slate-800', 'text-green-600');
+                }
+
+                ren.render(scene, cam); 
+            } 
+            ani();
+        }
+
+        function initTech3D() {
+            const cont = document.getElementById('tech-3d-canvas');
+            if (!cont || !window.THREE || cont.children.length > 1) return;
+            
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0f172a); // Dark tech theme
+            
+            const cam = new THREE.PerspectiveCamera(45, cont.clientWidth/cont.clientHeight, 0.1, 100);
+            cam.position.set(0, 6, 16); 
+            cam.lookAt(0, 0, 0);
+            
+            const ren = new THREE.WebGLRenderer({antialias:true}); 
+            ren.setSize(cont.clientWidth, cont.clientHeight); 
+            cont.appendChild(ren.domElement);
+            
+            scene.add(new THREE.AmbientLight(0x38bdf8, 0.4)); // Blue ambient light
+            const dL = new THREE.DirectionalLight(0xffffff, 1); 
+            dL.position.set(5, 10, 7); 
+            scene.add(dL);
+            
+            // Add a point light in the middle for glowing effect
+            const pLight = new THREE.PointLight(0x22d3ee, 2, 20);
+            pLight.position.set(0, 2, 0);
+            scene.add(pLight);
+
+            const grp = new THREE.Group(); 
+            scene.add(grp);
+
+            // ម៉ាស៊ីនមេ (Server) ផ្នែកខាងឆ្វេង
+            const serverGrp = new THREE.Group();
+            serverGrp.position.set(-4, 0, 0);
+            
+            const serverBody = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 5, 32), new THREE.MeshLambertMaterial({color:0x1e3a8a}));
+            serverGrp.add(serverBody);
+            
+            // ពន្លឺភ្លើងនៅលើ Server
+            for(let i=-1.5; i<=1.5; i+=1) {
+                const ring = new THREE.Mesh(new THREE.TorusGeometry(1.55, 0.05, 16, 64), new THREE.MeshBasicMaterial({color:0x22d3ee}));
+                ring.position.y = i;
+                ring.rotation.x = Math.PI / 2;
+                serverGrp.add(ring);
+            }
+            grp.add(serverGrp);
+
+            // កុំព្យូទ័រយួរដៃ (Laptop) ផ្នែកខាងស្តាំ
+            const laptopGrp = new THREE.Group();
+            laptopGrp.position.set(4, -1.5, 0);
+            laptopGrp.rotation.y = -Math.PI / 6;
+            
+            const lBase = new THREE.Mesh(new THREE.BoxGeometry(3, 0.2, 2.5), new THREE.MeshLambertMaterial({color:0x94a3b8}));
+            const lScreen = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 0.1), new THREE.MeshLambertMaterial({color:0x475569}));
+            lScreen.position.set(0, 1, -1.2);
+            lScreen.rotation.x = Math.PI / 12; // ងាកអេក្រង់បន្តិច
+            
+            // ផ្ទៃអេក្រង់ភ្លឺ
+            const lDisplay = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 1.8), new THREE.MeshBasicMaterial({color:0x0284c7}));
+            lDisplay.position.set(0, 1, -1.14);
+            lDisplay.rotation.x = Math.PI / 12;
+            
+            laptopGrp.add(lBase, lScreen, lDisplay);
+            grp.add(laptopGrp);
+
+            // កញ្ចប់ទិន្នន័យ (Data Streams - ភាគល្អិតពន្លឺរត់ពី Server ទៅ Laptop)
+            const particles = [];
+            for(let i=0; i<30; i++){ 
+                const p = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), new THREE.MeshBasicMaterial({color:0x60a5fa})); 
+                // កំណត់ទីតាំងចាប់ផ្តើមពី Server
+                p.position.set(-4 + (Math.random()-0.5)*2, (Math.random()-0.5)*4, (Math.random()-0.5)*2);
+                p.userData = {
+                    progress: Math.random(), // 0 ដល់ 1 (ពី Server ទៅ Laptop)
+                    speed: 0.01 + Math.random() * 0.02,
+                    offsetY: (Math.random()-0.5)*4,
+                    offsetZ: (Math.random()-0.5)*2
+                };
+                particles.push(p); 
+                grp.add(p);
+            }
+
+            // បង្កើត HTML Overlay UI (Dashboard លោតតម្លៃលុយ និងទិន្នន័យ)
+            const techUI = document.createElement('div');
+            techUI.className = "absolute bottom-3 right-3 bg-slate-900/90 text-white p-4 rounded-xl border border-slate-700 w-56 shadow-2xl pointer-events-none transition-all z-20 backdrop-blur-sm";
+            techUI.innerHTML = `
+                <div class="mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
+                    <span class="text-xs text-slate-400">ទិន្នន័យប្រើប្រាស់:</span> 
+                    <span class="font-bold text-cyan-400 text-xl"><span id="tech-data">0</span> GB</span>
+                </div>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between items-center bg-slate-800 p-2 rounded" id="box-planA">
+                        <span class="font-bold">គម្រោង A:</span> 
+                        <span id="tech-costA" class="font-bold text-lg">$5</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-800 p-2 rounded" id="box-planB">
+                        <span class="font-bold">គម្រោង B:</span> 
+                        <span id="tech-costB" class="font-bold text-lg">$15</span>
+                    </div>
+                </div>
+            `;
+            cont.appendChild(techUI);
+
+            let drag = false, pX = 0, pY = 0;
+            cont.onmousedown = e => {drag=true; pX=e.offsetX; pY=e.offsetY;};
+            cont.onmousemove = e => { if(drag) { grp.rotation.y += (e.offsetX-pX)*0.01; grp.rotation.x += (e.offsetY-pY)*0.01; pX=e.offsetX; pY=e.offsetY;} };
+            cont.onmouseup = cont.onmouseleave = () => drag=false;
+            cont.addEventListener('touchstart', (e) => { drag = true; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }, { passive: false });
+            cont.addEventListener('touchmove', (e) => {
+                if(drag) { e.preventDefault(); grp.rotation.y += (e.touches[0].clientX - pX) * 0.01; grp.rotation.x += (e.touches[0].clientY - pY) * 0.01; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }
+            }, { passive: false });
+            cont.addEventListener('touchend', () => drag = false);
+
+            let globalTime = 0;
+
+            function ani() { 
+                requestAnimationFrame(ani); 
+                if(!drag) grp.rotation.y += 0.002; 
+                
+                globalTime += 0.02;
+
+                // ចលនាភាគល្អិត (Data streaming)
+                particles.forEach(p => { 
+                    p.userData.progress += p.userData.speed;
+                    if(p.userData.progress >= 1) {
+                        p.userData.progress = 0; // Reset ទៅ Server វិញ
+                    }
+                    
+                    // គណនាទីតាំងរវាង Server (-4, Y, Z) និង Laptop (4, 0, 0)
+                    const startX = -4;
+                    const endX = 4;
+                    
+                    // បង្កើតខ្សែកោង (Arc)
+                    const currentX = startX + (endX - startX) * p.userData.progress;
+                    const arcY = Math.sin(p.userData.progress * Math.PI) * 2; // លោតឡើងលើបន្តិច
+                    
+                    p.position.set(
+                        currentX, 
+                        p.userData.offsetY * (1 - p.userData.progress) + arcY, // ចាប់ផ្តើមរាយប៉ាយ បញ្ចប់ប្រមូលផ្តុំ
+                        p.userData.offsetZ * (1 - p.userData.progress)
+                    );
+                }); 
+
+                // ដំណើរការគណនា Data & Cost 4D
+                const cycleTime = globalTime % 25; // លោតពី 0 ទៅ 25 វិនាទី
+                let currentData = Math.floor(cycleTime); // 1 វិនាទី = 1 GB
+                
+                let costA = 5 + currentData;
+                let costB = 15;
+
+                const elData = document.getElementById('tech-data');
+                const elCostA = document.getElementById('tech-costA');
+                const elCostB = document.getElementById('tech-costB');
+                const boxA = document.getElementById('box-planA');
+                const boxB = document.getElementById('box-planB');
+
+                if(elData) elData.innerText = currentData;
+                if(elCostA) elCostA.innerText = "$" + costA;
+                
+                // ប្រៀបធៀបតម្លៃដើម្បីប្តូរពណ៌
+                if(boxA && boxB && elCostA && elCostB) {
+                    if(costA < costB) {
+                        // A ថោកជាង (បៃតង)
+                        boxA.classList.replace('bg-slate-800', 'bg-green-900/50');
+                        boxA.classList.replace('bg-red-900/50', 'bg-green-900/50');
+                        elCostA.classList.replace('text-red-400', 'text-green-400');
+                        elCostA.classList.replace('text-slate-300', 'text-green-400');
+                        
+                        boxB.classList.replace('bg-green-900/50', 'bg-red-900/50');
+                        boxB.classList.replace('bg-slate-800', 'bg-red-900/50');
+                        elCostB.classList.replace('text-green-400', 'text-red-400');
+                        elCostB.classList.replace('text-slate-300', 'text-red-400');
+                    } 
+                    else if (costA > costB) {
+                        // B ថោកជាង (បៃតង) - ទិន្នន័យលើស 10GB
+                        boxB.classList.replace('bg-red-900/50', 'bg-green-900/50');
+                        elCostB.classList.replace('text-red-400', 'text-green-400');
+                        
+                        boxA.classList.replace('bg-green-900/50', 'bg-red-900/50');
+                        elCostA.classList.replace('text-green-400', 'text-red-400');
+                    } 
+                    else {
+                        // ស្មើគ្នា (10GB)
+                        boxA.classList.replace('bg-red-900/50', 'bg-slate-800');
+                        boxA.classList.replace('bg-green-900/50', 'bg-slate-800');
+                        elCostA.classList.replace('text-red-400', 'text-yellow-400');
+                        elCostA.classList.replace('text-green-400', 'text-yellow-400');
+
+                        boxB.classList.replace('bg-red-900/50', 'bg-slate-800');
+                        boxB.classList.replace('bg-green-900/50', 'bg-slate-800');
+                        elCostB.classList.replace('text-red-400', 'text-yellow-400');
+                        elCostB.classList.replace('text-green-400', 'text-yellow-400');
+                    }
+                }
+
+                ren.render(scene,cam); 
+            } 
+            ani();
+        }
+
+        function initEnv3D() {
+            const cont = document.getElementById('env-3d-canvas');
+            if (!cont || !window.THREE || cont.children.length > 1) return;
+            
+            const scene = new THREE.Scene();
+            const clearSky = new THREE.Color(0xbae6fd); // Sky blue
+            const smogSky = new THREE.Color(0x9ca3af); // Gray smog
+            scene.background = clearSky.clone();
+            scene.fog = new THREE.FogExp2(0xbae6fd, 0.015);
+            
+            const cam = new THREE.PerspectiveCamera(40, cont.clientWidth/cont.clientHeight, 0.1, 100);
+            cam.position.set(12, 6, 15);
+            cam.lookAt(0, 3, 0);
+            
+            const ren = new THREE.WebGLRenderer({antialias:true}); 
+            ren.setSize(cont.clientWidth, cont.clientHeight); 
+            cont.appendChild(ren.domElement);
+            
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6)); 
+            const dL = new THREE.DirectionalLight(0xffffff, 1.0); 
+            dL.position.set(10, 20, 10); 
+            scene.add(dL);
+            
+            const grp = new THREE.Group(); 
+            scene.add(grp);
+
+            // ផ្ទៃដី
+            const ground = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 0.5, 32), new THREE.MeshLambertMaterial({color: 0x4b5563}));
+            ground.position.y = -0.25;
+            grp.add(ground);
+
+            // តួរោងចក្រ
+            const f1 = new THREE.Mesh(new THREE.BoxGeometry(5, 3, 4), new THREE.MeshLambertMaterial({color: 0x334155}));
+            f1.position.y = 1.5;
+            grp.add(f1);
+
+            // ចង្ក្រានភ្លើងរោងចក្រ (Glowing Core)
+            const coreMat = new THREE.MeshBasicMaterial({color: 0xf59e0b});
+            const core = new THREE.Mesh(new THREE.PlaneGeometry(2, 1), coreMat);
+            core.position.set(0, 1.5, 2.01);
+            grp.add(core);
+
+            // បំពង់ផ្សែង
+            const c1 = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 4, 16), new THREE.MeshLambertMaterial({color: 0x64748b}));
+            c1.position.set(1.2, 3.5, -0.5);
+            const c2 = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 4, 16), new THREE.MeshLambertMaterial({color: 0x64748b}));
+            c2.position.set(-1.2, 3.5, -0.5);
+            grp.add(c1); grp.add(c2);
+
+            // បន្ទាត់ក្រហមកំណត់ ៥០តោន
+            const limitBox = new THREE.Mesh(new THREE.BoxGeometry(6, 0.1, 3), new THREE.MeshBasicMaterial({color: 0xef4444, transparent: true, opacity: 0.3}));
+            limitBox.position.set(0, 8.5, -0.5);
+            grp.add(limitBox);
+
+            // ភាគល្អិតផ្សែង
+            const smokes = [];
+            for(let i=0; i<30; i++) {
+                const s = new THREE.Mesh(new THREE.SphereGeometry(0.4, 8, 8), new THREE.MeshLambertMaterial({color: 0xffffff, transparent: true, opacity: 0.6}));
+                s.position.set((Math.random()>0.5?1.2:-1.2), 5, -0.5);
+                s.userData = { offset: Math.random() * Math.PI * 2, speed: 0.02 + Math.random()*0.02, life: Math.random() };
+                smokes.push(s);
+                grp.add(s);
+            }
+
+            // HTML Overlay UI សម្រាប់រាប់ថ្ងៃ និង CO2
+            const uiTag = document.createElement('div');
+            uiTag.className = "absolute top-3 right-3 bg-white/95 px-4 py-2 rounded-xl shadow-lg border-2 border-teal-500 text-center pointer-events-none transition-colors duration-300 z-20";
+            uiTag.id = "env-ui-box";
+            uiTag.innerHTML = `<p class="text-[10px] font-bold text-gray-500 uppercase">ដំណើរការថ្ងៃទី <span id="env-day" class="text-blue-600 text-sm">0</span></p><p class="text-xl font-bold text-slate-800"><span id="env-co2">10</span> <span class="text-xs">តោន (Max 50)</span></p>`;
+            cont.appendChild(uiTag);
+
+            let drag = false, pX = 0, pY = 0;
+            cont.onmousedown = e => {drag=true; pX=e.offsetX; pY=e.offsetY;};
+            cont.onmousemove = e => { if(drag) { grp.rotation.y += (e.offsetX-pX)*0.01; grp.rotation.x += (e.offsetY-pY)*0.01; pX=e.offsetX; pY=e.offsetY;} };
+            cont.onmouseup = cont.onmouseleave = () => drag=false;
+            cont.addEventListener('touchstart', (e) => { drag = true; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }, { passive: false });
+            cont.addEventListener('touchmove', (e) => {
+                if(drag) { e.preventDefault(); grp.rotation.y += (e.touches[0].clientX - pX) * 0.01; grp.rotation.x += (e.touches[0].clientY - pY) * 0.01; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }
+            }, { passive: false });
+            cont.addEventListener('touchend', () => drag = false);
+
+            let time = 0;
+            let day = 0;
+            let lastDayTime = Date.now();
+            const dayDuration = 400; // ល្បឿននៃការកើនឡើងថ្ងៃ (ms)
+
+            function ani() { 
+                requestAnimationFrame(ani); 
+                time += 0.016;
+                
+                if(!drag) grp.rotation.y += 0.002;
+
+                // ភ្លើងចង្ក្រានលោតភ្លឹបភ្លែត
+                coreMat.opacity = 0.7 + Math.sin(time*5)*0.3;
+
+                // ដំណើរការគណនា Game Logic 4D
+                if(Date.now() - lastDayTime > dayDuration) {
+                    if(day < 20) {
+                        day++;
+                        const currentCO2 = 10 + (day * 2);
+                        
+                        const elDay = document.getElementById('env-day');
+                        const elCo2 = document.getElementById('env-co2');
+                        if (elDay) elDay.innerText = day;
+                        if (elCo2) elCo2.innerText = currentCO2;
+
+                        // ប្តូរពណ៌ផ្ទៃមេឃ និងអ័ព្ទទៅជាអាប់អួរ (Smog)
+                        const progress = day / 20; 
+                        scene.background.lerpColors(clearSky, smogSky, progress);
+                        scene.fog.color.lerpColors(clearSky, smogSky, progress);
+                        scene.fog.density = 0.015 + (progress * 0.03);
+
+                        // ប្រកាសអាសន្នពេលដល់ថ្ងៃទី២០ (៥០ តោន)
+                        if(day === 20) {
+                            const uiBox = document.getElementById('env-ui-box');
+                            if (uiBox) {
+                                uiBox.classList.replace('border-teal-500', 'border-red-600');
+                                uiBox.classList.add('bg-red-50', 'scale-110');
+                            }
+                            if (elCo2) elCo2.classList.replace('text-slate-800', 'text-red-600');
+                            limitBox.material.opacity = 0.8; 
+                            coreMat.color.setHex(0xef4444); 
+                        }
+                    } else if(Date.now() - lastDayTime > dayDuration + 4000) {
+                        // Reset វិញបន្ទាប់ពីទុកអាសន្ន ៤វិនាទី
+                        day = 0;
+                        const elDay = document.getElementById('env-day');
+                        const elCo2 = document.getElementById('env-co2');
+                        const uiBox = document.getElementById('env-ui-box');
+                        
+                        if (elDay) elDay.innerText = 0;
+                        if (elCo2) elCo2.innerText = 10;
+                        scene.background.copy(clearSky);
+                        scene.fog.color.copy(clearSky);
+                        scene.fog.density = 0.015;
+                        
+                        if (uiBox) {
+                            uiBox.classList.replace('border-red-600', 'border-teal-500');
+                            uiBox.classList.remove('bg-red-50', 'scale-110');
+                        }
+                        if (elCo2) elCo2.classList.replace('text-red-600', 'text-slate-800');
+                        limitBox.material.opacity = 0.3;
+                        coreMat.color.setHex(0xf59e0b);
+                    }
+                    if(day < 20) lastDayTime = Date.now();
+                }
+
+                // ចលនាផ្សែងហុយឡើង
+                smokes.forEach(s => {
+                    s.userData.life += s.userData.speed;
+                    if(s.userData.life >= 1) {
+                        s.userData.life = 0;
+                        s.position.y = 5.5; 
+                        s.position.x = (Math.random()>0.5?1.2:-1.2);
+                        s.position.z = -0.5 + (Math.random()-0.5)*0.5;
+                    }
+                    s.position.y += 0.05 + (day/20)*0.05; // ហុយលឿនជាងមុនពេលកខ្វក់
+                    s.position.x += Math.sin(time*2 + s.userData.offset) * 0.02;
+                    
+                    const scale = 1 + s.userData.life * 2;
+                    s.scale.set(scale, scale, scale);
+                    
+                    // ផ្សែងឡើងពណ៌ខ្មៅពេលថ្ងៃកាន់តែកើន
+                    const darkness = Math.max(0.2, 1 - (day/20)*0.6);
+                    s.material.color.setRGB(darkness, darkness, darkness);
+                    s.material.opacity = (1 - s.userData.life) * 0.6;
+                });
+
+                ren.render(scene, cam); 
+            } 
+            ani();
+        }
+
+        function initEnergy3D() {
+            const cont = document.getElementById('energy-3d-canvas');
+            if (!cont || !window.THREE || cont.children.length > 1) return;
+            
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0f172a); // ចាប់ផ្តើមពីពេលយប់ងងឹត
+            
+            const cam = new THREE.PerspectiveCamera(40, cont.clientWidth/cont.clientHeight, 0.1, 100);
+            cam.position.set(0, 8, 16); 
+            cam.lookAt(0, 2, 0);
+            
+            const ren = new THREE.WebGLRenderer({antialias:true}); 
+            ren.setSize(cont.clientWidth, cont.clientHeight); 
+            cont.appendChild(ren.domElement);
+            
+            // ពន្លឺទូទៅទាបនៅពេលយប់
+            const ambLight = new THREE.AmbientLight(0x404040, 1.0); 
+            scene.add(ambLight);
+            
+            // ពន្លឺព្រះអាទិត្យ (Directional Light ដែលវិលតាមពេលវេលា)
+            const sunLight = new THREE.DirectionalLight(0xffffee, 0);
+            scene.add(sunLight);
+            
+            // គំរូព្រះអាទិត្យ (Visual Sun)
+            const sunGeo = new THREE.SphereGeometry(1.2, 16, 16);
+            const sunMat = new THREE.MeshBasicMaterial({color: 0xffaa00});
+            const sunMesh = new THREE.Mesh(sunGeo, sunMat);
+            scene.add(sunMesh);
+
+            const grp = new THREE.Group(); 
+            scene.add(grp);
+            
+            // ដី (Ground)
+            const ground = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 0.5, 32), new THREE.MeshLambertMaterial({color: 0x4ade80}));
+            ground.position.y = -0.25;
+            grp.add(ground);
+            
+            // ផ្ទះ (House)
+            const house = new THREE.Group();
+            const base = new THREE.Mesh(new THREE.BoxGeometry(4, 3, 4), new THREE.MeshLambertMaterial({color: 0xffedd5}));
+            base.position.y = 1.5;
+            const roof = new THREE.Mesh(new THREE.ConeGeometry(3.5, 2.5, 4), new THREE.MeshLambertMaterial({color: 0xf97316}));
+            roof.position.y = 4.25;
+            roof.rotation.y = Math.PI / 4;
+            house.add(base, roof);
+            grp.add(house);
+            
+            // ផ្ទាំងសូឡាចំនួន ១០ (Solar Panels)
+            const panelGeo = new THREE.BoxGeometry(0.8, 0.05, 1.2);
+            const panelMat = new THREE.MeshLambertMaterial({color: 0x1e3a8a}); // ពណ៌ខៀវចាស់
+            const panels = [];
+            for(let i=0; i<10; i++) {
+                const p = new THREE.Mesh(panelGeo, panelMat);
+                // តម្រៀប ៥ ផ្ទាំងខាងមុខ ៥ ផ្ទាំងខាងក្រោយផ្ទះ
+                const row = Math.floor(i / 5);
+                const col = i % 5;
+                p.position.set(-2.5 + col * 1.25, 0.1, (row === 0 ? 3 : -3));
+                p.rotation.x = (row === 0 ? Math.PI / 6 : -Math.PI / 6); // ងាកទទួលពន្លឺ
+                grp.add(p);
+                panels.push(p);
+            }
+
+            // កង្ហារខ្យល់ (Wind Turbine)
+            const turbine = new THREE.Group();
+            turbine.position.set(-4, 0, -3);
+            const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.2, 6), new THREE.MeshLambertMaterial({color: 0xcbd5e1}));
+            pole.position.y = 3;
+            turbine.add(pole);
+            
+            const rotor = new THREE.Group();
+            rotor.position.set(0, 6, 0.2);
+            const hub = new THREE.Mesh(new THREE.SphereGeometry(0.2), new THREE.MeshLambertMaterial({color: 0x94a3b8}));
+            rotor.add(hub);
+            for(let i=0; i<3; i++) {
+                const blade = new THREE.Mesh(new THREE.BoxGeometry(0.1, 2.5, 0.05), new THREE.MeshLambertMaterial({color: 0xf8fafc}));
+                blade.position.y = 1.25;
+                const pivot = new THREE.Group();
+                pivot.rotation.z = (i * 2 * Math.PI) / 3;
+                pivot.add(blade);
+                rotor.add(pivot);
+            }
+            turbine.add(rotor);
+            grp.add(turbine);
+            
+            // HTML Overlay UI សម្រាប់ផ្ទាំងកុងទ័រម៉ោង និងថាមពល
+            const energyUI = document.createElement('div');
+            energyUI.className = "absolute top-3 right-3 bg-white/95 px-4 py-2 rounded-xl shadow-lg border-2 border-indigo-500 text-left pointer-events-none transition-colors duration-300 z-20 w-48";
+            energyUI.id = "energy-ui-box";
+            energyUI.innerHTML = `
+                <p class="text-[11px] font-bold text-gray-500 uppercase mb-1 border-b pb-1">ពេលវេលា: <span id="e-time" class="text-indigo-600 text-sm bg-indigo-50 px-2 rounded">00:00</span></p>
+                <div class="flex justify-between items-center text-xs mb-1"><span class="text-sky-600"><i class="fas fa-wind"></i> ខ្យល់:</span> <span class="font-bold"><span id="e-wind">0</span> Wh</span></div>
+                <div class="flex justify-between items-center text-xs mb-1"><span class="text-amber-500"><i class="fas fa-solar-panel"></i> សូឡា:</span> <span class="font-bold"><span id="e-solar">0</span> Wh</span></div>
+                <div class="flex justify-between items-center text-sm border-t pt-1 mt-1"><span class="text-indigo-800 font-bold">សរុប:</span> <span class="font-bold text-red-500 transition-colors" id="e-total-box"><span id="e-total">0</span> Wh</span></div>
+            `;
+            cont.appendChild(energyUI);
+
+            // Controls
+            let drag = false, pX = 0, pY = 0;
+            cont.onmousedown = e => {drag=true; pX=e.offsetX; pY=e.offsetY;};
+            cont.onmousemove = e => { if(drag) { grp.rotation.y += (e.offsetX-pX)*0.01; grp.rotation.x += (e.offsetY-pY)*0.01; pX=e.offsetX; pY=e.offsetY;} };
+            cont.onmouseup = cont.onmouseleave = () => drag=false;
+            cont.addEventListener('touchstart', (e) => { drag = true; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }, { passive: false });
+            cont.addEventListener('touchmove', (e) => {
+                if(drag) { e.preventDefault(); grp.rotation.y += (e.touches[0].clientX - pX) * 0.01; grp.rotation.x += (e.touches[0].clientY - pY) * 0.01; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }
+            }, { passive: false });
+            cont.addEventListener('touchend', () => drag = false);
+
+            let timeOfDay = 0; // 0 ដល់ 24 ម៉ោង
+            let lastTick = Date.now();
+
+            // ពណ៌មេឃតាមពេលវេលា
+            const colDawn = new THREE.Color(0xfdb3a0);
+            const colDay = new THREE.Color(0xbae6fd);
+            const colDusk = new THREE.Color(0xfab48b);
+            const colNight = new THREE.Color(0x0f172a);
+
+            function ani() { 
+                requestAnimationFrame(ani); 
+                
+                if(!drag) grp.rotation.y += 0.002;
+                rotor.rotation.z -= 0.08; // កង្ហារខ្យល់វិលជានិច្ច
+
+                const now = Date.now();
+                const delta = now - lastTick;
+                lastTick = now;
+                
+                // ល្បឿន: 24 ម៉ោង ស្មើនឹង 12 វិនាទីពិត (1 ម៉ោង = 500ms)
+                timeOfDay += delta / 500; 
+                
+                // រង់ចាំបន្តិចនៅម៉ោង 24 មុននឹង Reset
+                if (timeOfDay >= 26) {
+                    timeOfDay = 0; 
+                }
+
+                let displayTime = Math.min(24, Math.max(0, timeOfDay));
+                let hour = Math.floor(displayTime);
+                let min = Math.floor((displayTime - hour) * 60);
+                
+                const elTime = document.getElementById('e-time');
+                if(elTime) elTime.innerText = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+
+                // គណនាថាមពល (Energy Calculation Logic 4D)
+                let windE = Math.min(500, (displayTime / 24) * 500); // កើនឡើងរហូត
+                
+                // សូឡាដំណើរការតែពេលថ្ងៃ (ម៉ោង 6:00 ដល់ 18:00)
+                let solarActiveHours = Math.max(0, Math.min(12, displayTime - 6)); 
+                let solarE = Math.min(2500, (solarActiveHours / 12) * 2500);
+                
+                let totalE = windE + solarE;
+
+                const elWind = document.getElementById('e-wind');
+                const elSolar = document.getElementById('e-solar');
+                const elTotal = document.getElementById('e-total');
+                const elTotalBox = document.getElementById('e-total-box');
+
+                if(elWind) elWind.innerText = Math.floor(windE);
+                if(elSolar) elSolar.innerText = Math.floor(solarE);
+                if(elTotal) elTotal.innerText = Math.floor(totalE);
+
+                // ប្តូរពណ៌ទៅជាបៃតង ពេលដល់គោលដៅ 3000Wh (ម៉ោង 18:00)
+                if(elTotalBox) {
+                    if (totalE >= 3000) {
+                        elTotalBox.classList.replace('text-red-500', 'text-emerald-500');
+                        document.getElementById('energy-ui-box').classList.add('bg-emerald-50');
+                    } else {
+                        elTotalBox.classList.replace('text-emerald-500', 'text-red-500');
+                        document.getElementById('energy-ui-box').classList.remove('bg-emerald-50');
+                    }
+                }
+
+                // ចលនាព្រះអាទិត្យ និងពន្លឺ (រះម៉ោង 6 លិចម៉ោង 18)
+                let sunAngle = ((displayTime - 6) / 12) * Math.PI;
+                if (displayTime >= 6 && displayTime <= 18) {
+                    sunLight.intensity = Math.sin(sunAngle) * 1.5;
+                    sunMesh.visible = true;
+                    // គន្លងព្រះអាទិត្យវិលពីឆ្វេងទៅស្តាំអមពីលើផ្ទះ
+                    sunMesh.position.x = Math.cos(sunAngle) * -12;
+                    sunMesh.position.y = Math.sin(sunAngle) * 10;
+                    sunMesh.position.z = -5;
+                    sunLight.position.copy(sunMesh.position);
+                    
+                    // ធ្វើឱ្យផ្ទាំងសូឡាបញ្ចេញពន្លឺ (Glowing) ពេលត្រូវថ្ងៃ
+                    panelMat.emissive.setHex(0x3b82f6);
+                    panelMat.emissiveIntensity = Math.sin(sunAngle) * 0.5;
+                } else {
+                    sunLight.intensity = 0;
+                    sunMesh.visible = false;
+                    panelMat.emissiveIntensity = 0;
+                }
+
+                // ប្តូរពណ៌ផ្ទៃមេឃតាមម៉ោង
+                if (displayTime < 5 || displayTime > 19) {
+                    scene.background = colNight;
+                } else if (displayTime >= 5 && displayTime < 7) {
+                    scene.background = colDawn.clone().lerp(colDay, (displayTime-5)/2);
+                } else if (displayTime >= 7 && displayTime <= 17) {
+                    scene.background = colDay;
+                } else if (displayTime > 17 && displayTime <= 19) {
+                    scene.background = colDay.clone().lerp(colDusk, (displayTime-17)/2);
+                }
+
+                ren.render(scene, cam); 
+            } 
+            ani();
+        }
+
+        function initMilitary3D() {
+            const cont = document.getElementById('military-3d-canvas');
+            if (!cont || !window.THREE || cont.children.length > 1) return;
+            const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(40, cont.clientWidth/cont.clientHeight, 0.1, 100);
+            scene.background = new THREE.Color(0xe0f2fe); cam.position.set(0, 3, 16); cam.lookAt(0,-2,0);
+            const ren = new THREE.WebGLRenderer({antialias:true}); ren.setSize(cont.clientWidth, cont.clientHeight); cont.appendChild(ren.domElement);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.7)); const dL = new THREE.DirectionalLight(0xffffff, 0.9); dL.position.set(5,10,7); scene.add(dL);
+            const grp = new THREE.Group(); scene.add(grp);
+
+            const heli = new THREE.Group();
+            const hBody1 = new THREE.Mesh(new THREE.BoxGeometry(2.5,1.2,1.2), new THREE.MeshLambertMaterial({color:0x334155})); heli.add(hBody1);
+            const hBody2 = new THREE.Mesh(new THREE.BoxGeometry(2.5,0.3,0.3), new THREE.MeshLambertMaterial({color:0x334155})); hBody2.position.set(-2,0,0); heli.add(hBody2);
+            const rotor = new THREE.Mesh(new THREE.BoxGeometry(6,0.05,0.2), new THREE.MeshLambertMaterial({color:0x1e293b})); rotor.position.set(0,0.7,0); heli.add(rotor);
+            
+            const rope = new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,3), new THREE.MeshLambertMaterial({color:0x94a3b8}));
+            rope.position.set(0,-2,0); heli.add(rope);
+            
+            const cargoNet = new THREE.Group();
+            cargoNet.position.set(0, -3.5, 0);
+            heli.add(cargoNet);
+
+            // បង្កើតកេសទំនិញ ៤០កេស (លាក់ទុកសិន)
+            const boxes = [];
+            const boxGeo = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+            const boxMat = new THREE.MeshLambertMaterial({color:0x4d7c0f});
+            for(let i=0; i<40; i++) {
+                const b = new THREE.Mesh(boxGeo, boxMat);
+                b.add(new THREE.LineSegments(new THREE.EdgesGeometry(boxGeo), new THREE.LineBasicMaterial({color:0x15803d})));
+                // តម្រៀបជារាងគូប
+                b.position.set(-0.35 + (i%2)*0.7, (Math.floor(i/4))*0.6, -0.35 + (Math.floor(i/2)%2)*0.7);
+                b.visible = false;
+                cargoNet.add(b);
+                boxes.push(b);
+            }
+
+            grp.add(heli);
+
+            // បន្ទាត់ព្រមាន 2500kg
+            const dangerLine = new THREE.Mesh(new THREE.BoxGeometry(8, 0.05, 4), new THREE.MeshBasicMaterial({color:0xef4444, transparent:true, opacity:0.3}));
+            dangerLine.position.set(0, -5, 0);
+            grp.add(dangerLine);
+
+            // HTML Overlay UI
+            const uiTag = document.createElement('div');
+            uiTag.className = "absolute top-3 right-3 bg-white/95 px-4 py-3 rounded-xl shadow-lg border-2 border-sky-400 text-left pointer-events-none transition-all duration-300 z-20 w-48";
+            uiTag.id = "mil-ui-box";
+            uiTag.innerHTML = `
+                <div class="flex justify-between items-center text-xs mb-1"><span class="text-slate-500">ពីឡុត:</span> <span class="font-bold">160 kg</span></div>
+                <div class="flex justify-between items-center text-xs mb-1"><span class="text-slate-500">កេស (<span id="m-boxes" class="text-sky-600">0</span>):</span> <span class="font-bold text-sky-600">+<span id="m-cargo">0</span> kg</span></div>
+                <div class="flex justify-between items-center text-sm border-t pt-1 mt-1"><span class="text-slate-800 font-bold">បន្ទុកសរុប:</span> <span class="font-bold text-sky-600 transition-colors" id="m-total-box"><span id="m-total">160</span> kg</span></div>
+                <div class="text-[10px] text-center mt-2 text-red-500 font-bold">MAX: 2500 kg</div>
+            `;
+            cont.appendChild(uiTag);
+
+            let drag = false, pX = 0, pY = 0;
+            cont.onmousedown = e => {drag=true; pX=e.offsetX; pY=e.offsetY;};
+            cont.onmousemove = e => { if(drag) { grp.rotation.y += (e.offsetX-pX)*0.01; grp.rotation.x += (e.offsetY-pY)*0.01; pX=e.offsetX; pY=e.offsetY;} };
+            cont.onmouseup = cont.onmouseleave = () => drag=false;
+            cont.addEventListener('touchstart', (e) => { drag = true; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }, { passive: false });
+            cont.addEventListener('touchmove', (e) => {
+                if(drag) { e.preventDefault(); grp.rotation.y += (e.touches[0].clientX - pX) * 0.01; grp.rotation.x += (e.touches[0].clientY - pY) * 0.01; pX = e.touches[0].clientX; pY = e.touches[0].clientY; }
+            }, { passive: false });
+            cont.addEventListener('touchend', () => drag = false);
+
+            let time = 0;
+            let currentBoxes = 0;
+            let lastBoxTime = Date.now();
+
+            function ani() { 
+                requestAnimationFrame(ani); 
+                time += 0.016;
+                if(!drag) grp.rotation.y -= 0.002; 
+                rotor.rotation.y -= 0.5; // កង្ហារវិល
+
+                if (Date.now() - lastBoxTime > 300) {
+                    currentBoxes++;
+                    if (currentBoxes > 35) { // Reset បន្ទាប់ពីលើសទម្ងន់មួយសន្ទុះ
+                        currentBoxes = 0;
+                    }
+                    lastBoxTime = Date.now();
+                }
+
+                boxes.forEach((b, idx) => {
+                    b.visible = (idx < currentBoxes);
+                });
+
+                let weight = 160 + (currentBoxes * 80);
+
+                // Update UI
+                const eBox = document.getElementById('m-boxes');
+                const eCargo = document.getElementById('m-cargo');
+                const eTotal = document.getElementById('m-total');
+                const eTotalBox = document.getElementById('m-total-box');
+                const uiBox = document.getElementById('mil-ui-box');
+
+                if(eBox) eBox.innerText = currentBoxes;
+                if(eCargo) eCargo.innerText = currentBoxes * 80;
+                if(eTotal) eTotal.innerText = weight;
+
+                // Logic ធ្លាក់ចុះ និងញ័រ ពេលបន្ទុកធ្ងន់
+                let baseHeliY = 2 - (weight / 2500) * 2; // កាន់តែធ្ងន់ ឧទ្ធម្ភាគចក្រកាន់តែធ្លាក់
+                
+                if (weight > 2500) {
+                    // លើសបន្ទុក -> ពណ៌ក្រហម និងញ័រខ្លាំង
+                    if(eTotalBox) eTotalBox.classList.replace('text-sky-600', 'text-red-600');
+                    if(uiBox) { uiBox.classList.replace('border-sky-400', 'border-red-500'); uiBox.classList.add('bg-red-50'); }
+                    
+                    heli.position.y = baseHeliY + (Math.random()-0.5)*0.2; // ញ័រ
+                    heli.rotation.z = (Math.random()-0.5)*0.1;
+                } else {
+                    // សុវត្ថិភាព
+                    if(eTotalBox) eTotalBox.classList.replace('text-red-600', 'text-sky-600');
+                    if(uiBox) { uiBox.classList.replace('border-red-500', 'border-sky-400'); uiBox.classList.remove('bg-red-50'); }
+                    
+                    heli.position.y = baseHeliY + Math.sin(time*3)*0.2; // Hover រលូនៗ
+                    heli.rotation.z = Math.sin(time*2)*0.05;
+                }
+
+                ren.render(scene,cam); 
+            } 
+            ani();
+        }
+
+        // --- Execute Init ---
+        window.onload = () => {
+            generateLinearEq();
+            generateAMGM();
+            updateSlide();
+            setTimeout(() => {
+                initAgri3D();
+                initCom3D();
+                initHealth3D();
+                initTech3D();
+                initEnv3D();
+                initTrans3D();
+                initEnergy3D();
+                initMilitary3D();
+                initGameLogistics3D();
+                initCatcher3D(); 
+            }, 500);
+        };
+    </script>
+</body>
+</html>
