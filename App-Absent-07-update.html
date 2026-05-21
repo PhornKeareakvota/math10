@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ប្រព័ន្ធគ្រប់គ្រង និងស្រង់អវត្តមានសិស្ស</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Khmer -->
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,300..700;1,300..700&family=Moul&family=Nokora:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- SheetJS for Excel generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- html2pdf for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Kantumruy Pro', 'sans-serif'],
+                        moul: ['Moul', 'serif'],
+                        nokora: ['Nokora', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Table Border Style for Ministry standard */
+        .report-table th, .report-table td {
+            border: 1.5px solid #000000;
+        }
+        /* Double underline decoration */
+        .double-underline {
+            border-bottom: 3px double #000000;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Cell editing styling helper */
+        [contenteditable="true"]:focus {
+            outline: 2px solid #3b82f6;
+            background-color: #eff6ff;
+            border-radius: 2px;
+        }
+        /* Print Styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: #ffffff !important;
+                padding: 0 !important;
+            }
+            .paper-sheet {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+        @keyframes pulse-ring {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            50% { transform: scale(1.03); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+        }
+        .pulse-active {
+            animation: pulse-ring 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-gradient-to-r from-blue-800 to-indigo-900 text-white shadow-md py-4 px-6 no-print">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-white/10 rounded-lg">
+                    <i class="fa-solid fa-file-invoice text-2xl text-yellow-400"></i>
+                </div>
+                <div>
+                    <h1 class="font-moul text-lg tracking-wide">ប្រព័ន្ធស្រង់របាយការណ៍អវត្តមានសិស្ស</h1>
+                    <p class="text-xs text-blue-200 mt-1">ផ្អែកលើការវិភាគទិន្នន័យស្វ័យប្រវត្តិនៃថ្នាក់ទី ៧C1</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition shadow">
+                    <i class="fa-solid fa-file-excel text-base"></i> ទាញយកជា Excel (.xlsx)
+                </button>
+                <button onclick="exportToWord()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition shadow">
+                    <i class="fa-solid fa-file-word text-base"></i> ទាញយកជា Word (.doc)
+                </button>
+                <button onclick="exportToPDF()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition shadow">
+                    <i class="fa-solid fa-file-pdf text-base"></i> ទាញយកជា PDF (.pdf)
+                </button>
+                <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition shadow">
+                    <i class="fa-solid fa-print"></i> បោះពុម្ព
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-[1600px] w-full mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+        <!-- Left Sidebar: Controls & Uploads -->
+        <div class="lg:col-span-1 space-y-6 no-print">
+            
+            <!-- Sources Status Card -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2 border-b pb-3 border-slate-100">
+                    <i class="fa-solid fa-database text-blue-600"></i>
+                    ប្រភពទិន្នន័យ CSV
+                </h2>
+                <div class="space-y-3 mb-4">
+                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border text-xs">
+                        <span class="font-medium text-slate-600">១. ឯកសារវត្តមាន៖</span>
+                        <span id="attendance-status" class="px-2 py-0.5 rounded-full font-semibold text-[10px] bg-amber-100 text-amber-800">
+                            <i class="fa-solid fa-spinner fa-spin mr-1"></i> កំពុងស្វែងរក...
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border text-xs">
+                        <span class="font-medium text-slate-600">២. ប្រវត្តិរូបសិស្ស៖</span>
+                        <span id="profile-status" class="px-2 py-0.5 rounded-full font-semibold text-[10px] bg-amber-100 text-amber-800">
+                            <i class="fa-solid fa-spinner fa-spin mr-1"></i> កំពុងស្វែងរក...
+                        </span>
+                    </div>
+                </div>
+
+                <div class="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl p-4 text-center cursor-pointer transition bg-slate-50 hover:bg-blue-50/20 group relative mb-4">
+                    <input type="file" id="manual-file-input" multiple accept=".csv" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleManualUpload(event)">
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 group-hover:text-blue-500 mb-2 transition"></i>
+                    <p class="text-xs font-semibold text-slate-700">បញ្ចូលឯកសារ CSV ថ្មី</p>
+                    <p class="text-[10px] text-slate-400 mt-1">ទម្លាក់ឯកសារវត្តមាន ឬ ប្រវត្តិរូបនៅទីនេះ</p>
+                </div>
+
+                <!-- Process Button (ប៊ូតុងដំណើរការ) -->
+                <button id="btn-process" onclick="triggerProcessing()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-gears text-lg"></i>
+                    <span>ដំណើរការទិន្នន័យ</span>
+                </button>
+                
+                <!-- Clear Button (ប៊ូតុងលុបទិន្នន័យ) -->
+                <button id="btn-clear" onclick="clearAllData()" class="w-full mt-2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-sm flex items-center justify-center gap-2 transition duration-200 cursor-pointer">
+                    <i class="fa-solid fa-trash-can text-base"></i>
+                    <span>លុបទិន្នន័យទាំងអស់</span>
+                </button>
+
+                <div id="process-info" class="text-[11px] text-slate-500 text-center mt-3 font-medium">
+                    រង់ចាំការផ្ទុកឯកសារចូល...
+                </div>
+            </div>
+
+            <!-- Configuration / Settings -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2 border-b pb-3 border-slate-100">
+                    <i class="fa-solid fa-sliders text-blue-600"></i>
+                    កំណត់រចនាសម្ព័ន្ធរបាយការណ៍
+                </h2>
+                
+                <div class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1.5">ឈ្មោះសាលារៀន</label>
+                        <input type="text" id="cfg-school" value="វិទ្យាល័យ ទួលប្រាសាទសែនសុខ" oninput="updateMetadata()" class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1.5">ថ្នាក់សិក្សា</label>
+                            <input type="text" id="cfg-grade" value="៧C1" oninput="updateMetadata()" class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1.5">ប្រចាំខែ</label>
+                            <input type="text" id="cfg-month" value="ឧសភា" oninput="updateMetadata()" class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1.5">ឆ្នាំសិក្សា</label>
+                            <input type="text" id="cfg-year" value="២០២៥-២០២៦" oninput="updateMetadata()" class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1.5">កម្រិតអវត្តមានទាបបំផុត (ថ្ងៃ)</label>
+                            <input type="number" id="cfg-threshold" value="7" min="1" oninput="filterByThreshold()" class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1.5">ថ្ងៃខែឆ្នាំចេញរបាយការណ៍</label>
+                        <input type="text" id="cfg-report-date" value="រាជធានីភ្នំពេញ ថ្ងៃទី៣១ ខែឧសភា ឆ្នាំ២០២៦" oninput="updateMetadata()" class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1.5">ឈ្មោះនាយកវិទ្យាល័យ</label>
+                        <input type="text" id="cfg-director" value="សេង ផល្លី" oninput="updateMetadata()" class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1.5">ឈ្មោះអ្នកធ្វើរបាយការណ៍</label>
+                        <input type="text" id="cfg-reporter" value="ឡេង សុធារ៉ា" oninput="updateMetadata()" class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Info -->
+            <div class="bg-gradient-to-br from-indigo-50 to-blue-50 p-5 rounded-2xl border border-blue-100">
+                <h3 class="font-bold text-indigo-900 text-sm mb-3">ណែនាំបន្ថែម៖</h3>
+                <ul class="text-xs text-indigo-950 space-y-2 list-disc list-inside">
+                    <li>លោកគ្រូអ្នកគ្រូអាច <strong class="text-blue-700">ចុចលើក្រឡានីមួយៗ</strong> ក្នុងតារាងរបាយការណ៍ ដើម្បីកែសម្រួលព័ត៌មានបន្ថែមបាន។</li>
+                    <li>ព័ត៌មានដែលកែសម្រួលនឹងរក្សាទុកក្នុង Excel/Word/PDF ដែលទាញយក។</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Right Side: Live Report Preview Paper Sheet -->
+        <div class="lg:col-span-3 space-y-6">
+            
+            <!-- Dashboard Quick Statistics -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 no-print">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">សិស្សអវត្តមានសរុប (>=៧ដង)</p>
+                        <h4 id="stat-absent-count" class="text-2xl font-bold text-red-600 mt-1">0 នាក់</h4>
+                    </div>
+                    <div class="p-3 bg-red-50 rounded-lg text-red-600">
+                        <i class="fa-solid fa-user-slash text-xl"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">អវត្តមានអតិបរមា</p>
+                        <h4 id="stat-max-absent" class="text-2xl font-bold text-amber-600 mt-1">0 ថ្ងៃ</h4>
+                    </div>
+                    <div class="p-3 bg-amber-50 rounded-lg text-amber-600">
+                        <i class="fa-solid fa-circle-exclamation text-xl"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">ភេទស្រីសរុប</p>
+                        <h4 id="stat-female-count" class="text-2xl font-bold text-indigo-600 mt-1">0 នាក់</h4>
+                    </div>
+                    <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600">
+                        <i class="fa-solid fa-venus text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paper Sheet Preview -->
+            <div class="bg-white shadow-lg border border-slate-200 rounded-lg p-6 lg:p-12 overflow-x-auto paper-sheet">
+                
+                <!-- Report Container meant for PDF/Print representation -->
+                <div id="report-container" class="min-w-[1000px] text-black bg-white" style="font-family: 'Kantumruy Pro', Arial, sans-serif;">
+                    
+                    <!-- Ministry Headers & Kingdom Logo Header Block -->
+                    <div class="grid grid-cols-2 mb-6">
+                        <div class="text-left space-y-1">
+                            <p class="font-moul text-xs leading-normal">មន្ទីរអប់រំ យុវជន និងកីឡារាជធានីភ្នំពេញ</p>
+                            <p class="font-moul text-xs leading-normal" id="rep-school-top">វិទ្យាល័យ ទួលប្រាសាទសែនសុខ</p>
+                        </div>
+                        <div class="text-right space-y-1">
+                            <p class="font-moul text-xs leading-normal">ព្រះរាជាណាចក្រកម្ពុជា</p>
+                            <p class="font-moul text-xs leading-normal">ជាតិ សាសនា ព្រះមហាក្សត្រ</p>
+                            <div class="flex justify-end pr-8">
+                                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='10' viewBox='0 0 100 10'><path d='M 10,5 Q 50,0 90,5 Q 50,10 10,5 Z' fill='black'/></svg>" class="w-24 opacity-60" alt="divider">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Report Document Title -->
+                    <div class="text-center my-8 space-y-2">
+                        <h3 class="font-moul text-sm leading-relaxed tracking-wider" id="rep-title">
+                            តារាងរបាយការណ៍តាមដានសិស្សអវត្តមានថ្នាក់ទី <span id="rep-grade-text">៧C1</span> នៃវិទ្យាល័យ ទួលប្រាសាទសែនសុខ
+                        </h3>
+                        <p class="text-xs font-semibold" style="font-family: 'Kantumruy Pro', sans-serif;">
+                            ប្រចាំខែ <span id="rep-month-text">ឧសភា</span> ឆ្នាំសិក្សា <span id="rep-year-text">២០២៥-២០២៦</span>
+                        </p>
+                    </div>
+
+                    <!-- Report Table Structure matching multi-row style of Ministry of Education -->
+                    <table id="report-table" class="report-table w-full text-[10px] leading-tight mb-6">
+                        <thead>
+                            <tr class="bg-slate-50">
+                                <th rowspan="3" class="px-1 py-2 text-center font-bold w-[30px]">ល.រ</th>
+                                <th rowspan="3" class="px-2 py-2 text-center font-bold w-[130px]">ឈ្មោះ</th>
+                                <th rowspan="3" class="px-1 py-2 text-center font-bold w-[40px]">ភេទ</th>
+                                <th rowspan="3" class="px-2 py-2 text-center font-bold w-[75px]">ថ្ងៃខែឆ្នាំកំណើត</th>
+                                <th colspan="4" class="px-2 py-1 text-center font-bold">អាសយដ្ឋានបច្ចុប្បន្ន</th>
+                                <th rowspan="3" class="px-1 py-2 text-center font-bold w-[50px]">សិស្សថ្នាក់ទី</th>
+                                <th rowspan="2" class="px-1 py-1 text-center font-bold w-[45px]">អវត្តមាន</th>
+                                <th colspan="2" class="px-2 py-1 text-center font-bold">ឈ្មោះអាណាព្យាបាលសិស្ស</th>
+                                <th rowspan="3" class="px-2 py-2 text-center font-bold w-[100px]">លេខទូរស័ព្ទអាណាព្យាបាល</th>
+                                <th colspan="2" class="px-2 py-1 text-center font-bold">លទ្ធផលទំនាក់ទំនង</th>
+                            </tr>
+                            <tr class="bg-slate-50">
+                                <th rowspan="2" class="px-2 py-1 text-center font-bold w-[65px]">ភូមិ</th>
+                                <th rowspan="2" class="px-2 py-1 text-center font-bold w-[65px]">សង្កាត់</th>
+                                <th rowspan="2" class="px-2 py-1 text-center font-bold w-[65px]">ខណ្ឌ</th>
+                                <th rowspan="2" class="px-2 py-1 text-center font-bold w-[65px]">រាជធានី</th>
+                                <th rowspan="2" class="px-2 py-1 text-center font-bold w-[70px]">ឪពុក</th>
+                                <th rowspan="2" class="px-2 py-1 text-center font-bold w-[70px]">ម្ដាយ</th>
+                                <th rowspan="2" class="px-2 py-1 text-center font-bold w-[60px]">កម្រិតសាលា</th>
+                                <th rowspan="2" class="px-2 py-1 text-center font-bold w-[60px]">ចុះដល់ផ្ទះ</th>
+                            </tr>
+                            <tr class="bg-slate-50">
+                                <th class="px-1 py-1 text-center font-bold">ចំនួនថ្ងៃ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-table-body">
+                            <!-- Dynamic rows will inject here -->
+                        </tbody>
+                    </table>
+
+                    <!-- Statement Note -->
+                    <div class="mb-8">
+                        <p class="text-xs italic font-bold">បញ្ជាក់ ៖ ស្រង់សិស្សអវត្តមានចាប់ពី ៧ ថ្ងៃឡើងទៅ។</p>
+                    </div>
+
+                    <!-- Signatures Section -->
+                    <div class="grid grid-cols-2 text-center text-xs mt-12 gap-8">
+                        <div class="space-y-24">
+                            <div class="space-y-1">
+                                <p class="font-bold">បានឃើញ និងឯកភាព</p>
+                                <p class="font-moul text-[11px]">នាយកវិទ្យាល័យ</p>
+                            </div>
+                            <div>
+                                <p class="font-bold underline" id="rep-director-name">សេង ផល្លី</p>
+                            </div>
+                        </div>
+                        <div class="space-y-24">
+                            <div class="space-y-1">
+                                <p class="italic text-[11px]" id="rep-date-label">រាជធានីភ្នំពេញ ថ្ងៃទី៣១ ខែឧសភា ឆ្នាំ២០២៦</p>
+                                <p class="font-moul text-[11px]">អ្នកធ្វើតារាងរាយការណ៍</p>
+                            </div>
+                            <div>
+                                <p class="font-bold underline" id="rep-reporter-name">ឡេង សុធារ៉ា</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-400 py-4 text-center text-xs mt-auto no-print border-t border-slate-700">
+        <p>© ២០២៦ វិទ្យាល័យ ទួលប្រាសាទសែនសុខ - រក្សាសិទ្ធិគ្រប់យ៉ាង</p>
+    </footer>
+
+    <!-- Scripting Area -->
+    <script>
+        // Global holds for CSV strings
+        let attendanceCSVText = "";
+        let profileCSVText = "";
+
+        // Final structured dataset
+        let studentData = [
+            { id: 1, name: "ខន ពិសី", sex: "ស្រី", dob: "12-10-2013", village: "សែនសុខ២", commune: "ឃ្មួញ", district: "សែនសុខ", province: "ភ្នំពេញ", grade: "៧C1", absences: 14, fatherName: "ហុឹម សុខឡេង", motherName: "ម៉ៅ សាខឿន", phone: "0966660660", schoolLevel: "✅", homeVisit: "" },
+            { id: 2, name: "ចន ស្រីឡែន", sex: "ស្រី", dob: "14-04-2013", village: "សែនសុខ៦", commune: "ឃ្មួញ", district: "សែនសុខ", province: "ភ្នំពេញ", grade: "៧C1", absences: 14, fatherName: "អ៊ុនដារ៉ា", motherName: "ម៉ើ សៀវម៉ី", phone: "0969930664", schoolLevel: "✅", homeVisit: "" },
+            { id: 3, name: "តឹម សុជាតា", sex: "ស្រី", dob: "18-09-2012", village: "សែនសុខ", commune: "ឃ្មួញ", district: "សែនសុខ", province: "ភ្នំពេញ", grade: "៧C1", absences: 14, fatherName: "តឹម សុខា", motherName: "ជា សុផានី", phone: "0966560580", schoolLevel: "✅", homeVisit: "" },
+            { id: 4, name: "ពៅ រចដា", sex: "ស្រី", dob: "23-10-2013", village: "ក្រសាំងជ្រុំ", commune: "ឃ្មួញ", district: "សែនសុខ", province: "ភ្នំពេញ", grade: "៧C1", absences: 14, fatherName: "តុង ធា", motherName: "ឃីម ស៊ាងគីម", phone: "089481813", schoolLevel: "✅", homeVisit: "" },
+            { id: 5, name: "ពៅ សូដានីតា", sex: "ស្រី", dob: "14-04-2013", village: "សម្រោង", commune: "ឃ្មួញ", district: "សែនសុខ", province: "ភ្នំពេញ", grade: "៧C1", absences: 14, fatherName: "ពៅ បុណ្ណា", motherName: "ម៉ៅ សុខា", phone: "015971831", schoolLevel: "✅", homeVisit: "" },
+            { id: 6, name: "យ៉ាន់ ដារីន", sex: "ប្រុស", dob: "18-06-2013", village: "សែនសុខ៦", commune: "ឃ្មួញ", district: "សែនសុខ", province: "ភ្នំពេញ", grade: "៧C1", absences: 9, fatherName: "យ៉ាន់ ដារ៉ា", motherName: "ម៉ើ សៀវម៉ី", phone: "0962998393", schoolLevel: "✅", homeVisit: "" },
+            { id: 7, name: "លាត ពុធធារី", sex: "ស្រី", dob: "23-10-2013", village: "ក្រសាំងជ្រុំ", commune: "ឃ្មួញ", district: "សែនសុខ", province: "ភ្នំពេញ", grade: "៧C1", absences: 9, fatherName: "លាត តុង", motherName: "ឃីម ស៊ាងគីម", phone: "078814190", schoolLevel: "✅", homeVisit: "" },
+            { id: 8, name: "វណ្ណ ដាណា", sex: "ស្រី", dob: "14-04-2013", village: "សែនសុខ២", commune: "ឃ្មួញ", district: "សែនសុខ", province: "ភ្នំពេញ", grade: "៧C1", absences: 14, fatherName: "វណ្ណ សុខឡេង", motherName: "ម៉ៅ សាខឿន", phone: "0966660660", schoolLevel: "✅", homeVisit: "" },
+            { id: 9, name: "វណ្ណា ចាន់លក្ខិណា", sex: "ស្រី", dob: "18-06-2013", village: "សែនសុខ៦", commune: "ឃ្មួញ", district: "សែនសុខ", province: "ភ្នំពេញ", grade: "៧C1", absences: 12, fatherName: "វណ្ណា ដារ៉ា", motherName: "ម៉ើ សៀវម៉ី", phone: "0969930664", schoolLevel: "✅", homeVisit: "" },
+            { id: 10, name: "វន ភក្ដី", sex: "ប្រុស", dob: "23-10-2013", village: "ក្រសាំងជ្រុំ", commune: "ឃ្មួញ", district: "សែនសុខ", province: "ភ្នំពេញ", grade: "៧C1", absences: 9, fatherName: "វន តុង", motherName: "ឃីម ស៊ាងគីម", phone: "089522872", schoolLevel: "✅", homeVisit: "" }
+        ];
+
+        // Safe Reset UI and confirmation states
+        let clearConfirmActive = false;
+        let clearTimer = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+            tryAutoLoadFiles();
+        });
+
+        // Auto detecting file from workspace
+        async function tryAutoLoadFiles() {
+            try {
+                const attendanceFile = 'student-attendance-7C1-05-2026.xlsx - Student Attendance list.csv';
+                const profileFile = '7C1-ប្រវត្តិរូបសិស្សថ្នាក់ទី7-2026.xlsx - Form Responses 1.csv';
+                
+                const resAtt = await fetch(attendanceFile);
+                const resProf = await fetch(profileFile);
+
+                if (resAtt.ok && resProf.ok) {
+                    attendanceCSVText = await resAtt.text();
+                    profileCSVText = await resProf.text();
+                    
+                    updateStatus('attendance-status', 'រកឃើញទិន្នន័យ', 'bg-emerald-100 text-emerald-800');
+                    updateStatus('profile-status', 'រកឃើញទិន្នន័យ', 'bg-emerald-100 text-emerald-800');
+                    
+                    // Activate process button pulsing
+                    setProcessingButtonState(true, 'ត្រៀមខ្លួនជាស្រេច! សូមចុចដំណើរការ');
+                } else {
+                    if (!resAtt.ok) updateStatus('attendance-status', 'រកមិនឃើញ', 'bg-red-100 text-red-800');
+                    if (!resProf.ok) updateStatus('profile-status', 'រកមិនឃើញ', 'bg-red-100 text-red-800');
+                    setProcessingButtonState(false, 'រង់ចាំបញ្ចូលឯកសារដោយដៃ...');
+                }
+            } catch (err) {
+                console.warn("Auto-load failed. Falling back to interactive manual modes.", err);
+                updateStatus('attendance-status', 'រកមិនឃើញ', 'bg-red-100 text-red-800');
+                updateStatus('profile-status', 'រកមិនឃើញ', 'bg-red-100 text-red-800');
+                setProcessingButtonState(false, 'សូមបញ្ចូលឯកសារ CSV របស់អ្នក');
+            }
+        }
+
+        function updateStatus(id, text, classes) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.className = `px-2 py-0.5 rounded-full font-semibold text-[10px] ${classes}`;
+                el.innerHTML = text;
+            }
+        }
+
+        function setProcessingButtonState(ready, text) {
+            const btn = document.getElementById('btn-process');
+            const info = document.getElementById('process-info');
+            if (ready) {
+                btn.removeAttribute('disabled');
+                btn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition duration-200 pulse-active cursor-pointer";
+                info.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> ${text}</span>`;
+            } else {
+                btn.setAttribute('disabled', 'true');
+                btn.className = "w-full bg-slate-200 text-slate-400 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 cursor-not-allowed";
+                info.innerHTML = `<span class="text-slate-500">${text}</span>`;
+            }
+        }
+
+        // Two-step safe data clearance
+        function clearAllData() {
+            const btn = document.getElementById('btn-clear');
+            if (!clearConfirmActive) {
+                clearConfirmActive = true;
+                btn.className = "w-full mt-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 px-4 rounded-xl shadow-sm flex items-center justify-center gap-2 transition duration-200 cursor-pointer animate-pulse";
+                btn.innerHTML = `<i class="fa-solid fa-circle-question text-base"></i> <span>ចុចម្តងទៀតដើម្បីលុប!</span>`;
+                
+                // Auto reset state after 3 seconds if user didn't double click
+                clearTimer = setTimeout(() => {
+                    resetClearButton();
+                }, 3000);
+            } else {
+                clearTimeout(clearTimer);
+                executeClear();
+            }
+        }
+
+        function resetClearButton() {
+            clearConfirmActive = false;
+            const btn = document.getElementById('btn-clear');
+            if (btn) {
+                btn.className = "w-full mt-2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-sm flex items-center justify-center gap-2 transition duration-200 cursor-pointer";
+                btn.innerHTML = `<i class="fa-solid fa-trash-can text-base"></i> <span>លុបទិន្នន័យទាំងអស់</span>`;
+            }
+        }
+
+        function executeClear() {
+            // Empty local storage states
+            studentData = [];
+            attendanceCSVText = "";
+            profileCSVText = "";
+            
+            const fileInput = document.getElementById('manual-file-input');
+            if (fileInput) fileInput.value = "";
+            
+            // Revert state signs
+            updateStatus('attendance-status', 'មិនទាន់ភ្ជាប់', 'bg-red-100 text-red-800');
+            updateStatus('profile-status', 'មិនទាន់ភ្ជាប់', 'bg-red-100 text-red-800');
+            
+            // Reset processes
+            setProcessingButtonState(false, 'រង់ចាំបញ្ចូលឯកសារដោយដៃ...');
+            renderTable();
+            
+            const info = document.getElementById('process-info');
+            if (info) {
+                info.innerHTML = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-trash-can"></i> បានលុបទិន្នន័យទាំងអស់រួចរាល់!</span>`;
+            }
+            
+            resetClearButton();
+        }
+
+        // Trigger extracting action
+        function triggerProcessing() {
+            if (!attendanceCSVText || !profileCSVText) {
+                alert("សូមប្រាកដថាអ្នកបានបញ្ជូនឯកសារទាំងពីររួចរាល់!");
+                return;
+            }
+
+            const btn = document.getElementById('btn-process');
+            const info = document.getElementById('process-info');
+            
+            // Show processing UI state
+            btn.className = "w-full bg-slate-600 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 cursor-wait";
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-lg"></i> <span>កំពុងស្រង់ទិន្នន័យ...</span>`;
+            info.textContent = 'កំពុងវិភាគទិន្នន័យអវត្តមាន និងប្រវត្តិរូប...';
+
+            setTimeout(() => {
+                processCSVData(attendanceCSVText, profileCSVText);
+                
+                // Show completion UI
+                btn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition duration-200 cursor-pointer";
+                btn.innerHTML = `<i class="fa-solid fa-check-double text-lg"></i> <span>ដំណើរការរួចរាល់!</span>`;
+                info.innerHTML = `<span class="text-emerald-700 font-bold"><i class="fa-solid fa-circle-check"></i> បានស្រង់ទិន្នន័យដោយជោគជ័យ!</span>`;
+            }, 600);
+        }
+
+        // Extract and combine the datasets
+        function processCSVData(attendanceText, profileText) {
+            try {
+                const attData = Papa.parse(attendanceText, { skipEmptyLines: true }).data;
+                const profData = Papa.parse(profileText, { skipEmptyLines: true }).data;
+
+                // 1. Process Attendance Row/Header
+                let attHeaderIdx = -1;
+                for (let i = 0; i < attData.length; i++) {
+                    if (attData[i].some(cell => cell && (cell.includes('ល.រ') || cell.includes('គោត្តនាម') || cell.includes('ឈ្មោះ')))) {
+                        attHeaderIdx = i;
+                        break;
+                    }
+                }
+                if (attHeaderIdx === -1) attHeaderIdx = 1;
+
+                const attHeaders = attData[attHeaderIdx] || [];
+                const attIndices = findAttendanceIndices(attHeaders);
+
+                const threshold = parseInt(document.getElementById('cfg-threshold').value) || 7;
+                const rawAbsents = [];
+
+                for (let i = attHeaderIdx + 1; i < attData.length; i++) {
+                    const row = attData[i];
+                    if (!row || row.length < 2) continue;
+
+                    const name = row[attIndices.name];
+                    if (!name || name.trim() === '' || name.includes('សរុប') || name.includes('ល.រ')) continue;
+
+                    const totalAbs = parseInt(row[attIndices.totalAbsences]);
+                    if (!isNaN(totalAbs) && totalAbs >= threshold) {
+                        rawAbsents.push({
+                            name: name.trim(),
+                            absences: totalAbs
+                        });
+                    }
+                }
+
+                // 2. Process Student Profiles Header & Map
+                let profHeaderIdx = -1;
+                for (let i = 0; i < profData.length; i++) {
+                    if (profData[i].some(cell => cell && (cell.includes('គោត្តនាម') || cell.includes('ឈ្មោះ') || cell.includes('ភេទ')))) {
+                        profHeaderIdx = i;
+                        break;
+                    }
+                }
+                if (profHeaderIdx === -1) profHeaderIdx = 2;
+
+                const profHeaders = profData[profHeaderIdx] || [];
+                const profIndices = findProfileIndices(profHeaders);
+
+                const profileMap = {};
+                for (let i = profHeaderIdx + 1; i < profData.length; i++) {
+                    const row = profData[i];
+                    if (!row || row.length < 4) continue;
+
+                    const name = row[profIndices.name];
+                    if (!name) continue;
+
+                    const key = normalizeKhmerName(name);
+                    profileMap[key] = {
+                        sex: row[profIndices.sex] || '',
+                        dob: row[profIndices.dob] || '',
+                        village: row[profIndices.village] || '',
+                        commune: row[profIndices.commune] || '',
+                        district: row[profIndices.district] || '',
+                        province: row[profIndices.province] || '',
+                        fatherName: row[profIndices.fatherName] || '',
+                        motherName: row[profIndices.motherName] || '',
+                        fatherPhone: row[profIndices.fatherPhone] || '',
+                        motherPhone: row[profIndices.motherPhone] || ''
+                    };
+                }
+
+                // 3. Connect datasets
+                const gradeVal = document.getElementById('cfg-grade').value || '៧C1';
+                const processed = rawAbsents.map((student, index) => {
+                    const key = normalizeKhmerName(student.name);
+                    const prof = profileMap[key] || {};
+
+                    return {
+                        id: index + 1,
+                        name: student.name,
+                        sex: prof.sex || '?',
+                        dob: formatDOB(prof.dob),
+                        village: cleanAddressString(prof.village),
+                        commune: cleanAddressString(prof.commune),
+                        district: cleanAddressString(prof.district),
+                        province: cleanAddressString(prof.province),
+                        grade: gradeVal,
+                        absences: student.absences,
+                        fatherName: prof.fatherName || '',
+                        motherName: prof.motherName || '',
+                        phone: prof.fatherPhone || prof.motherPhone || '',
+                        schoolLevel: '✅',
+                        homeVisit: ''
+                    };
+                });
+
+                if (processed.length > 0) {
+                    studentData = processed;
+                    renderTable();
+                } else {
+                    alert("គ្មានសិស្សណាមានអវត្តមានស្មើ ឬលើសពីកំណត់ឡើយ!");
+                }
+
+            } catch (err) {
+                console.error("Error processing CSV data", err);
+                alert("ការវិភាគទិន្នន័យមានកំហុស។ សូមត្រួតពិនិត្យឯកសារ CSV សារជាថ្មី!");
+            }
+        }
+
+        // Helpers to match CSV headers adaptively
+        function findAttendanceIndices(headers) {
+            const indices = { name: 1, totalAbsences: headers.length - 1 };
+            headers.forEach((h, idx) => {
+                const header = h.trim().toLowerCase();
+                if (header.includes('ល.រ') || header === 'លរ') indices.no = idx;
+                else if (header.includes('គោត្តនាម') || header.includes('ឈ្មោះ')) indices.name = idx;
+                else if (header.includes('សរុប') || header.includes('អវត្តមាន')) indices.totalAbsences = idx;
+            });
+            return indices;
+        }
+
+        function findProfileIndices(headers) {
+            const indices = { name: 3, sex: 4, dob: 5, village: 6, commune: 7, district: 8, province: 9, fatherName: 14, motherName: 16, fatherPhone: 18, motherPhone: 19 };
+            headers.forEach((h, idx) => {
+                const header = h.trim().toLowerCase();
+                if (header.includes('ល.រ') || header === 'លរ') indices.no = idx;
+                else if (header.includes('គោត្តនាម') || (header.includes('ឈ្មោះ') && !header.includes('ឪពុក') && !header.includes('ម្តាយ') && !header.includes('អាណាព្យាបាល'))) indices.name = idx;
+                else if (header.includes('ភេទ')) indices.sex = idx;
+                else if (header.includes('កំណើត') || header.includes('ថ្ងៃខែឆ្នាំ')) indices.dob = idx;
+                else if (header === 'ភូមិ') indices.village = idx;
+                else if (header.includes('សង្កាត់') || header.includes('ឃុំ')) indices.commune = idx;
+                else if (header.includes('ខណ្ឌ') || header.includes('ស្រុក')) indices.district = idx;
+                else if (header.includes('ខេត្ត') || header.includes('ក្រុង')) {
+                    if (indices.province === undefined || idx < 11) indices.province = idx;
+                }
+                else if (header.includes('ឈ្មោះឪពុក') || (header.includes('ឪពុក') && !header.includes('មុខរបរ') && !header.includes('ទូរសព្ទ'))) indices.fatherName = idx;
+                else if (header.includes('ឈ្មោះម្តាយ') || (header.includes('ម្តាយ') && !header.includes('មុខរបរ') && !header.includes('ទូរសព្ទ'))) indices.motherName = idx;
+                else if (header.includes('ទូរសព្ទឪពុក') || header.includes('ទូរស័ព្ទឪពុក')) indices.fatherPhone = idx;
+                else if (header.includes('ទូរសព្ទម្តាយ') || header.includes('ទូរស័ព្ទម្តាយ')) indices.motherPhone = idx;
+            });
+            return indices;
+        }
+
+        function normalizeKhmerName(name) {
+            return name ? name.replace(/[\s\u200B\u200C\u200D]+/g, '').trim() : '';
+        }
+
+        // Clean address markers to display only specific names
+        function cleanAddressString(addr) {
+            if (!addr) return '';
+            return addr.replace(/សង្កាត់|ខណ្ឌ|ខ័ណ្ឌ|ក្រុង|រាជធានី|ខេត្ត/g, '').trim();
+        }
+
+        function formatDOB(dob) {
+            if (!dob) return '';
+            return dob.replace(/៑/g, '-').trim();
+        }
+
+        // Render table rows
+        function renderTable() {
+            const tbody = document.getElementById('report-table-body');
+            tbody.innerHTML = '';
+
+            let maxAbs = 0;
+            let femaleCount = 0;
+
+            studentData.forEach((student, index) => {
+                if (student.absences > maxAbs) maxAbs = student.absences;
+                if (student.sex === 'ស្រី') femaleCount++;
+
+                const row = document.createElement('tr');
+                row.setAttribute('data-id', student.id);
+                row.className = "hover:bg-slate-50 transition";
+                row.innerHTML = `
+                    <td class="px-1 py-1 text-center font-semibold">${index + 1}</td>
+                    <td class="px-2 py-1 font-semibold text-left" contenteditable="true" data-field="name">${student.name}</td>
+                    <td class="px-1 py-1 text-center" contenteditable="true" data-field="sex">${student.sex}</td>
+                    <td class="px-2 py-1 text-center" contenteditable="true" data-field="dob">${student.dob}</td>
+                    <td class="px-2 py-1 text-center" contenteditable="true" data-field="village">${student.village}</td>
+                    <td class="px-2 py-1 text-center" contenteditable="true" data-field="commune">${student.commune}</td>
+                    <td class="px-2 py-1 text-center" contenteditable="true" data-field="district">${student.district}</td>
+                    <td class="px-2 py-1 text-center" contenteditable="true" data-field="province">${student.province}</td>
+                    <td class="px-1 py-1 text-center" contenteditable="true" data-field="grade">${student.grade}</td>
+                    <td class="px-1 py-1 text-center font-bold text-red-600" contenteditable="true" data-field="absences">${student.absences}</td>
+                    <td class="px-2 py-1 text-center" contenteditable="true" data-field="fatherName">${student.fatherName}</td>
+                    <td class="px-2 py-1 text-center" contenteditable="true" data-field="motherName">${student.motherName}</td>
+                    <td class="px-2 py-1 text-center text-[9px]" contenteditable="true" data-field="phone">${student.phone}</td>
+                    <td class="px-2 py-1 text-center bg-slate-50/50" contenteditable="true" data-field="schoolLevel">${student.schoolLevel}</td>
+                    <td class="px-2 py-1 text-center bg-slate-50/50" contenteditable="true" data-field="homeVisit">${student.homeVisit}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('stat-absent-count').textContent = `${studentData.length} នាក់`;
+            document.getElementById('stat-max-absent').textContent = `${maxAbs} ថ្ងៃ`;
+            document.getElementById('stat-female-count').textContent = `${femaleCount} នាក់`;
+        }
+
+        // Handle manual edits
+        document.addEventListener('blur', function(e) {
+            if (e.target.hasAttribute('data-field')) {
+                const tr = e.target.closest('tr');
+                if (!tr) return;
+                const id = parseInt(tr.getAttribute('data-id'));
+                const field = e.target.getAttribute('data-field');
+                let value = e.target.textContent.trim();
+
+                const student = studentData.find(s => s.id === id);
+                if (student) {
+                    if (field === 'absences') {
+                        student[field] = parseInt(value) || 0;
+                    } else {
+                        student[field] = value;
+                    }
+                }
+            }
+        }, true);
+
+        // Update titles and dates
+        function updateMetadata() {
+            const school = document.getElementById('cfg-school').value;
+            const grade = document.getElementById('cfg-grade').value;
+            const month = document.getElementById('cfg-month').value;
+            const year = document.getElementById('cfg-year').value;
+            const reportDate = document.getElementById('cfg-report-date').value;
+            const director = document.getElementById('cfg-director').value;
+            const reporter = document.getElementById('cfg-reporter').value;
+
+            document.getElementById('rep-school-top').textContent = school;
+            document.getElementById('rep-grade-text').textContent = grade;
+            document.getElementById('rep-month-text').textContent = month;
+            document.getElementById('rep-year-text').textContent = year;
+            document.getElementById('rep-date-label').textContent = reportDate;
+            document.getElementById('rep-director-name').textContent = director;
+            document.getElementById('rep-reporter-name').textContent = reporter;
+
+            studentData.forEach(student => {
+                student.grade = grade;
+            });
+            renderTable();
+        }
+
+        function filterByThreshold() {
+            if (attendanceCSVText && profileCSVText) {
+                processCSVData(attendanceCSVText, profileCSVText);
+            }
+        }
+
+        // Manual upload handlers
+        function handleManualUpload(event) {
+            const files = event.target.files;
+            if (files.length === 0) return;
+
+            const promises = Array.from(files).map(file => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const text = e.target.result;
+                        const name = file.name.toLowerCase();
+                        if (name.includes('attendance') || name.includes('វត្តមាន')) {
+                            attendanceCSVText = text;
+                            updateStatus('attendance-status', 'ភ្ជាប់រួច (ដោយដៃ)', 'bg-emerald-100 text-emerald-800');
+                        } else if (name.includes('ប្រវត្តិរូប') || name.includes('7c1') || name.includes('response') || name.includes('form')) {
+                            profileCSVText = text;
+                            updateStatus('profile-status', 'ភ្ជាប់រួច (ដោយដៃ)', 'bg-emerald-100 text-emerald-800');
+                        } else {
+                            // Deduce by header
+                            if (text.includes('អវត្តមានសរុប') || text.includes('ល.រ,គោត្តនាម')) {
+                                attendanceCSVText = text;
+                                updateStatus('attendance-status', 'ភ្ជាប់រួច (ដោយដៃ)', 'bg-emerald-100 text-emerald-800');
+                            } else {
+                                profileCSVText = text;
+                                updateStatus('profile-status', 'ភ្ជាប់រួច (ដោយដៃ)', 'bg-emerald-100 text-emerald-800');
+                            }
+                        }
+                        resolve();
+                    };
+                    reader.readAsText(file);
+                });
+            });
+
+            Promise.all(promises).then(() => {
+                if (attendanceCSVText && profileCSVText) {
+                    setProcessingButtonState(true, 'ឯកសារត្រូវបានបញ្ចូល! សូមចុចដំណើរការ');
+                } else {
+                    setProcessingButtonState(false, 'រង់ចាំឯកសារមួយទៀត...');
+                }
+            });
+        }
+
+        // Exporters
+        function exportToWord() {
+            const htmlContent = document.getElementById('report-container').innerHTML;
+            const documentHtml = `
+            <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+            <head>
+                <meta charset="utf-8">
+                <title>របាយការណ៍អវត្តមាន</title>
+                <style>
+                    body { font-family: 'Khmer OS Battambang', 'Kantumruy Pro', Arial, sans-serif; }
+                    table { border-collapse: collapse; width: 100%; margin-top: 15px; }
+                    th, td { border: 1px solid black; padding: 4px 6px; text-align: center; font-size: 10px; }
+                    th { font-weight: bold; background-color: #f3f4f6; }
+                    .text-left { text-align: left; }
+                    .font-moul { font-family: 'Khmer OS Muol Light', serif; font-size: 11px; }
+                    .grid { display: table; width: 100%; }
+                    .col { display: table-cell; width: 50%; }
+                </style>
+            </head>
+            <body>
+                ${htmlContent}
+            </body>
+            </html>
+            `;
+
+            const blob = new Blob(['\ufeff' + documentHtml], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'បញ្ជីស្រង់អវត្តមានសិស្សឈប់៧ដង_៧C1.doc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportToExcel() {
+            const table = document.getElementById('report-table');
+            const wb = XLSX.utils.table_to_book(table, { raw: true });
+            XLSX.writeFile(wb, 'បញ្ជីស្រង់អវត្តមានសិស្សឈប់៧ដង_៧C1.xlsx');
+        }
+
+        function exportToPDF() {
+            const element = document.getElementById('report-container');
+            const opt = {
+                margin:       [0.3, 0.3],
+                filename:     'បញ្ជីស្រង់អវត្តមានសិស្សឈប់៧ដង_៧C1.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>
